@@ -1,0 +1,130 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN / </span> ADD PRODUCT</h4>
+
+    <!-- Basic Layout & Basic with Icons -->
+    <div class="row">
+      <!-- Basic Layout -->
+      <div class="col-xxl">
+        <div class="card mb-4">
+          {% comment %} <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">Basic Layout</h5>
+            <small class="text-muted float-end">Default label</small>
+          </div> {% endcomment %}
+          <div class="card-body">
+
+            <form enctype="multipart/form-data" method="post" action="">
+              {% csrf_token %}
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-name">PRODUCT NAME :</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="basic-default-name" name="product_name" placeholder="Name of the product" required/>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-category"> CATEGORY :</label>
+                <div class="col-sm-10">
+                    <select class="form-select" id="basic-default-category" name="category" required>
+                        <option value="">Select category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.category_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-brand">BRAND :</label>
+                <div class="col-sm-10">
+                    <select class="form-select" id="basic-default-brand" name="brand" required>
+                        <option value="">Select brand</option>
+                        {% for brand in brands %}
+                        <option value="{{ brand.id }}">{{ brand.brand_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-company">IMAGE UPLOAD : </label>
+                <div class="col-sm-10">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="basic-default-company"
+                    name="product_image"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- MULTIPLE IMAGES -->
+
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-company">OTHER IMAGES : </label>
+                <div class="col-sm-10">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="basic-default-company"
+                    name="multiple_images"
+                    multiple
+                  />
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-price">ORIGINAL PRICE :</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="basic-default-price" name="original_price" placeholder="Original Price" required/>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-selling-price">SELLING PRICE :</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="basic-default-selling-price" name="selling_price" placeholder="Selling Price"/>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-message"> DESCRIPTION : </label>
+                <div class="col-sm-10">
+                  <textarea
+                    id="basic-default-message"
+                    class="form-control"
+                    placeholder="Description of the product"
+                    name="product_description"
+                    required
+                    aria-describedby="basic-icon-default-message2"
+                  ></textarea>
+                </div>
+              </div>
+              
+              <div class="row justify-content-end">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary">ADD NEW PRODUCT</button>
+                </div>
+              </div>
+              
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

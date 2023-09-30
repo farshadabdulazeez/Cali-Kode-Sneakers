@@ -62,7 +62,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'calikodesneakers.wsgi.application'
 
-# AUTH_USER_MODEL = 'user_app.CustomUser'
+AUTH_USER_MODEL = 'user_app.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'calikodesneakers.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'calikodesneakers',
         'USER': 'postgres',
         'port': '5432',
         'PASSWORD': '0786',
@@ -116,7 +116,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR / 'static')]
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'assets'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR / 'media')

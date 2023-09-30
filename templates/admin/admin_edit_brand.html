@@ -1,0 +1,86 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN / </span> EDIT BRAND</h4>
+
+    <!-- Basic Layout & Basic with Icons -->
+    <div class="row">
+      <!-- Basic Layout -->
+      <div class="col-xxl">
+        <div class="card mb-4">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">UPDATE BRAND DETAILS :</h5>
+            {% comment %} <small class="text-muted float-end">Default label</small> {% endcomment %}
+          </div>
+          <div class="card-body">
+
+
+            <form enctype="multipart/form-data" method="post">
+              {% csrf_token %}
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-name">BRAND NAME :</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="basic-default-name" name="category_name" placeholder="Edit category name" required/>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="current-brand-image">CURRENT IMAGE:</label>
+                <div class="col-sm-10">
+                    {% if brands.brand_image %}
+                        <img src="{{ brands.brand_image.url }}" alt="Current Brand Image" style="max-width: 20%;" />
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </div>
+            </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-company">IMAGE UPLOAD : </label>
+                <div class="col-sm-10">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="basic-default-company"
+                    name="category_image"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="basic-default-message">DESCRIPTION : </label>
+                <div class="col-sm-10">
+                  <textarea
+                    id="basic-default-message"
+                    class="form-control"
+                    placeholder="Edit category description"
+                    name="category_description"
+                    required
+                    aria-describedby="basic-icon-default-message2"
+                  ></textarea>
+                </div>
+              </div>
+              <div class="row justify-content-end">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary">EDIT BRAND</button>
+                </div>
+              </div>
+            </form>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
