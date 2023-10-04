@@ -30,6 +30,7 @@ def product_details(request, id):
 
     context = {
         'product': single_product,
+        'product_id' : product_id,
         'variant': variant,
         'products': all_products,
         'multiple_images': multiple_images,

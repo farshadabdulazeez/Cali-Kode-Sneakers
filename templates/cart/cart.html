@@ -37,22 +37,39 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        
+                                        {% if cart_items %}
+
+                                        {% for item in cart_items %}
+
                                         <tr>
-                                            <td class="product-thumbnail">
-                                                <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
+                                          <td class="product-thumbnail">
+                                                <a href="#"><img src="{{ item.product.product.product_image.url }}" alt="" style="width: 123px; height: 123px;"></a>
                                             </td>
-                                            <td class="product-name"><a href="#">Simple Black T-Shirt</a></td>
-                                            <td class="product-price-cart"><span class="amount">$260.00</span></td>
+                                            <td class="product-name">{{ item.product.product.product_name }}</td>
+                                            <td class="product-price-cart"><span class="amount">{{ item.product.product.selling_price }}</span></td>
+                                            <td >{{ item.product.product_size }}</td>
+                                            <td >{{ item.product.product.category.category_name }}</td>
+                                            <td >{{ item.quantity }}</td>
+
+
+
                                             <td class="product-quantity pro-details-quality">
                                                 <div class="cart-plus-minus">
                                                     <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1">
                                                 </div>
                                             </td>
-                                            <td class="product-subtotal">$110.00</td>
+
+                                            <td class="product-subtotal">{{ item.sub_total }}</td>
                                             <td class="product-remove">
                                                 <a href=""><i class="icon_close"></i></a>
                                             </td>
                                         </tr>
+                                        
+                                        {% endfor %}
+
+                                        {% endif %}
+
                                     </tbody>
                                 </table>
                             </div>

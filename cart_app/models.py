@@ -24,10 +24,10 @@ class CartItem(models.Model):
         ordering = ['created_date']
 
     def sub_total(self):
-        return self.product.product_price * self.quantity
+        return self.product.product.selling_price * self.quantity
 
     def __str__(self):
-        return f"self.product.variant_name"
+        return f"{self.product.product.product_name} - size : {self.product.product_size.size}"
     
 
 # class Checkout(models.Model):

@@ -20,11 +20,37 @@ def _cart_id(request):
 
 def cart(request, quantity=0, total=0, cart_items=None):
 
-    total = 0
     quantity = 0
+    total = 0
+    cart_items = None
+
+    user = request.user
+    cart = Cart.objects.get(cart_id=_cart_id(request))  # fetching the cart id
+    cart_items = CartItem.objects.filter(customer=user).order_by('id')   # fetch every cart items related with the cart
+    
+    for item in cart_items:
+        product_price = item.product.product.selling_price
+        quantity = item.quantity
+        if product_price is not None and quantity is not None:
+            try:
+                total += int(product_price) * int(quantity)
+            except ValueError:
+                return HttpResponse("Some items have invalid price or quantity.")
+        else:
+            return HttpResponse("Some items have missing price or quantity.")
 
 
-    return render(request, 'cart/cart.html')
+
+
+
+
+    context = {
+        'quantity' : quantity,
+        'total' : total,
+        'cart_items' : cart_items,
+    }
+
+    return render(request, 'cart/cart.html', context)
 
 
 def add_cart(request, product_id):
@@ -33,18 +59,21 @@ def add_cart(request, product_id):
 
     # getting variant of product
     if request.method == 'POST':
+
         try:
             product = Product.objects.get(id=product_id)
             category_slug = product.category.slug
             product_slug = product.slug
             size = request.POST['size']
+            # variant = 0
             if size:
                 variant = ProductVariant.objects.get(Q(product=product), Q(product_size__size=size))
+                # return HttpResponse(variant)
             else:
                 messages.error(request, 'choose a size')
-                return redirect('product_details', category_slug, product_slug)
+                return redirect('product_details', product_id)
         except ProductVariant.DoesNotExist:
-            return redirect('product_details', category_slug, product_slug)
+            return redirect('product_details', product_id)
 
     # getting cart    
     try:
@@ -70,13 +99,15 @@ def add_cart(request, product_id):
                 messages.error(request, "stock exhausted")
         cart_item.save()
 
-
     except CartItem.DoesNotExist:
         if 'user' in request.session:
             my_user = request.user
             cart_item = CartItem.objects.create(product=variant, quantity=1, cart=cart, customer=my_user)
+            cart_item.save()
+
         else:
             cart_item = CartItem.objects.create(product=variant, quantity=1, cart=cart)
+            cart_item.save()
         cart.save()
 
     return redirect('cart')
