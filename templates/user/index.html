@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'user/assets/images/favicon.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'user\assets\images\logo\cali-kode-logo-crop.png' %}">
 
     <!-- All CSS is here
 	============================================ -->
@@ -237,7 +237,7 @@
                             <ul class="mobile-menu">
                                 <li class="menu-item-has-children"><a href="index.html">Home</a></li>
                                 <li class="menu-item-has-children "><a href="#">shop</a>
-                                    {% comment %} <ul class="dropdown">
+                                   <!-- <ul class="dropdown">
                                         <li class="menu-item-has-children"><a href="#">shop layout</a>
                                             <ul class="dropdown">
                                                 <li><a href="shop.html">standard style</a></li>
@@ -258,9 +258,9 @@
                                                 <li><a href="product-details-affiliate.html">affiliate style</a></li>
                                                 <li><a href="product-details-group.html">group style</a></li>
                                                 <li><a href="product-details-fixed-img.html">fixed image style </a></li>
-                                            </ul>
+                                            </ul> -->
                                         </li>
-                                    </ul> {% endcomment %}
+                                    </ul>
                                 </li>
                                 <li class="menu-item-has-children"><a href="#">Pages</a>
                                     <ul class="dropdown">
@@ -356,25 +356,27 @@
                 <div class="tab-btn-wrap mb-40">
                     <div class="tab-style-2 nav">
                         <a class="active" href="#product-1" data-toggle="tab">All Products</a>
-                        {% comment %} <a href="#product-2" data-toggle="tab"> Clothing </a>
+                        <!-- <a href="#product-2" data-toggle="tab"> Clothing </a>
                         <a href="#product-3" data-toggle="tab">Shoes </a>
                         <a href="#product-4" data-toggle="tab">Bags</a>
-                        <a href="#product-5" data-toggle="tab">Accessorirs</a> {% endcomment %}
+                        <a href="#product-5" data-toggle="tab">Accessories</a> -->
                     </div>
                     <div class="btn-style-2">
-                        <a class="animated" href="shop.html">see all product <i class="icon-arrow-right"></i></a>
+                        <a class="animated" href="{% url 'products' %}">See all product <i class="icon-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="tab-content jump">
                     <div id="product-1" class="tab-pane active">
+
                         <div class="row">
+                        {% for i in products %}
                             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                                 <div class="single-product-wrap mb-35">
                                     <div class="product-img product-img-zoom mb-15">
-                                        <a href="product-details.html">
-                                            <img src="{% static 'user/assets/images/product/product-14.jpg' %}" alt="">
+                                        <a href="{% url 'product_details' i.id %}">
+                                            <img src="{{ i.product_image.url }}" alt="">
                                         </a>
-                                        {% comment %} <span class="pro-badge left bg-red">-10%</span> {% endcomment %}
+                                       <!-- <span class="pro-badge left bg-red">-10%</span> -->
                                         <div class="product-action-2 tooltip-style-2">
                                             <button title="Wishlist"><i class="icon-heart"></i></button>
                                             <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
@@ -392,10 +394,10 @@
                                             </div>
                                             <span>(2)</span>
                                         </div> {% endcomment %}
-                                        <h3><a href="product-details.html">Make Thing Happen T-Shirt</a></h3>
+                                        <h3><a href="">{{ i.product_name }}</a></h3>
                                         <div class="product-price-2">
-                                            <span class="new-price">$35.45</span>
-                                            <span class="old-price">$45.80</span>
+                                            <span class="new-price">{{ i.selling_price }}</span>
+                                            <span class="old-price">{{ i.original_price }}</span>
                                         </div>
                                     </div>
                                     <div class="product-content-wrap-2 product-content-position text-center">
@@ -409,10 +411,10 @@
                                             </div>
                                             <span>(2)</span>
                                         </div> {% endcomment %}
-                                        <h3><a href="product-details.html">Make Thing Happen T-Shirt</a></h3>
+                                        <h3><a href="">{{ i.product_name }}</a></h3>
                                         <div class="product-price-2">
-                                            <span class="new-price">$35.45</span>
-                                            <span class="old-price">$45.80</span>
+                                            <span class="new-price">{{ i.selling_price }}</span>
+                                            <span class="old-price">{{ i.original_price }}</span>
                                         </div>
                                         <div class="pro-add-to-cart">
                                             <button title="Add to Cart">Add To Cart</button>
@@ -420,6 +422,8 @@
                                     </div>
                                 </div>
                             </div>
+                        {% endfor %}
+
                         </div>
                     </div>
                 

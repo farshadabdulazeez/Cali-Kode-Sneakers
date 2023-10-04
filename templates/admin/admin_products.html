@@ -21,7 +21,7 @@
                 <th>PRODUCT IMAGE</th>
                 <th>PRICE</th>
                 <th>CATEGORY</th>
-                <th>STOCK</th>
+                <th>STOCK/SIZE</th>
                 <th>OPERATIONS</th>
                 <th>ACTIONS</th>
 
@@ -45,16 +45,16 @@
                     </td>
                     <td>{{ i.selling_price }}</td>
                     <td>{{ i.category.category_name }}</td>
-                    <td><a href="{% url 'admin_product_variant' i.id %}"> STOCK </a></td>
+                    <td><a href="{% url 'admin_product_variant' i.id %}"> STOCK/SIZE</a></td>
                     <td><a href="{% url 'admin_edit_product' i.id %}"><i class="bi bi-pencil-fill  me-4"></i></a>
                       <a href="{% url 'admin_delete_product' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td>
                     <td>
-                      <form method="post" action="{% url 'admin_available_product' i.id %}">
+                      <form method="post" action="{% url 'admin_control_product' i.id %}">
                       {% csrf_token %}
                       {% if i.is_available %}
-                          <button type="submit" class="btn btn-primary">BLOCK</button>
+                          <button type="submit" class="btn btn-primary">LIST</button>
                       {% else %}
-                          <button type="submit" class="btn btn-danger">UNBLOCK</button> 
+                          <button type="submit" class="btn btn-danger">UNLIST</button> 
                       {% endif %}
                       </form>
                   </td>

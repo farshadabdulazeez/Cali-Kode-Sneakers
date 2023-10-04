@@ -1,4 +1,5 @@
 from .models import *
+from product_app.models import *
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
@@ -13,11 +14,21 @@ from django.contrib.auth import authenticate, login, logout
 
 def index(request):
 
-    return render(request, 'user/index.html')
+    context = {}
+
+    categories = Category.objects.all().order_by('id')
+    products = Product.objects.all()
+
+    context = {
+        'categories' : categories,
+        'products' : products
+    }
+
+    return render(request, 'user/index.html', context)
 
 
 
-@cache_control(no_cache=True, no_store=True)
+# @cache_control(no_cache=True, no_store=True)
 def register(request):
 
     # if 'email' in request.session:
@@ -78,7 +89,7 @@ Thank you for using Cali Kode Sneakers!
 
 
 
-@cache_control(no_cache=True, no_store=True)
+# @cache_control(no_cache=True, no_store=True)
 def user_login(request):
 
     # if 'email' in request.session:
@@ -105,7 +116,7 @@ def user_login(request):
 
 
 
-@cache_control(no_cache=True, no_store=True)
+# @cache_control(no_cache=True, no_store=True)
 def otp_verification(request, user_id):
     # if 'email' in request.session:
     #     return redirect('admin_dashboard')
@@ -169,8 +180,8 @@ def otp_verification(request, user_id):
 #     return render(request, 'otp_verification')
 
 
-@login_required(login_url='index')
-@cache_control(no_cache=True, no_store=True)
+# @login_required(login_url='index')
+# @cache_control(no_cache=True, no_store=True)
 def user_logout(request):
 
     # if 'email' in request.session:

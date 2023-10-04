@@ -134,12 +134,12 @@
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
+            {% comment %} <li class="menu-item active">
               <a href="{% url 'admin_dashboard' %}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">DASHBOARD</div>
               </a>
-            </li>
+            </li> {% endcomment %}
             
             <li class="menu-item active">
               <a href="{% url 'admin_users' %}" class="menu-link ">
@@ -166,6 +166,13 @@
               <a href="{% url 'admin_brands' %}" class="menu-link ">
                 <i class="menu-icon tf-icons bx bx-cube-alt"></i>
                 <div data-i18n="Misc">BRANDS</div>
+              </a>
+            </li>
+
+            <li class="menu-item active">
+              <a href="" class="menu-link ">
+                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <div data-i18n="Misc">ORDERS</div>
               </a>
             </li>
 

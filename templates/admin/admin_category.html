@@ -38,14 +38,16 @@
                 <td><a href="{% url 'admin_edit_category' i.id %}"><i class="bi bi-pencil-fill  me-4"></i></a>
                     <a href="{% url 'admin_delete_category' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td>
                 <td>
-                  <form method="post" action="{% url 'admin_available_category' i.id %}">
-                  {% csrf_token %}
+                  {% comment %} <form method="post" action="{% url 'admin_control_category' i.id %}"> {% endcomment %}
+                  {% comment %} {% csrf_token %} {% endcomment %}
                   {% if i.is_active == True %}
-                      <button type="submit" class="btn btn-danger">UNLIST CATEGORY</button>
+                    <a href="{% url 'admin_control_category' i.id %}"><button type="submit" class="btn btn-danger">UNLIST CATEGORY</button></a>
                   {% else %}
-                      <button type="submit" class="btn btn-primary">LIST CATEGORY</button> 
+                      <a href="{% url 'admin_control_category' i.id %}"><button type="submit" class="btn btn-primary">LIST CATEGORY</button></a>
                   {% endif %}
-                  </form>
+                  {% comment %} </form> {% endcomment %}
+
+
               </td>
               </tr>
 
