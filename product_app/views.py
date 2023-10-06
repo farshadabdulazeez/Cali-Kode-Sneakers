@@ -1,11 +1,14 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from product_app.models import *
 from user_app.models import *
 
 
 
 def products(request):
+
+    if 'email' in request.session:
+        return redirect('admin_dashboard')
 
     products = Product.objects.filter(is_available=True)
 

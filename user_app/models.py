@@ -39,7 +39,10 @@ class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     mobile = models.CharField(max_length=10, unique=True)
     otp = models.CharField(max_length=6, null=True, blank=True)
-
+    image = models.ImageField(upload_to='profile_images', blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']
 
@@ -50,3 +53,22 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return '{}'.format(self.email)
+    
+
+class UserAddress(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150, blank=True, null=True)
+    alternative_mobile = models.CharField(max_length=10, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=150, blank=True, null=True)
+    Landmark = models.CharField(max_length=255, blank=True, null=True)
+    pincode = models.IntegerField(blank=True, null=True)
+    district = models.CharField(max_length=150, blank=True, null=True)
+    state = models.CharField(max_length=150, blank=True, null=True)
+    created = models.DateField(auto_now_add=True, )
+
+    class Meta:
+        verbose_name_plural = 'User Address'
+
+    def __str__(self):
+        return f"{self.user.email}"

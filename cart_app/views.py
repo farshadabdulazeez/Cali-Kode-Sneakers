@@ -25,25 +25,30 @@ def cart(request, quantity=0, total=0, cart_items=None):
     cart_items = None
 
     user = request.user
-    cart = Cart.objects.get(cart_id=_cart_id(request))  # fetching the cart id
-    cart_items = CartItem.objects.filter(customer=user).order_by('id')   # fetch every cart items related with the cart
-    
-    for item in cart_items:
-        product_price = item.product.product.selling_price
-        quantity = item.quantity
-        if product_price is not None and quantity is not None:
-            try:
-                total += int(product_price) * int(quantity)
-            except ValueError:
-                return HttpResponse("Some items have invalid price or quantity.")
-        else:
-            return HttpResponse("Some items have missing price or quantity.")
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))  # fetching the cart id
+
+    except ObjectDoesNotExist:
+        pass
+    try:
+
+        cart_items = CartItem.objects.filter(customer=user).order_by('id')   # fetch every cart items related with the cart
+        for item in cart_items:
+            product_price = item.single_product.selling_price
+            quantity = item.quantity
+            if product_price is not None and quantity is not None:
+                try:
+                    total += int(product_price) * int(quantity)
+                except ValueError:
+                    return HttpResponse("Some items have invalid price or quantity.")
+            else:
+                return HttpResponse("Some items have missing price or quantity.")
 
 
+    except Exception as e:
+        print(e)
 
-
-
-
+   
     context = {
         'quantity' : quantity,
         'total' : total,
@@ -53,34 +58,35 @@ def cart(request, quantity=0, total=0, cart_items=None):
     return render(request, 'cart/cart.html', context)
 
 
-def add_cart(request, product_id):
+def add_cart_item(request, product_id):
 
     product = Product.objects.get(id=product_id)
+    size = None
+    variant = None
 
-    # getting variant of product
     if request.method == 'POST':
 
         try:
             product = Product.objects.get(id=product_id)
             category_slug = product.category.slug
             product_slug = product.slug
-            size = request.POST['size']
-            # variant = 0
+            size = request.POST.get('size') 
+
             if size:
                 variant = ProductVariant.objects.get(Q(product=product), Q(product_size__size=size))
-                # return HttpResponse(variant)
             else:
-                messages.error(request, 'choose a size')
+                messages.error(request, 'Select a size')
                 return redirect('product_details', product_id)
+            
         except ProductVariant.DoesNotExist:
-            return redirect('product_details', product_id)
+            return redirect('product_details', product_id)        
 
     # getting cart    
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
         cart = Cart.objects.create(cart_id=_cart_id(request))   #to get the cart using cart id present in the session
-        cart.save()
+        cart.save()    
 
     # getting cart items
     try:
@@ -97,7 +103,7 @@ def add_cart(request, product_id):
                 cart_item.quantity += 1
             else:
                 messages.error(request, "stock exhausted")
-        cart_item.save()
+        cart_item.save()    
 
     except CartItem.DoesNotExist:
         if 'user' in request.session:
@@ -113,10 +119,38 @@ def add_cart(request, product_id):
     return redirect('cart')
 
 
-# @cache_control(no_cache=True, no_store=True)
-def delete_cart(request, variant_id):
-    # if 'email' in request.session:
-    #     return redirect('admin_dashboard')
+@cache_control(no_cache=True, no_store=True)
+def add_cart_quantity(request, cart_item_id):
+    if 'email' in request.session:
+        return redirect('admin_dashboard')
+    
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    if cart_item.product.stock > cart_item.quantity:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('cart')
+
+
+@cache_control(no_cache=True, no_store=True)
+def remove_cart_quantity(request, cart_item_id):
+    if 'email' in request.session:
+        return redirect('admin_dashboard')
+    
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    
+    return redirect('cart')
+
+
+@cache_control(no_cache=True, no_store=True)
+def delete_cart_item(request, variant_id):
+    if 'email' in request.session:
+        return redirect('admin_dashboard')
+    
     variant = get_object_or_404(ProductVariant, id=variant_id)
 
     if 'user' in request.session:
@@ -130,4 +164,23 @@ def delete_cart(request, variant_id):
         cart_item = CartItem.objects.filter(cart=cart, product=variant)
         cart_item.delete()
         
+    return redirect('cart')
+
+
+@cache_control(no_cache=True, no_store=True)
+def clear_cart(request):
+    if 'email' in request.session:
+        return redirect('admin_dashboard')
+    
+    user = request.user
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+    except Cart.DoesNotExist:
+        return redirect('cart')
+    
+    cart_items = CartItem.objects.filter(cart=cart)
+    
+    for cart_item in cart_items:
+        cart_item.delete()
+    
     return redirect('cart')

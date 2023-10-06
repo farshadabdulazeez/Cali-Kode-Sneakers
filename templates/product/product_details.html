@@ -111,7 +111,7 @@
                                 <span class="new-price">{{ product.selling_price }}</span>
                                 <span class="old-price">{{ product.original_price }}</span>
                             </div>
-                        <form method="post" action="{% url 'add_cart' product_id %}">
+                        <form method="post" action="{% url 'add_cart_item' product_id %}">
                             {% csrf_token %}
                             <div class="pro-details-size">
                                 <span>Size:</span>
@@ -139,7 +139,7 @@
 
                             <div class="pro-details-action-wrap">
                                 <div class="pro-details-add-to-cart">
-                                    <a title="Add to Cart" href="{% url 'add_cart' product_id %}">Add To Cart </a>
+                                    <a title="Add to Cart" href="{% url 'add_cart_item' product_id %}">Add To Cart </a>
                                     <button type="submit" title="Add to Cart">Add to cart</button>
                                 </div>
                                 <div class="pro-details-action">

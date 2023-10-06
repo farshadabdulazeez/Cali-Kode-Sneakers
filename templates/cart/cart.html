@@ -31,7 +31,7 @@
                                             <th>Price</th>
                                             <th>Size</th>
                                             <th>Category</th>
-                                            <th>Qty</th>
+                                            <th>Quantity</th>
                                             <th>Subtotal</th>
                                             <th>Action</th>
                                         </tr>
@@ -46,24 +46,37 @@
                                           <td class="product-thumbnail">
                                                 <a href="#"><img src="{{ item.product.product.product_image.url }}" alt="" style="width: 123px; height: 123px;"></a>
                                             </td>
-                                            <td class="product-name">{{ item.product.product.product_name }}</td>
+                                            <td class="product-name"><a href="">{{ item.product.product.product_name }}</a></td>
                                             <td class="product-price-cart"><span class="amount">{{ item.product.product.selling_price }}</span></td>
                                             <td >{{ item.product.product_size }}</td>
                                             <td >{{ item.product.product.category.category_name }}</td>
-                                            <td >{{ item.quantity }}</td>
 
-
-
-                                            <td class="product-quantity pro-details-quality">
+                                            {% comment %} <td class="product-quantity pro-details-quality">
                                                 <div class="cart-plus-minus">
                                                     <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1">
                                                 </div>
-                                            </td>
+                                            </td> {% endcomment %}
 
-                                            <td class="product-subtotal">{{ item.sub_total }}</td>
-                                            <td class="product-remove">
-                                                <a href=""><i class="icon_close"></i></a>
+                                            <td>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <a href="{% url 'remove_cart_quantity' item.id %}">-
+                                                    </a>
+                                                    <span>{{ item.quantity }}</span>
+                                                    <a href="{% url 'add_cart_quantity' item.id %}">+
+                                                        <!-- <i class="bi bi-plus-lg"></i> -->
+                                                    </a>
+                                                </div>
                                             </td>
+                                            
+                                            {% if item %}
+                                                <td class="product-subtotal">{{ item.sub_total }}</td>
+                                            {% else %}
+                                                <td class="product-subtotal">Item not found</td>
+                                            {% endif %}
+
+                                            <td class="product-remove">
+                                                <a href="{% url 'delete_cart_item' item.product.id %}"><i class="icon_close"></i></a>
+                                            </td>                                            
                                         </tr>
                                         
                                         {% endfor %}
@@ -81,7 +94,7 @@
                                         </div>
                                         <div class="cart-clear">
                                             <button>Update Cart</button>
-                                            <a href="#">Clear Cart</a>
+                                            <a href="{% url 'clear_cart' %}">Clear Cart</a>
                                         </div>
                                     </div>
                                 </div>
