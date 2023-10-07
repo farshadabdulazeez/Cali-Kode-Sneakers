@@ -58,10 +58,10 @@ class CustomUser(AbstractUser):
 class UserAddress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=150, blank=True, null=True)
-    alternative_mobile = models.CharField(max_length=10, blank=True, null=True)
+    mobile = models.CharField(max_length=10, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=150, blank=True, null=True)
-    Landmark = models.CharField(max_length=255, blank=True, null=True)
+    landmark = models.CharField(max_length=255, blank=True, null=True)
     pincode = models.IntegerField(blank=True, null=True)
     district = models.CharField(max_length=150, blank=True, null=True)
     state = models.CharField(max_length=150, blank=True, null=True)

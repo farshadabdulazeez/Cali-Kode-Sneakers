@@ -197,59 +197,67 @@ def user_logout(request):
 @cache_control(no_cache=True, no_store=True)
 def user_profile(request):
 
-    return render(request, 'user/user_profile.html')
+    if 'email' in request.session:
+        return redirect('admin_dashboard') 
+    if 'user' in request.session:
+        user = request.user
+
+    context = {}
+
+    address = UserAddress.objects.filter(user=user)
+
+    context = {
+        'address' : address,
+    }
+
+    return render(request, 'user/user_profile.html', context)
 
 
 @login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
-def add_address(request):
+def add_address(request, id):
 
     if 'email' in request.session:
         return redirect('admin_dashboard')
-    try:
-        if 'user' in request.session:
-            user = request.user
-        if request.method == 'POST':
-            name = request.POST['first_name']
-            if len(request.POST['mobile']) == 10:
-                phone = request.POST['mobile']
-            address = request.POST['address']
-            city = request.POST['city']
-            landmark = request.POST['landmark']
-            pincode = request.POST['pincode']
-            district = request.POST['district']
-            state = request.POST['state']
-
-            if not name:
-                name = user.first_name
-
-            user_address = UserAddress(user=user, name=name, alternative_mobile=phone, address=address, city=city, landmark=landmark,
-                                       pincode=pincode, district=district, state=state )
-            user_address.save()
-
-            messages.success(request, "New address added.")
-            return redirect('address_book')
+    
+    if 'user' in request.session:
+        user = request.user
         
-    except Exception as e:
-        print(e)
+    if request.method == 'POST':
+        name = request.POST['name']
+        mobile = request.POST['mobile']
+        address = request.POST['address']
+        city = request.POST['city']
+        landmark = request.POST['landmark']
+        pincode = request.POST['pincode']
+        district = request.POST['district']
+        state = request.POST['state']
+
+        if not name:
+            name = user.first_name
+
+        if len(mobile) == 10:
+            user_address = UserAddress(
+                user=user,
+                name=name,
+                mobile=mobile,
+                address=address,
+                city=city,
+                landmark=landmark,
+                pincode=pincode,
+                district=district,
+                state=state
+            )
+            user_address.save()
+            messages.success(request, "Address successfully created!")
+
+        else:
+            messages.error(request, "Mobile number must be 10 characters long!")
+    # except Exception as e:
+    #     print(e)
 
     return redirect('user_profile')
 
 
-
-# @login_required(login_url='index')
-# def address_book(request):
-
-#     if 'email' in request.session:
-#         return redirect('admin_dashboard')
-#     if 'user' in request.session:
-#         user = request.user
-
-#     address = UserAddress.objects.filter(user=user)
-
-#     context = {
-#         'address': address,
-#     }
-
-#     return render(request, 'user/user_profile.html', context)
+    
 
