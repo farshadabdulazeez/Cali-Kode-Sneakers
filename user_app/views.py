@@ -4,12 +4,14 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import redirect, render
 from django.utils.crypto import get_random_string
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import get_object_or_404, redirect, render
+
 
 
 def index(request):
@@ -259,5 +261,57 @@ def add_address(request, id):
     return redirect('user_profile')
 
 
-    
+@login_required(login_url='index')
+@cache_control(no_cache=True, no_store=True)
+def edit_address(request, id):
 
+    if 'email' in request.session:
+        return redirect('admin_dashboard')
+    
+    if 'user' in request.session:
+
+        user_address = UserAddress.objects.get(id=id)
+
+        if request.method == 'POST':
+            name = request.POST['name']
+            mobile = request.POST['mobile']
+            address = request.POST['address']
+            city = request.POST['city']
+            landmark = request.POST['landmark']
+            pincode = request.POST['pincode']
+            district = request.POST['district']
+            state = request.POST['state']
+
+        # Update the user_address object with new data
+            user_address.name = name
+            user_address.mobile = mobile
+            user_address.address = address
+            user_address.city = city
+            user_address.landmark = landmark
+            user_address.pincode = pincode
+            user_address.district = district
+            user_address.state = state 
+
+            user_address.save()
+            messages.success(request, "Address updated successfully!")
+            return redirect('user_profile')
+        
+
+@login_required(login_url="index")
+@cache_control(no_cache=True, no_store=True)
+def delete_address(request, address_id):
+
+    if "email" in request.session:
+        return redirect('admin_dashboard')
+    
+    if "user" in request.session:
+
+        try:
+            address = UserAddress.objects.get(id=address_id)
+            address.delete()
+            messages.success(request, "Address deleted successfully!")
+
+        except ObjectDoesNotExist:
+            messages.error(request, "Address not found!")
+
+    return redirect('user_profile')

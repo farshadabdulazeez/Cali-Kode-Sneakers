@@ -10,8 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.admin.views.decorators import staff_member_required
 
 
-def admin_login(request):
-   
+@cache_control(no_cache=True, no_store=True)
+def admin_login(request):  
     
     if request.method == 'POST':
         email = request.POST['email']
@@ -31,11 +31,13 @@ def admin_login(request):
     return render(request, 'admin/admin_login.html')
 
 
+@staff_member_required(login_url='admin_login')
 def admin_dashboard(request):
 
     return render(request, 'admin/admin_dashboard.html')
 
 
+@staff_member_required(login_url='admin_login')
 def admin_users(request):
 
     context = {}
@@ -50,6 +52,8 @@ def admin_users(request):
     return render(request, 'admin/admin_users.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_users_control(request, id):
 
     try:
@@ -65,6 +69,7 @@ def admin_users_control(request, id):
     return redirect('admin_users')
 
 
+@staff_member_required(login_url='admin_login')
 def admin_category(request):
 
     context = {}
@@ -79,6 +84,8 @@ def admin_category(request):
     return render(request, 'admin/admin_category.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_add_category(request):
 
     try:
@@ -109,6 +116,8 @@ def admin_add_category(request):
     return render(request, 'admin/admin_add_category.html')
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_edit_category(request, id):
 
     try:
@@ -138,7 +147,8 @@ def admin_edit_category(request, id):
         return redirect('admin_category')
 
     
-
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_delete_category(request, id):
 
     try:
@@ -154,6 +164,8 @@ def admin_delete_category(request, id):
     return redirect('admin_category')
     
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_control_category(request, id):
 
     try:
@@ -173,6 +185,7 @@ def admin_control_category(request, id):
     return redirect('admin_category')
 
 
+@staff_member_required(login_url='admin_login')
 def admin_brands(request):
 
     context = {}
@@ -185,6 +198,8 @@ def admin_brands(request):
     return render(request, 'admin/admin_brands.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_add_brand(request):
     if request.method == 'POST':
         brand_name = request.POST['brand_name']
@@ -221,6 +236,8 @@ def admin_add_brand(request):
     return render(request, 'admin/admin_add_brand.html')
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_edit_brand(request, id):
 
     context = {}
@@ -256,10 +273,13 @@ def admin_edit_brand(request, id):
         return redirect('admin_brands')
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_delete_brand(request):
     return render(request, 'admin/admin_delete_brand.html')
 
 
+@staff_member_required(login_url='admin_login')
 def admin_products(request):
 
     context = {}
@@ -276,6 +296,8 @@ def admin_products(request):
     return render(request, 'admin/admin_products.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_add_product(request):
 
     categories = Category.objects.all()
@@ -326,26 +348,28 @@ def admin_add_product(request):
             except Exception as e:
                 print(e)
 
-            messages.success(request, "Product Created")
+            messages.success(request, "Product Created Successfully!")
 
             return redirect('admin_products')
         
     except Exception as e:
-        messages.error(request, "Product Exist")
+        messages.error(request, "Product is already exist!")
         print(e)
 
     return render(request, 'admin/admin_add_product.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_edit_product(request, id):
 
     product = Product.objects.get(id=id)
     product_category = product.category
     product_brand = product.brand
-    # fetch the images from multiple images table related with that product
     multiple_images = MultipleImages.objects.filter(product=id)
     brands = ProductBrand.objects.exclude(brand_name=product_brand)
     categories = Category.objects.exclude(category_name=product_category)
+
     context = {
         'product': product,
         'categories': categories,
@@ -354,6 +378,7 @@ def admin_edit_product(request, id):
         'product_brand': product_brand,
         'multiple_images': multiple_images,
     }
+
     try:
         if request.method == 'POST':
             product_name = request.POST['product_name']
@@ -361,7 +386,6 @@ def admin_edit_product(request, id):
             brand = request.POST['brand']
             original_price = request.POST['original_price']
             selling_price = request.POST['selling_price']
-            # condition for checking is there any file is present in the request.
             single_image = request.FILES.get('product_image', None)
 
             multiple_images = request.FILES.getlist('multiple_images')
@@ -405,6 +429,8 @@ def admin_edit_product(request, id):
     return render(request, 'admin/admin_edit_product.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_delete_product(request, id):
 
     product = Product.objects.get(id=id)
@@ -416,7 +442,9 @@ def admin_delete_product(request, id):
 
     return redirect('admin_products')
 
-    
+
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_control_product(request, id):
 
     try:
@@ -434,6 +462,8 @@ def admin_control_product(request, id):
     return redirect('admin_products')
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_product_variant(request, product_id):
 
     context = {}
@@ -448,6 +478,8 @@ def admin_product_variant(request, product_id):
     return render(request, 'admin/admin_product_variant.html',context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_add_product_variant(request,product_id):
 
     context = {}
@@ -489,6 +521,8 @@ def admin_add_product_variant(request,product_id):
     return render(request, 'admin/admin_add_product_variant.html', context)
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_edit_product_variant(request):
     try:
         if request.method == 'POST':
@@ -500,7 +534,6 @@ def admin_edit_product_variant(request):
             variant.product_price = price
             variant.stock = stock
             variant.save()
-        # return HttpResponse(variant)
 
         return redirect('admin_product_variant', product_id.id)
     
@@ -513,6 +546,8 @@ def admin_edit_product_variant(request):
     return redirect('admin_dashboard')
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_delete_product_variant(request, variant_id):
 
     try:
@@ -530,6 +565,8 @@ def admin_delete_product_variant(request, variant_id):
     return redirect('admin_dashboard')
 
 
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
 def admin_control_product_variant(request, variant_id):
 
     try:

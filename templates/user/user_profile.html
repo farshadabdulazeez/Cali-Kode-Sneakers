@@ -35,7 +35,7 @@
                                         <a href="#payment-method" data-toggle="tab"><i class="fa fa-credit-card"></i> Payment
                                             Method</a>
                                         <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
-                                        <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i> Account Details</a>
+                                        <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i> Account Details & Change Password</a>
                                         <a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
                                     </div>
                                 </div>
@@ -140,12 +140,14 @@
                                         </div>
                                         <!-- Single Tab Content End -->
                                         <!-- Single Tab Content Start -->
+
                                         <div class="tab-pane fade" id="address-edit" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Billing Address</h3>
                                         
                                                 {% if address %}
                                                 {% for i in address %}
+
                                                 <div class="card mb-3">
                                                     <div class="card-body">
                                                         <p><strong>{{forloop.counter}}. {{ i.name }}</strong></p>
@@ -156,14 +158,16 @@
                                                         <p>District : {{ i.district }}</p>
                                                         <p>State : {{ i.state }}</p>
                                                         <p>Mobile: {{ i.mobile }}</p>
-                                                        <button type="button" class="btn btn-primary" style="border-radius: 0; border: none;">Edit address</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lrg-{{ i.id }}" style="border-radius: 0; border: none;">Edit address</button>
+                                                        <a href="{% url 'delete_address' i.id %}" class="btn btn-danger" style="border-radius: 0; border: none;">Delete address</a>
                                                     </div>
                                                 </div>
+                                                
                                                 {% endfor %}
                                                 {% endif %}
 
                                                 <div class="text-center">
-                                                    <button type="button" class="btn btn-primary" style="border-radius: 0; border: none;">Add address</button>
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" style="border-radius: 0; border: none;">Add address</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,82 +258,164 @@
             </div>
         </div>
 
+
         <!-- add address modal -->
 
-    <div class="modal fade bd-example-modal-lg container" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">               
-                <div class="container">
-                <form action="{% url 'add_address' user.id %}" method="post">
-                    {% csrf_token %}
+        <div class="modal fade bd-example-modal-lg container" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">               
+                    <div class="container">
+                    <form action="{% url 'add_address' user.id %}" method="post">
+                        {% csrf_token %}
 
-                    <div class="single-input-item">
-                        <label for="first-name" class="required">Name</label>
-                        <input type="text" id="first-name" name="name" required/>
-                    </div>
+                        <div class="single-input-item">
+                            <label for="first-name" class="required">Name</label>
+                            <input type="text" id="first-name" name="name" required/>
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="mobile" class="required">Mobile Number</label>
-                        <input type="text" id="mobile" name="mobile" required/>
-                    </div>
+                        <div class="single-input-item">
+                            <label for="mobile" class="required">Mobile Number</label>
+                            <input type="text" id="mobile" name="mobile" required/>
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="address" class="required">Address</label>
-                        <input type="text" id="address" name="address" required/>
-                    </div>
+                        <div class="single-input-item">
+                            <label for="address" class="required">Address</label>
+                            <input type="text" id="address" name="address" required/>
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="landmark" class="required">Landmark</label>
-                        <input type="text" id="landmark" name="landmark" required/>
-                    </div>
+                        <div class="single-input-item">
+                            <label for="landmark" class="required">Landmark</label>
+                            <input type="text" id="landmark" name="landmark" required/>
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="city" class="required">City</label>
-                        <input type="text" id="city" name="city" required />
-                    </div>
+                        <div class="single-input-item">
+                            <label for="city" class="required">City</label>
+                            <input type="text" id="city" name="city" required />
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="pincode" class="required">Pincode</label>
-                        <input type="text" id="pincode" name="pincode" required/>
-                    </div>
+                        <div class="single-input-item">
+                            <label for="pincode" class="required">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" required/>
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="district" class="required">District</label>
-                        <select class="form-control" id="district" name="district" required>
-                            <option value=""><b>Select District*</b></option>
-                            <option value="Kasarkode">Kasargode</option>
-                            <option value="Kannur">Kannur</option>
-                            <option value="Wayanad">Wayanad</option>
-                            <option value="Kozhikode">Kozhikode</option>
-                            <option value="Malapuram">Malappuram</option>
-                            <option value="Palakkad">Palakkad</option>
-                            <option value="Trissur">Thrissur</option>
-                            <option value="Ernakulam">Ernakulam</option>
-                            <option value="Idukki">Idukki</option>
-                            <option value="Kottayam">Kottayam</option>
-                            <option value="Alappuzha">Alappuzha</option>
-                            <option value="Pathanamthitta">Pathanamthitta</option>
-                            <option value="Kollam">Kollam</option>
-                            <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                        </select>
-                    </div>
+                        <div class="single-input-item">
+                            <label for="district" class="required">District</label>
+                            <select class="form-control" id="district" name="district" required>
+                                <option value=""><b>Select District*</b></option>
+                                <option value="Kasarkode">Kasargode</option>
+                                <option value="Kannur">Kannur</option>
+                                <option value="Wayanad">Wayanad</option>
+                                <option value="Kozhikode">Kozhikode</option>
+                                <option value="Malapuram">Malappuram</option>
+                                <option value="Palakkad">Palakkad</option>
+                                <option value="Trissur">Thrissur</option>
+                                <option value="Ernakulam">Ernakulam</option>
+                                <option value="Idukki">Idukki</option>
+                                <option value="Kottayam">Kottayam</option>
+                                <option value="Alappuzha">Alappuzha</option>
+                                <option value="Pathanamthitta">Pathanamthitta</option>
+                                <option value="Kollam">Kollam</option>
+                                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                            </select>
+                        </div>
 
-                    <div class="single-input-item">
-                        <label for="state" class="required">State</label>
-                        <select class="form-control" id="state" name="state" required>
-                            <option value=""><b>Select State*</b></option>
-                            <option value="Kerala">Kerala</option>
-                        </select>
-                    </div>
-                    
-                    <div class="single-input-item">
-                        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add address</button>                                       
-                    </div>
-                </form>
-            </div>
+                        <div class="single-input-item">
+                            <label for="state" class="required">State</label>
+                            <select class="form-control" id="state" name="state" required>
+                                <option value=""><b>Select State*</b></option>
+                                <option value="Kerala">Kerala</option>
+                            </select>
+                        </div>
+                        
+                        <div class="single-input-item">
+                            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add address</button>                                       
+                        </div>
+                    </form>
+                </div>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- edit address modal -->
+        {% if address %}
+        {% for i in address%}
+        <div class="modal fade bd-example-modal-lrg-{{ i.id }} container" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">               
+                    <div class="container">
+                    <form action="{% url 'edit_address' i.id %}" method="post">
+                        {% csrf_token %}
+                        
+                        <div class="single-input-item">
+                            <label for="first-name" class="required">Name</label>
+                            <input type="text" id="first-name" value="{{i.name}}" name="name" required/>
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="mobile" class="required">Mobile Number</label>
+                            <input type="text" id="mobile" value="{{i.mobile}}" name="mobile" required/>
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="address" class="required">Address</label>
+                            <input type="text" id="address" value="{{i.address}}" name="address" required/>
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="landmark" class="required">Landmark</label>
+                            <input type="text" id="landmark" value="{{i.landmark}}" name="landmark" required/>
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="city" class="required">City</label>
+                            <input type="text" id="city" value="{{i.city}}" name="city" required />
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="pincode" class="required">Pincode</label>
+                            <input type="text" id="pincode" value="{{i.pincode}}" name="pincode" required/>
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="district" class="required">District</label>
+                            <select class="form-control" id="district" value="{{i.district}}" name="district" required>
+                                <option value=""><b>Select District*</b></option>
+                                <option value="Kasarkode">Kasargode</option>
+                                <option value="Kannur">Kannur</option>
+                                <option value="Wayanad">Wayanad</option>
+                                <option value="Kozhikode">Kozhikode</option>
+                                <option value="Malapuram">Malappuram</option>
+                                <option value="Palakkad">Palakkad</option>
+                                <option value="Trissur">Thrissur</option>
+                                <option value="Ernakulam">Ernakulam</option>
+                                <option value="Idukki">Idukki</option>
+                                <option value="Kottayam">Kottayam</option>
+                                <option value="Alappuzha">Alappuzha</option>
+                                <option value="Pathanamthitta">Pathanamthitta</option>
+                                <option value="Kollam">Kollam</option>
+                                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                            </select>
+                        </div>
+
+                        <div class="single-input-item">
+                            <label for="state" class="required">State</label>
+                            <select class="form-control" id="state" value="state" name="state" required>
+                                <option value=""><b>Select State*</b></option>
+                                <option value="Kerala">Kerala</option>
+                            </select>
+                        </div>
+                        
+                        <div class="single-input-item">
+                            <button type="submit" class="btn btn-primary" >Update address</button>                                       
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
 
         <!-- add account details -->
 
