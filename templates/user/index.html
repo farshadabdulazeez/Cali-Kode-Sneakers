@@ -369,6 +369,7 @@
                     <div id="product-1" class="tab-pane active">
 
                         <div class="row">
+                        {% if products %}
                         {% for i in products %}
                             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                                 <div class="single-product-wrap mb-35">
@@ -394,7 +395,7 @@
                                             </div>
                                             <span>(2)</span>
                                         </div> {% endcomment %}
-                                        <h3><a href="">{{ i.product_name }}</a></h3>
+                                        <h3>{{ i.product_name }}</h3>
                                         <div class="product-price-2">
                                             <span class="new-price">{{ i.selling_price }}</span>
                                             <span class="old-price">{{ i.original_price }}</span>
@@ -411,18 +412,19 @@
                                             </div>
                                             <span>(2)</span>
                                         </div> {% endcomment %}
-                                        <h3><a href="">{{ i.product_name }}</a></h3>
+                                        <h3>{{ i.product_name }}</h3>
                                         <div class="product-price-2">
                                             <span class="new-price">{{ i.selling_price }}</span>
                                             <span class="old-price">{{ i.original_price }}</span>
                                         </div>
                                         <div class="pro-add-to-cart">
-                                            <button title="Add to Cart">Add To Cart</button>
+                                            <a href=""> <button title="Add to Cart">Add To Cart</button></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
+                        {% endif %}
 
                         </div>
                     </div>

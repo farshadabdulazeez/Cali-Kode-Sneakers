@@ -93,7 +93,7 @@
                                             <a href="{% url 'products' %}">Continue Shopping</a>
                                         </div>
                                         <div class="cart-clear">
-                                            <button>Update Cart</button>
+                                            {% comment %} <button>Update Cart</button> {% endcomment %}
                                             <a href="{% url 'clear_cart' %}">Clear Cart</a>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@
                         </form>
                         <div class="row">
                             <div class="col-lg-4 col-md-6">
-                                <div class="cart-tax">
+                                {% comment %} <div class="cart-tax">
                                     <div class="title-wrap">
                                         <h4 class="cart-bottom-title section-bg-gray">Estimate Shipping And Tax</h4>
                                     </div>
@@ -142,10 +142,10 @@
                                             <button class="cart-btn-2" type="submit">Get A Quote</button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                             <div class="col-lg-4 col-md-6">
-                                <div class="discount-code-wrapper">
+                                {% comment %} <div class="discount-code-wrapper">
                                     <div class="title-wrap">
                                         <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
                                     </div>
@@ -156,23 +156,26 @@
                                             <button class="cart-btn-2" type="submit">Apply Coupon</button>
                                         </form>
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                             <div class="col-lg-4 col-md-12">
                                 <div class="grand-totall">
                                     <div class="title-wrap">
                                         <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
-                                    </div>
-                                    <h5>Total products <span>$260.00</span></h5>
+                                    {% comment %} </div>
+                                    <h5>Products</h5>
+                                    {% for item in cart_items %}
+                                    <h5>{{ item.product.product.product_name }} <span>{{ item.sub_total }}</span></h5>
+                                    <p class="text-muted">Product Price: Rs. {{ item.product.product.selling_price }} /- for each</p>
+                                    {% endfor %} {% endcomment %}
                                     <div class="total-shipping">
-                                        <h5>Total shipping</h5>
+                                        <h5>Payment method</h5>
                                         <ul>
-                                            <li><input type="checkbox"> Standard <span>$20.00</span></li>
-                                            <li><input type="checkbox"> Express <span>$30.00</span></li>
+                                            <li><input type="checkbox"> Cash on delivery <span>$20.00</span></li>
                                         </ul>
                                     </div>
-                                    <h4 class="grand-totall-title">Grand Total <span>$260.00</span></h4>
-                                    <a href="#">Proceed to Checkout</a>
+                                    <h4 class="grand-totall-title">Grand Total <span>{{ grand_total }}</span></h4>
+                                    <a href="{% url 'checkout' %}">Proceed to Checkout</a>
                                 </div>
                             </div>
                         </div>

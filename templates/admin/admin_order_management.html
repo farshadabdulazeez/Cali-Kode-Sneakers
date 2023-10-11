@@ -1,0 +1,56 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN /</span> ORDERS</h4>
+
+    <div class="card">
+        <div class="table-responsive text-nowrap">
+          <table class="table table-hover">
+            {% comment %} <div class="mt-3 pr-4 text-end">
+                <button class="btn btn-primary me-3" type="submit"><a class="text-white" href="{% url 'admin_add_category' %}"> ADD CATEGORY</a></button>
+            </div> {% endcomment %}
+            <thead>
+              <tr>
+                <th>SL.NO</th>
+                <th>ORDER ID</th>
+                <th>DATE</th>
+                <th>CUSTOMER</th>
+                <th>AMOUNT </th>
+                <th>PAYMENT </th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% comment %} {% if orders %}
+              {% for order in orders %}
+                  {% if not i.is_superuser %} {% endcomment %}
+                    <tr>
+                      <!-- <td>{{ forloop.counter }}</td>
+                      <td>{{ order.order_id }}</td>
+                      <td>{{ order.created }} </td> 
+                      <td>{{ order.user.email }}</td>
+                      <td>{{ order.order_total }}</td>
+                      <td>{% if order.payment.is_paid %} Paid {% else %} Pending {% endif %} </td>
+                      <td>{% if order.status %} {{ order.status}} {% else %} Pending {% endif %} </td> -->
+                      {% comment %} <td><a class="btn btn-sm btn-warning" href="{% url 'order_update' order.id %}">Detail</a></td> {% endcomment %}
+
+                    </tr>
+                  {% comment %} {% endif %}
+                {% endfor %}
+              {% endif %} {% endcomment %}
+            </tbody>
+            
+          </table>
+        </div>
+      </div>
+    </div>
+    
+
+
+{% endblock content %}

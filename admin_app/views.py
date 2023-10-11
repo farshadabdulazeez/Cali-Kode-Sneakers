@@ -1,5 +1,5 @@
 import os
-
+from order.models import *
 from user_app.models import *
 from product_app.models import *
 from django.contrib import messages
@@ -581,6 +581,19 @@ def admin_control_product_variant(request, variant_id):
     except Exception as e:
         print(e)
         return redirect('admin_products')
+    
+
+@staff_member_required(login_url='admin_login')
+def admin_order_management(request):
+    context = {}
+    # try:
+    orders = Order.objects.all().order_by('-order_id')
+    context = {
+        'orders': orders,
+    }
+    # except Exception as e:
+    #     print(e)
+    return render(request, 'admin/admin_order_management.html', context)
 
 
 @cache_control(no_cache=True, no_store=True)
