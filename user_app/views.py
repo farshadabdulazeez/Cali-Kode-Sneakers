@@ -1,4 +1,5 @@
 from .models import *
+from order.models import *
 from product_app.models import *
 from django.conf import settings
 from django.contrib import messages
@@ -207,9 +208,11 @@ def user_profile(request):
     context = {}
 
     address = UserAddress.objects.filter(user=user)
+    order = OrderProduct.objects.filter(customer=user)
 
     context = {
         'address' : address,
+        'orders' : order,
     }
 
     return render(request, 'user/user_profile.html', context)

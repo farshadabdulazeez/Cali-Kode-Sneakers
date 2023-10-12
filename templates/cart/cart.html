@@ -161,19 +161,19 @@
                             <div class="col-lg-4 col-md-12">
                                 <div class="grand-totall">
                                     <div class="title-wrap">
-                                        <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
+                                        <h4 class="cart-bottom-title section-bg-gary-cart mb-5">Cart Total</h4>
                                     {% comment %} </div>
                                     <h5>Products</h5>
                                     {% for item in cart_items %}
                                     <h5>{{ item.product.product.product_name }} <span>{{ item.sub_total }}</span></h5>
                                     <p class="text-muted">Product Price: Rs. {{ item.product.product.selling_price }} /- for each</p>
                                     {% endfor %} {% endcomment %}
-                                    <div class="total-shipping">
+                                    {% comment %} <div class="total-shipping">
                                         <h5>Payment method</h5>
                                         <ul>
                                             <li><input type="checkbox"> Cash on delivery <span>$20.00</span></li>
                                         </ul>
-                                    </div>
+                                    </div> {% endcomment %}
                                     <h4 class="grand-totall-title">Grand Total <span>{{ grand_total }}</span></h4>
                                     <a href="{% url 'checkout' %}">Proceed to Checkout</a>
                                 </div>

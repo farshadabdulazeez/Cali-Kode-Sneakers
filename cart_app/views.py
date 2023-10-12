@@ -1,4 +1,6 @@
+import datetime
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from order.models import *
 from user_app.models import *
 from .models import *
 from product_app.models import *
@@ -40,6 +42,7 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
         try:
 
             cart_items = CartItem.objects.filter(customer=user).order_by('id')   # fetch every cart items related with the cart
+
             for item in cart_items:                    
                 total = total + (float(item.product.product.selling_price) * float(item.quantity))
                 
@@ -87,7 +90,7 @@ def add_cart_item(request, product_id):
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
         cart = Cart.objects.create(cart_id=_cart_id(request))   #to get the cart using cart id present in the session
-        cart.save()    
+        cart.save()   
 
     # getting cart items
     try:
@@ -104,7 +107,7 @@ def add_cart_item(request, product_id):
                 cart_item.quantity += 1
             else:
                 messages.error(request, "stock exhausted")
-        cart_item.save()    
+        cart_item.save() 
 
     except CartItem.DoesNotExist:
         if 'user' in request.session:
@@ -216,7 +219,60 @@ def checkout(request):
 
         for item in cart_items:
             total = total + (float(item.product.product.selling_price) * float(item.quantity))
-        grand_total = total            
+        grand_total = total   
+
+        if request.method == 'POST':
+
+            payment_method = request.POST['payment_method']
+            delivery_address = UserAddress.objects.get(id=request.POST['delivery_address'])
+
+            user = request.user
+            
+            payment = Payments.objects.create(
+                user=user,
+                payment_method = payment_method,
+                total_amount = grand_total,
+            )
+            payment.save()
+
+            order = Order.objects.create(
+                user=user, 
+                address=delivery_address,
+                payment = payment,
+                total=total,
+                order_total=grand_total, 
+            )
+            order.save()
+
+            # creating order with current date and order id
+            yr = int(datetime.date.today().strftime('%Y'))
+            dt = int(datetime.date.today().strftime('%d'))
+            mt = int(datetime.date.today().strftime('%m'))
+            d = datetime.date(yr, mt, dt)
+            current_date = d.strftime("%Y%m%d")
+            order_id = current_date + str(order.id)  # creating order id
+            order.order_id = order_id
+
+            order.save()
+
+
+            cart_items = CartItem.objects.filter(customer=my_user)
+            for item in cart_items:
+                variant = ProductVariant.objects.get(id=item.product.id)
+                order_item = OrderProduct.objects.create(
+                    customer=my_user,
+                    order_id=order,
+                    payment_id=payment.id,
+                    variant=variant,
+                    quantity=item.quantity,
+                    product_price=item.product.product.selling_price,
+                    ordered=True,
+                )
+                variant.stock = variant.stock - item.quantity
+                variant.save()
+                item.delete()
+
+            return redirect('order_confirmed')
         
         context = {
             'addresses': address,

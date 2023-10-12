@@ -139,7 +139,7 @@
 
                             <div class="pro-details-action-wrap">
                                 <div class="pro-details-add-to-cart">
-                                    <a title="Add to Cart" href="{% url 'add_cart_item' product_id %}">Add To Cart </a>
+                                    {% comment %} <a title="Add to Cart" href="{% url 'add_cart_item' product_id %}">Add To Cart </a> {% endcomment %}
                                     <button type="submit" title="Add to Cart">Add to cart</button>
                                 </div>
                                 <div class="pro-details-action">
