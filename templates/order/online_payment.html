@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="main-wrapper">
+    <div class="breadcrumb-area bg-gray">
+        <div class="container">
+            <div class="breadcrumb-content text-center">
+                <ul>
+                    <li>
+                        <a href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="active">Online payment </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-main-area pt-120 pb-120">
+        <div class="container">
+            <div class="checkout-wrap pt-30">
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-5 mx-auto"> <!-- Center the column horizontally -->
+                            <div class="your-order-area">
+                                <h3>Pay with Razorpay</h3>
+                                <div class="your-order-wrap gray-bg-4">
+                                    <div class="your-order-info-wrap">
+                                        <div class="your-order-info order-total">
+                                            <ul>
+                                                {% if grand_total %}
+                                                <li>Total amount<span>Rs. {{ grand_total }} /-</span></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="Place-order">
+                                    <button class="razorpayPayment" type="submit"> CONTINUE PAYMENT </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+{% endblock scripts %}
+
+

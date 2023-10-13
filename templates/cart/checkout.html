@@ -4,6 +4,8 @@
 
 {% block content %}
 
+
+
     <div class="main-wrapper">
         <div class="breadcrumb-area bg-gray">
             <div class="container">
@@ -81,9 +83,13 @@
                                 
                                   <div class="card" style="width: 30rem;">
                                     <div class="card-body">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="delivery_address" value={{address.id}} id="flexRadioDefault1" checked>
-                                            <label class="form-check-label" for="flexRadioDefault1">
+                                        <div class ="form-check">
+                                            <input style="    height: 20px !important;
+                                            position: relative;
+                                           
+                                            right: 265px;
+                                            bottom: 16px; ;" class="form-check-input" type="radio" name="delivery_address" value={{address.id}} id="flexRadioDefault1" checked >
+                                            <label class="form-check-label" for="flexRadioDefault1"  >
                                             </label>
                                         </div>
                                       <h4 class="card-title"><b>Address {{forloop.counter}} :</b></h4>
@@ -311,20 +317,11 @@
                                             <input id="payment-method-3" class="input-radio" type="radio" value="cash_on_delivery" name="payment_method">
                                             <label for="payment-method-3">Cash on delivery </label>
                                         </div>
-                                        {% comment %} <div class="pay-top sin-payment">
-                                            <input id="payment_method_1" class="input-radio" type="radio" value="cheque" checked="checked" name="payment_method">
-                                            <label for="payment_method_1"> Direct Bank Transfer </label>
-                                            <div class="payment-box payment_method_bacs">
-                                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
-                                            </div>
-                                        </div>
+
                                         <div class="pay-top sin-payment">
-                                            <input id="payment-method-2" class="input-radio" type="radio" value="cheque" name="payment_method">
-                                            <label for="payment-method-2">Check payments</label>
-                                            <div class="payment-box payment_method_bacs">
-                                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
-                                            </div>
-                                        </div> {% endcomment %}
+                                            <input id="payment-method" class="input-radio" type="radio" value="razorpayPayment" name="payment_method">
+                                            <label for="payment-method-3">Razorpay payment</label>
+                                        </div>
                                        
                                         {% comment %} <div class="pay-top sin-payment sin-payment-3">
                                             <input id="payment-method-4" class="input-radio" type="radio" value="cheque" name="payment_method">
