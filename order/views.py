@@ -107,13 +107,14 @@ def order_page_add_address(request, id):
 @login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
 def proceed_to_pay(request):
-
-    cart = CartItem.objects.filter(user = request.user)
-    
+    cart = request.GET.get("grand_total")
+    user = request.user
+    cart = CartItem.objects.filter(customer=user)
     total_amount = 0   
     for item in cart:
         total_amount = total_amount + item.product.product.selling_price * item.quantity
 
+    print(total_amount)
     return JsonResponse({
         'total_amount' : total_amount,
     })

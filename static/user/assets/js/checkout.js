@@ -1,4 +1,4 @@
-$(document).ready(function() {
+jQuery(document).ready(function($) {
     console.log("Document is ready");
 
     $('.razorpayPayment').click(function(e) {
@@ -21,12 +21,14 @@ $(document).ready(function() {
             return false;
         } else {
             console.log("Else case is working here.");
-
+            data = {
+                "grand_total": grand_total,
+            }
             $.ajax({
                 method: "GET",
-                url: "proceed-to-pay/",
+                url: "/order/proceed-to-pay/",
+                data:data,
                 success: function(response) {
-
                     console.log(response.total_amount);
 
                     var options = {
@@ -77,14 +79,13 @@ $(document).ready(function() {
                     rzp1.open();
                 },
                 error: function(xhr, status, error) {
+                    console.log('8');
                     console.error("AJAX request error: " + error);
                 }
             });
         }
     });
 });
-
-
 
 
 // $(document).ready(function () {

@@ -6,6 +6,7 @@ from user_app.models import *
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)  
     date_added = models.DateField(auto_now_add=True)
+    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.cart_id
