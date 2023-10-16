@@ -35,8 +35,9 @@
                 <td><img src="{{ i.category_image.url }}" width="100" height="120"></td>
                 <td>{{ i.category_name }}</td>
                 <td>{{ i.category_description }}</td>
-                <td><a href="{% url 'admin_edit_category' i.id %}"><i class="bi bi-pencil-fill  me-4"></i></a>
-                    <a href="{% url 'admin_delete_category' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td>
+                <td><a href="{% url 'admin_edit_category' i.id %}">EDIT CATEGORY <i class="bi bi-pencil-fill  me-4"></i></a>
+                    {% comment %} <a href="{% url 'admin_delete_category' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a> {% endcomment %}
+                  </td>
                 <td>
                   {% comment %} <form method="post" action="{% url 'admin_control_category' i.id %}"> {% endcomment %}
                   {% comment %} {% csrf_token %} {% endcomment %}

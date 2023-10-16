@@ -147,21 +147,21 @@ def admin_edit_category(request, id):
         return redirect('admin_category')
 
     
-@cache_control(no_cache=True, no_store=True)
-@staff_member_required(login_url='admin_login')
-def admin_delete_category(request, id):
+# @cache_control(no_cache=True, no_store=True)
+# @staff_member_required(login_url='admin_login')
+# def admin_delete_category(request, id):
 
-    try:
-        category = Category.objects.get(id=id)
-        if category.category_image:
-            os.remove(category.category_image.path)
-        category.delete()
-        messages.success(request, "Category Deleted!")
+#     try:
+#         category = Category.objects.get(id=id)
+#         if category.category_image:
+#             os.remove(category.category_image.path)
+#         category.delete()
+#         messages.success(request, "Category Deleted!")
 
-    except Exception as e:
-        print(e)
+#     except Exception as e:
+#         print(e)
 
-    return redirect('admin_category')
+#     return redirect('admin_category')
     
 
 @cache_control(no_cache=True, no_store=True)
@@ -338,13 +338,14 @@ def admin_add_product(request):
 
             # multiple image fetching
             try:
-                multiple_images = request.FILES.getlist('multiple_image', None)
+                multiple_images = request.FILES.getlist('multiple_images[]')
                 if multiple_images:
                     for image in multiple_images:
                         photo = MultipleImages.objects.create(
                             product=product,
                             images=image,
                         )
+                        photo.save()
             except Exception as e:
                 print(e)
 
@@ -367,8 +368,8 @@ def admin_edit_product(request, id):
     product_category = product.category
     product_brand = product.brand
     multiple_images = MultipleImages.objects.filter(product=id)
-    brands = ProductBrand.objects.exclude(brand_name=product_brand)
-    categories = Category.objects.exclude(category_name=product_category)
+    brands = ProductBrand.objects.all()
+    categories = Category.objects.all()
 
     context = {
         'product': product,
@@ -381,6 +382,7 @@ def admin_edit_product(request, id):
 
     try:
         if request.method == 'POST':
+
             product_name = request.POST['product_name']
             category = request.POST['category']
             brand = request.POST['brand']
@@ -393,14 +395,14 @@ def admin_edit_product(request, id):
             # first of all we have to check if there is any image exist on product object.
             if single_image:
                 if product.product_image:
-                    os.remove(product.product_image.path)
+                    product.product_image.delete()
                 product.product_image = single_image
 
             if multiple_images:
                 if multiple_images:
-                    for i in multiple_images:
-                        os.remove(i.images.path)
-                        i.delete()
+                    for existing_image in MultipleImages.objects.filter(product=product):
+                        existing_image.images.delete()
+                        existing_image.delete()
                     for image in multiple_images:
                         photo = MultipleImages.objects.create(
                             product=product,

@@ -4,7 +4,6 @@ from product_app.models import *
 from user_app.models import *
 
 
-
 def products(request):
 
     if 'email' in request.session:

@@ -76,34 +76,32 @@
                     <div class="row">
                         <div class="col-lg-7">
                             <div class="billing-info-wrap mr-50">
-                                {% comment %} <h3>Billing Address</h3> {% endcomment %}
-                                <h3>Billing Address</h3>
+                                <div class="d-flex mb-20">
+                                    <h3 class="mb-0">Billing Address</h3>
+                                    <a href="#" role="button" class="btn btn-primary" style="margin-left: 11rem; border-radius: 0;" data-toggle="modal" data-target="#exampleModal">Add address</a>
+                                </div>
+                                
                                 {% if addresses %}
                                 {% for address in addresses %}
                                 
-                                  <div class="card" style="width: 30rem;">
+                                  <div class="card mb-4" style="width: 30rem;">
                                     <div class="card-body">
                                         <div class ="form-check">
-                                            <input style="    height: 20px !important;
+                                            <input style="height: 20px !important;
                                             position: relative;
-                                           
                                             right: 265px;
-                                            bottom: 16px; ;" class="form-check-input" type="radio" name="delivery_address" value={{address.id}} id="flexRadioDefault1" checked >
+                                            bottom: 16px; ;" class="form-check-input" type="radio" name="delivery_address" value={{address.id}} id="flexRadioDefault1" >
                                             <label class="form-check-label" for="flexRadioDefault1"  >
                                             </label>
                                         </div>
-                                      <h4 class="card-title"><b>Address {{forloop.counter}} :</b></h4>
+                                      <h4 class="card-title" ><b>Address {{forloop.counter}} :</b></h4>
                                       {% comment %} <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> {% endcomment %}
                                       <h5 class="card-text"><p><strong>Name</strong> : {{ address.name }}</p>
-                                      <p><strong>Address</strong> : {{ address.address }}</p>
-                                      <p><strong>Landmark</strong> : {{ address.landmark }}</p>
-                                      <p><strong>City</strong> : {{ address.city }}</p>
-                                      <p><strong>Pincode</strong> : {{ address.pincode }}</p>
-                                      <p><strong>District</strong> : {{ address.district }}</p>
-                                      <p><strong>State</strong> : {{ address.state }}</p>
+                                      <p><strong>Address</strong> : {{ address.address }}, {{ address.landmark }} , {{ address.city }}, P.O: {{ address.pincode }} , {{ address.district }} , {{ address.state }}</p>
                                       <p><strong>Mobile</strong> : {{ address.mobile }}</p>
-                                      {% comment %} <a href="#" class="card-link">Card link</a>
-                                      <a href="#" class="card-link">Another link</a> {% endcomment %}
+                                      <a href="{% url 'user_profile' %}" role="button" class="btn btn-primary" style=" border-radius: 0;">Update</a>
+                                      
+
                                     </div>
                                   </div>
                                 {% endfor %}
@@ -271,6 +269,7 @@
                         </div>
                         <div class="col-lg-5">
                             <div class="your-order-area">
+                                <form>
                                 <h3>Your order</h3>
                                 <div class="your-order-wrap gray-bg-4">
                                     <div class="your-order-info-wrap">
@@ -332,9 +331,11 @@
                                         </div> {% endcomment %}
                                     </div>
                                 </div>
+                                
                                 <div class="Place-order">
                                     <button type="submit">Place Order</button>
                                 </div>
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -342,6 +343,90 @@
                 </div>
             </div>
         </div>      
+    </div>
+
+
+     <!-- Modal -->
+     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add new address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <form action="{% url 'order_page_add_address' user.id %}" method="post">
+                            {% csrf_token %}
+    
+                            <div class="single-input-item">
+                                <label for="first-name" class="required">Name</label>
+                                <input type="text" id="first-name" name="name" placeholder="Enter your name" required/>
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="mobile" class="required">Mobile Number</label>
+                                <input type="text" id="mobile" name="mobile" placeholder="Enter your mobile number" required/>
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="address" class="required">Address</label>
+                                <input type="text" id="address" name="address" placeholder="Enter your address (House name, street adress)*" required/>
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="landmark" class="required">Landmark</label>
+                                <input type="text" id="landmark" name="landmark" placeholder="Enter your nearest landmark" required/>
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="city" class="required">City</label>
+                                <input type="text" id="city" name="city" placeholder="Enter your city" required />
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="pincode" class="required">Pincode</label>
+                                <input type="text" id="pincode" name="pincode" placeholder="Enter your pincode" required/>
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="district" class="required">District</label>
+                                <select class="form-control" id="district" name="district" placeholder="Enter your district" required>
+                                    <option value=""><b>Select District*</b></option>
+                                    <option value="Kasarkode">Kasaragode</option>
+                                    <option value="Kannur">Kannur</option>
+                                    <option value="Wayanad">Wayanad</option>
+                                    <option value="Kozhikode">Kozhikode</option>
+                                    <option value="Malappuram">Malappuram</option>
+                                    <option value="Palakkad">Palakkad</option>
+                                    <option value="Thrissur">Thrissur</option>
+                                    <option value="Ernakulam">Ernakulam</option>
+                                    <option value="Idukki">Idukki</option>
+                                    <option value="Kottayam">Kottayam</option>
+                                    <option value="Alappuzha">Alappuzha</option>
+                                    <option value="Pathanamthitta">Pathanamthitta</option>
+                                    <option value="Kollam">Kollam</option>
+                                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                                </select>
+                            </div>
+    
+                            <div class="single-input-item">
+                                <label for="state" class="required">State</label>
+                                <input type="text" id="state" name="state" placeholder="Enter your state" required/>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Save changes</button>
+                                </div>
+    
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
     </div>
 
 {% endblock content %}

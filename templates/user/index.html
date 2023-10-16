@@ -73,7 +73,7 @@
                                     </div>
                                     {% endif %}
                                     <div class="header-cart-2">
-                                        <a class="cart-active" href="#"><i class="icon-basket-loaded"></i> <span class="black">02</span> $264.50</a>
+                                        <a class="cart-active" href="#"><i class="icon-basket-loaded"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -328,20 +328,27 @@
                     <h2><span>New</span> Arrivals</h2>
                     <p>We alway up to date new arrivals follows trending</p>
                 </div>
+                
                 <div class="product-slider-active dot-style-2 dot-style-2-position-static dot-style-2-mrg-1 dot-style-2-active-black">
+                   
+                    {% if categories %}
+                    {% for category in categories %}
                     <div class="product-plr-1">
                         <div class="single-product-wrap mb-35">
                             <div class="product-img product-img-zoom mb-20">
                                 <a href="product-details.html">
-                                    <img src="{% static 'user/assets/images/product/product-9.jpg' %}" alt="">
+                                    <img src="{{ category.category_image.url }}" alt="">
                                 </a>
                             </div>
-                            
                             <div class="product-content-2 text-center">
-                                <h3><a href="product-details.html"><span class="blod">Men</span> Sneakers <span class="available-product"></span></a></h3>
+                                <h3><a href=""><span class="blod">{{category.category_name}}</span> Sneakers <span class="available-product"></span></a></h3>
                             </div>
                         </div>
                     </div>
+                    
+                    {% endfor %}
+                    {% endif %}
+
                  </div>
             </div>
         </div>
@@ -768,8 +775,8 @@
                     <div class="footer-menu footer-menu-mrg footer-menu-hover-border">
                         <nav>
                             <ul>
-                                <li><a class="active" href="index.html">home</a></li>
-                                <li><a href="shop.html">Shop</a></li>
+                                <li><a class="active" href="{% url 'index' %}">home</a></li>
+                                <li><a href="{% url 'products' %}">Shop</a></li>
                                 <li><a href="shop.html">Product </a></li>
                                 <li><a href="contact.html">Contact</a></li>
                                 <li><a href="blog.html">Blog.</a></li>

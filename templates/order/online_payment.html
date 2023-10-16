@@ -18,6 +18,26 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        {% if selected_address %}
+            <input type="text" id="first-name" name="name" value="{{ selected_address.name }}" hidden />
+            <input type="text" id="mobile" name="mobile" value="{{ selected_address.mobile }}" hidden />
+            <input type="text" id="address" name="address" value="{{ selected_address.address }}" hidden />
+            <input type="text" id="landmark" name="landmark" value="{{ selected_address.landmark }}" hidden  />
+            <input type="text" id="city" name="city" value="{{ selected_address.city }}" hidden />
+            <input type="text" id="pincode" name="pincode" value="{{ selected_address.pincode }}" hidden />
+            <input type="text" id="district" name="district" value="{{ selected_address.district }}" hidden />
+            <input type="text" id="state" name="state" value="{{ selected_address.state }}" hidden />
+        {% endif %}
+
+        <input type="text" id="payment_method" name="payment_method" value="{{ payment_method }}" />
+
+        {% if grand_total %}
+
+            <input type="text" id="grand_total" name="grand_total" value="{{ grand_total }}" hidden />
+
+        {% endif %}
+    </div>
 
     <div class="checkout-main-area pt-120 pb-120">
         <div class="container">
@@ -25,7 +45,7 @@
                 <form method="post" action="">
                     {% csrf_token %}
                     <div class="row">
-                        <div class="col-lg-5 mx-auto"> <!-- Center the column horizontally -->
+                        <div class="col-lg-5 mx-auto"> 
                             <div class="your-order-area">
                                 <h3>Pay with Razorpay</h3>
                                 <div class="your-order-wrap gray-bg-4">
@@ -40,7 +60,7 @@
                                     </div>
                                 </div>
                                 <div class="Place-order">
-                                    <button class="razorpayPayment" type="submit"> CONTINUE PAYMENT </button>
+                                    <button class="btn btn-primary razorpayPayment " style="border-radius:0" type="button" onclick=""> CONTINUE PAYMENT </button>
                                 </div>
                             </div>
                         </div>
@@ -57,6 +77,7 @@
 {% block scripts %}
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 {% endblock scripts %}
 

@@ -196,6 +196,7 @@ def checkout(request):
 
     if 'email' in request.session:
         return redirect('admin_dashboard')
+    
     if 'user' in request.session:
         my_user = request.user
         cart_items = CartItem.objects.filter(customer=my_user)
@@ -222,57 +223,63 @@ def checkout(request):
         grand_total = total   
 
         if request.method == 'POST':
-
-            payment_method = request.POST['payment_method']
+          
             delivery_address = UserAddress.objects.get(id=request.POST['delivery_address'])
-
-            user = request.user
+            request.session['selected_address_id'] = delivery_address.id
+            payment_method = request.POST['payment_method']
             
-            payment = Payments.objects.create(
-                user=user,
-                payment_method = payment_method,
-                total_amount = grand_total,
-            )
-            payment.save()
+            if payment_method == "razorpayPayment":
+                return redirect('online_payment')
+            
+            elif payment_method == "cash_on_delivery":
 
-            order = Order.objects.create(
-                user=user, 
-                address=delivery_address,
-                payment = payment,
-                total=total,
-                order_total=grand_total, 
-            )
-            order.save()
-
-            # creating order with current date and order id
-            yr = int(datetime.date.today().strftime('%Y'))
-            dt = int(datetime.date.today().strftime('%d'))
-            mt = int(datetime.date.today().strftime('%m'))
-            d = datetime.date(yr, mt, dt)
-            current_date = d.strftime("%Y%m%d")
-            order_id = current_date + str(order.id)  # creating order id
-            order.order_id = order_id
-
-            order.save()
-
-
-            cart_items = CartItem.objects.filter(customer=my_user)
-            for item in cart_items:
-                variant = ProductVariant.objects.get(id=item.product.id)
-                order_item = OrderProduct.objects.create(
-                    customer=my_user,
-                    order_id=order,
-                    payment_id=payment.id,
-                    variant=variant,
-                    quantity=item.quantity,
-                    product_price=item.product.product.selling_price,
-                    ordered=True,
+                user = request.user
+                
+                payment = Payments.objects.create(
+                    user=user,
+                    payment_method = payment_method,
+                    total_amount = grand_total,
                 )
-                variant.stock = variant.stock - item.quantity
-                variant.save()
-                item.delete()
+                payment.save()
 
-            return redirect('order_confirmed')
+                order = Order.objects.create(
+                    user=user, 
+                    address=delivery_address,
+                    payment = payment,
+                    total=total,
+                    order_total=grand_total, 
+                )
+                order.save()
+
+                # creating order with current date and order id
+                yr = int(datetime.date.today().strftime('%Y'))
+                dt = int(datetime.date.today().strftime('%d'))
+                mt = int(datetime.date.today().strftime('%m'))
+                d = datetime.date(yr, mt, dt)
+                current_date = d.strftime("%Y%m%d")
+                order_id = current_date + str(order.id)  # creating order id
+                order.order_id = order_id
+
+                order.save()
+
+
+                cart_items = CartItem.objects.filter(customer=my_user)
+                for item in cart_items:
+                    variant = ProductVariant.objects.get(id=item.product.id)
+                    order_item = OrderProduct.objects.create(
+                        customer=my_user,
+                        order_id=order,
+                        payment_id=payment.id,
+                        variant=variant,
+                        quantity=item.quantity,
+                        product_price=item.product.product.selling_price,
+                        ordered=True,
+                    )
+                    variant.stock = variant.stock - item.quantity
+                    variant.save()
+                    item.delete()
+
+                return redirect('order_confirmed')
         
         context = {
             'addresses': address,

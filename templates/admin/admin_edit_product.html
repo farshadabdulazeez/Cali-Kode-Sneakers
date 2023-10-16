@@ -79,10 +79,9 @@
               <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">CURRENT UPLOADS :</label>
                 <div class="col-sm-10">
-                  {% if multiple_images %}
-                    {% for image in multiple_images %}
-                      <img src="{{ image.images.url }}" alt="multiple images" style="width: 10vw;" />
-                    {% endfor %}
+                  {% if product.product_image %}
+                      <img src="{{ product.product_image.url }}" alt="multiple images" style="width: 10vw;" />
+                   
                   {% endif %}
                 </div>
               </div>

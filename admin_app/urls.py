@@ -11,7 +11,7 @@ urlpatterns = [
     path('admin-category/', views.admin_category, name="admin_category"),
     path('admin-add-category/', views.admin_add_category, name="admin_add_category"),
     path('admin-edit-category/<int:id>', views.admin_edit_category, name="admin_edit_category"),
-    path('admin-delete-category/<int:id>', views.admin_delete_category, name="admin_delete_category"),
+    # path('admin-delete-category/<int:id>', views.admin_delete_category, name="admin_delete_category"),
     path('admin-control-category/<int:id>', views.admin_control_category, name="admin_control_category"),
 
 
