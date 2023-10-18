@@ -16,8 +16,11 @@ class Payments(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_paid = models.BooleanField(default=False, null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'Payments'
+
     def __str__(self):
-        return self.payment_id
+        return str(self.payment_id)
 
 
 class Order(models.Model):

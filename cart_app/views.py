@@ -190,6 +190,11 @@ def clear_cart(request):
     return redirect('cart')
 
 
+def wishlist(request):
+
+    return render(request, 'cart/wishlist.html')
+
+
 @cache_control(no_cache=True, no_store=True)
 @login_required(login_url='user_login')
 def checkout(request):
