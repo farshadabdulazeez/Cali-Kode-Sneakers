@@ -22,6 +22,7 @@
         {% if selected_address %}
             <input type="text" id="first-name" name="name" value="{{ selected_address.name }}" hidden />
             <input type="text" id="mobile" name="mobile" value="{{ selected_address.mobile }}" hidden />
+            <input type="text" id="address_id" name="address_id" value="{{ selected_address.id }}" hidden />
             <input type="text" id="address" name="address" value="{{ selected_address.address }}" hidden />
             <input type="text" id="landmark" name="landmark" value="{{ selected_address.landmark }}" hidden  />
             <input type="text" id="city" name="city" value="{{ selected_address.city }}" hidden />
@@ -29,8 +30,6 @@
             <input type="text" id="district" name="district" value="{{ selected_address.district }}" hidden />
             <input type="text" id="state" name="state" value="{{ selected_address.state }}" hidden />
         {% endif %}
-
-        <input type="text" id="payment_method" name="payment_method" value="{{ payment_method }}" />
 
         {% if grand_total %}
 

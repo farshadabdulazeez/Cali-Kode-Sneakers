@@ -6,7 +6,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Cali-Kode-Sneakers</title>
+    <title>Cali-Kode-Sneakers
+        {% block title %}  {% endblock title%}
+    </title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -171,7 +173,7 @@
                                         <a href="login-register.html"><i class="icon-user"></i></a>
                                     </div>
                                     <div class="same-style-2">
-                                        <a href="wishlist.html"><i class="icon-heart"></i><span class="pro-count red">03</span></a>
+                                        <a href="wishlist.html"><i class="icon-heart"></i><span class="pro-count red">0</span></a>
                                     </div>
                                     <div class="same-style-2 header-cart">
                                         <a class="cart-active" href="#">
@@ -230,7 +232,7 @@
                     <div class="footer-menu footer-menu-mrg footer-menu-hover-border">
                         <nav>
                             <ul>
-                                <li><a class="active" href="{% url 'index' %}">home</a></li>
+                                <li><a class="active" href="/">home</a></li>
                                 <li><a href="{% url 'products' %}">Shop</a></li>
                                 <li><a href="shop.html">Pages </a></li>
                                 <li><a href="contact.html">Contact</a></li>
@@ -280,7 +282,7 @@
                     </div>
                 </div>
                 <div class="footer-bottom copyright text-center">
-                    <p>Copyright © 2021 HasThemes | <a href="https://hasthemes.com/">Built with <span>Norda</span> by HasThemes</a>.</p>
+                    <p>Copyright © 2023 | <a href="/">Built with <span>CaliKode</span> Sneakers</a>.</p>
                 </div>
             </div>
         </footer> 

@@ -1,4 +1,6 @@
+import datetime
 from cart_app.models import *
+from order.models import *
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, JsonResponse
@@ -30,7 +32,10 @@ def order(request):
 
 
 def online_payment(request):
-
+    print("----------------")
+    print("----------------")
+    print("----------------")
+    print("----------------")
     my_user = request.user
     total = 0
     grand_total = 0
@@ -45,7 +50,68 @@ def online_payment(request):
         total = total + (float(item.product.product.selling_price) * float(item.quantity))
     grand_total = total   
 
-    payment_method = request.POST.get('payment_method')
+    if request.method == 'POST':
+        address_id = request.POST.get('address_id')
+        payment_method = request.POST.get('payment_method')
+        payment_id = request.POST.get('payment_id')
+        print("----------------------")
+        print("----------------------")
+        print("----------------------")
+        print("----------------------")
+        print("----------------------")
+        print("----------------------")
+        print("----------------------")
+        payment = Payments.objects.create(
+            user = my_user,
+            payment_method = payment_method,
+            total_amount = grand_total
+        )
+        payment.save()
+
+        order = Order.objects.create(
+            user = my_user,
+            address = selected_address,
+            payment = payment,
+            total = total,
+            order_total = grand_total
+        )
+        order.save()
+
+        yr = int(datetime.date.today().strftime('%Y'))
+        dt = int(datetime.date.today().strftime('%d'))
+        mt = int(datetime.date.today().strftime('%m'))
+        d = datetime.date(yr, mt, dt)
+        current_date = d.strftime("%Y%m%d")
+        order_id = current_date + str(order.id)  # creating order id
+        order.order_id = order_id
+
+        order.save()
+
+        cart_items = CartItem.objects.filter(customer=my_user)
+        for item in cart_items:
+            variant = ProductVariant.objects.get(id=item.product.id)
+            order_item = OrderProduct.objects.create(
+                customer=my_user,
+                order_id=order_id,
+                payment_id=payment.id,
+                variant=variant,
+                quantity=item.quantity,
+                product_price=item.product.product.selling_price,
+                ordered=True,
+            )
+            variant.stock = variant.stock - item.quantity
+            variant.save()
+            item.delete()
+        
+        if payment_method == payment_method:
+            return JsonResponse(
+            {
+                "status": "Your order has been placed successfully ",
+                "order_id": order_id,
+            }
+            )
+
+    #     return redirect('order_confirmed')
 
     context = {
         'selected_address' : selected_address,
@@ -107,14 +173,17 @@ def order_page_add_address(request, id):
 @login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
 def proceed_to_pay(request):
+
     cart = request.GET.get("grand_total")
+
     user = request.user
     cart = CartItem.objects.filter(customer=user)
+
     total_amount = 0   
     for item in cart:
         total_amount = total_amount + item.product.product.selling_price * item.quantity
-
     print(total_amount)
+
     return JsonResponse({
         'total_amount' : total_amount,
     })

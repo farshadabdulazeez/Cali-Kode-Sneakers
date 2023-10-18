@@ -6,6 +6,7 @@ jQuery(document).ready(function($) {
 
         var name = $("[name='name']").val();
         var mobile = $("[name='mobile']").val();
+        var address_id = $("[name='address_id']").val();
         var address = $("[name='address']").val();
         var landmark = $("[name='landmark']").val();
         var city = $("[name='city']").val();
@@ -15,12 +16,12 @@ jQuery(document).ready(function($) {
         var grand_total = $("[name='grand_total']").val();
         var token = $("[name='csrfmiddlewaretoken']").val();
 
-        console.log(name, mobile, address, landmark, city, pincode, district, state, grand_total);
+        console.log(address_id, grand_total);
 
-        if (name == "" || mobile == "" || address == "" || landmark == "" || city == "" || pincode == "" || district == "" || state == "" || grand_total == "") {
+        if (name == "" || mobile == "" || address_id == "" || address == "" || landmark == "" || city == "" || pincode == "" || district == "" || state == "" || grand_total == "") {
             return false;
         } else {
-            console.log("Else case is working here.");
+            console.log("else case running here");
             data = {
                 "grand_total": grand_total,
             }
@@ -41,35 +42,30 @@ jQuery(document).ready(function($) {
                         "handler": function(response_a) {
                             alert(response_a.razorpay_payment_id);
                             var data = {
-                                "name": name,
-                                "mobile": mobile,
-                                "address": address,
-                                "landmark": landmark,
-                                "city": city,
-                                "pincode": pincode,
-                                "district": district,
-                                "state": state,
+                                "address_id" : address_id,
                                 "grand_total": grand_total,
+                                "payment_method": "Razorpay",
+                                "payment_id": response_a.razorpay_payment_id,
                                 csrfmiddlewaretoken: token
                             };
                             $.ajax({
-                                method: "POST", // Change to POST method
+                                method: "POST", 
                                 url: "online-payment/",
                                 data: data,
                                 success: function(response_b) {
+                                    console.log(response_b.order_id);
                                     swal('Congratulations!', response_b.status, "success").then(function(value) {
-                                        window.location.href = 'online-payment/' + order_id + '/';
+                                        window.location.href = 'order-confirmed/' + order_id + '/';
                                     });
                                 }
                             });
                         },
+                        
                         "prefill": {
                             "name": name,
                             "contact": mobile
                         },
-                        "notes": {
-                            "address": "Razorpay Corporate Office"
-                        },
+
                         "theme": {
                             "color": "#3399cc"
                         }
@@ -79,7 +75,7 @@ jQuery(document).ready(function($) {
                     rzp1.open();
                 },
                 error: function(xhr, status, error) {
-                    console.log('8');
+                    console.log('ajax error');
                     console.error("AJAX request error: " + error);
                 }
             });

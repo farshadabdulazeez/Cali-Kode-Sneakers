@@ -118,7 +118,6 @@ def user_login(request):
     return render(request, 'user/user_login.html')
 
 
-
 @cache_control(no_cache=True, no_store=True)
 def otp_verification(request, user_id):
     if 'email' in request.session:
@@ -316,5 +315,12 @@ def delete_address(request, address_id):
 
         except ObjectDoesNotExist:
             messages.error(request, "Address not found!")
+
+    return redirect('user_profile')
+
+
+def change_password(request):
+
+    
 
     return redirect('user_profile')

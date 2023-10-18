@@ -15,7 +15,7 @@ urlpatterns = [
     path('edit-address/<int:id>/', views.edit_address, name ="edit_address"),
     path('delete-address/<int:address_id>/', views.delete_address, name = "delete_address"),
     # path('forgot-password/', views.forgot_password, name = "forgot_password"),
-    # path('reset-password/<token>/', views.change_password, name = "reset_password"),
+    path('change-password', views.change_password, name = "change_password"),
     # path('wallet-book/', views.wallet_book, name = "wallet_book"),
     path('user-logout/', views.user_logout, name = "user_logout"),
 

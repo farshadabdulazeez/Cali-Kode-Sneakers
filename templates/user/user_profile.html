@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-
+{% block title %}
+User-Profile
+{% endblock title %}
 {% load static %}
 
 {% block content %}
@@ -205,7 +207,7 @@
 
 
                                                         <fieldset>
-                                                            <legend>Password change</legend>
+                                                            <legend>Change password</legend>
                                                             <div class="single-input-item">
                                                                 <label for="current-pwd" class="required">Current Password</label>
                                                                 <input type="password" id="current-pwd" />
