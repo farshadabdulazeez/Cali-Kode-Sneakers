@@ -34,10 +34,9 @@ User-Profile
                                             Dashboard</a>
                                         <a href="#orders" data-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a>
                                         <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a>
-                                        <a href="#payment-method" data-toggle="tab"><i class="fa fa-credit-card"></i> Payment
-                                            Method</a>
                                         <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
                                         <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i> Account Details & Change Password</a>
+                                        {% comment %} <a href="#change-password" data-toggle="tab"><i class="fa fa-key"></i> Change Password</a> {% endcomment %}
                                         <a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
                                     </div>
                                 </div>
@@ -122,14 +121,7 @@ User-Profile
                                         </div>
                                         <!-- Single Tab Content End -->
                                         <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade" id="payment-method" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <h3>Payment Method</h3>
-                                                <p class="saved-message">You Can't Saved Your Payment Method yet.</p>
-                                            </div>
-                                        </div>
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
+                                        
 
                                         <div class="tab-pane fade" id="address-edit" role="tabpanel">
                                             <div class="myaccount-content">
@@ -204,36 +196,46 @@ User-Profile
                                                             <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lgt">Edit account</button>                                       
 
                                                         </div>
-
-
-                                                        <fieldset>
-                                                            <legend>Change password</legend>
-                                                            <div class="single-input-item">
-                                                                <label for="current-pwd" class="required">Current Password</label>
-                                                                <input type="password" id="current-pwd" />
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-lg-6">
-                                                                    <div class="single-input-item">
-                                                                        <label for="new-pwd" class="required">New Password</label>
-                                                                        <input type="password" id="new-pwd" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                                    <div class="single-input-item">
-                                                                        <label for="confirm-pwd" class="required">Confirm Password</label>
-                                                                        <input type="password" id="confirm-pwd" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-                                                        <div class="single-input-item">
-                                                            <button class="check-btn sqr-btn ">Save Changes</button>
-                                                        </div>
+                                                        <br>
                                                     </form>
+                                                    <form action="{% url 'change_password' %}" method="POST">
+                                                        {% csrf_token %}
+                                                        
+                                                        {% for error in form.non_field_errors %}
+                                                            <div class="alert alert-danger">
+                                                                {{ error }}
+                                                            </div>
+                                                        {% endfor %}
+                                                        
+                                                        {% for field in form %}
+                                                            <div class="form-group">
+                                                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                                                {{ field }}
+                                                            </div>
+                                                            {% if field.errors %}
+                                                                <div class="alert alert-danger">
+                                                                    {{ field.errors }}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        
+                                                        <button type="submit" class="btn btn-primary " data-toggle="modal" data-target=".bd-example-modal-lgt">
+                                                            Change Password
+                                                        </button>
+                                                    </form>
+                                                    
                                                 </div>
                                             </div>
                                         </div> <!-- Single Tab Content End -->
+
+                                        {% comment %} <div class="tab-pane fade" id="change-password" role="tabpanel">
+                                            <div class="myaccount-content">
+                                                <h3>Change Password</h3>
+                                                <!-- Inside the "Change Password" tab content -->
+                                                
+                                            </div>
+                                        </div> {% endcomment %}
+                                        
 
                                     </div>
                                 </div> <!-- My Account Tab Content End -->

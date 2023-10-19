@@ -1,17 +1,63 @@
 {% extends "base.html" %}
 
 {% block title %}
-confirmed
+Order-confirmed
 {% endblock title %}
 
 {% block content %}
 
-<div class="container-fluid " style="background-color: rgba(229, 240, 247, 0.911);">
+<div class="main-wrapper">
+    <div class="breadcrumb-area bg-gray">
+        <div class="container">
+            <div class="breadcrumb-content text-center">
+                <ul>
+                    <li>
+                        <a href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="active">Order-confirmed </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+    </div>
+
+    <div class="checkout-main-area pt-120 pb-120">
+        <div class="container">
+            <div class="checkout-wrap pt-30">
+                <form method="" action="">
+                    <div class="row">
+                        <div class="col-lg-5 mx-auto"> 
+                            <div class="your-order-area">
+                                <h3>Congratulations, Your order has been placed successfully!</h3>
+                                <div class="your-order-wrap gray-bg-4">
+                                    <div class="your-order-info-wrap">
+                                        <div class="your-order-info order-total">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="Place-order">
+                                    <button class="btn btn-primary " style="border-radius:0" type="button"> <a href="{% url 'index' %}" >BACK TO HOME </a></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- <div class="container-fluid " style="background-color: rgba(229, 240, 247, 0.911);">
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4">
             <div class="text-center mb-5 mt-5">
                 <h1 class="" style="color: rgb(69, 212, 69); font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Congratulations, Your order has been placed successfully!</h1>
+                {% comment %} <p>Your Order ID: <span class="text-primary">{{ order_id }}</span></p> {% endcomment %}
+            </div>
             </div>
             <div class="text-center">
                 <img class="img-fluid" src="https://cdn.dribbble.com/users/1238709/screenshots/4069900/success_celebration_800x600.gif" alt="">
@@ -21,6 +67,6 @@ confirmed
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 {% endblock content %}

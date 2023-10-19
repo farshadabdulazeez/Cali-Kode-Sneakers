@@ -1,13 +1,16 @@
+from django.urls import reverse_lazy
 from .models import *
 from order.models import *
 from product_app.models import *
+from django.contrib import auth
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.core.mail import send_mail
+from .forms import PasswordChangingForm
 from django.utils.crypto import get_random_string
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.views import PasswordChangeView
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -319,8 +322,9 @@ def delete_address(request, address_id):
     return redirect('user_profile')
 
 
-def change_password(request):
+class PasswordChangeView(PasswordChangeView):
+    form_class = PasswordChangingForm
+    success_url = reverse_lazy('password_success')
 
-    
-
+def password_success(request):
     return redirect('user_profile')
