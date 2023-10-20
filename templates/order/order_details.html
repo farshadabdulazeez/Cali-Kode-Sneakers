@@ -24,6 +24,7 @@ Order-details
             </div>
         </div>
         <div class="compare-page-wrapper pt-120 pb-120">
+            {% if order_items %}
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -32,32 +33,44 @@ Order-details
                             <div class="compare-table table-responsive">
                                 <table class="table table-bordered mb-0">
                                     <tbody>
+                                        {% for item in order_items %}
                                         <tr>
-                                            <td class="first-column">Product</td>
+                                            <td class="first-column" colspan="2"><h3><strong>PRODUCT DETAILS</strong></h3></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="first-column">Product Image</td>
                                             <td class="product-image-title">
                                                 <a href="product-details.html" class="image">
-                                                    <img class="img-fluid" src="assets/images/product/product-13.jpg" alt="Compare Product">
+                                                    <img class="img-fluid" src="{{ item.variant.product.product_image.url }}" alt="Compare Product" style="max-width: 136px; max-height: 136px;">
                                                 </a>
-                                                <h4>Basic Joggin Shorts</h4>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="first-column">Description</td>
+                                            <td class="first-column">Name</td>
                                             <td class="pro-desc">
-                                                <p>Samsome Note Book Pro 5 is an the best Laptop on this budgeted. You can satisfied
-                                                    after usign this laptop. </p>
+                                                <h4>{{item.variant.product.product_name}}</h4>
                                             </td>
-                                            
                                         </tr>
+                                        <tr>
+                                            <td class="first-column">Size</td>
+                                            <td class="pro-price">{{item.variant.product_size}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Category</td>
+                                            <td>{{item.variant.product.category.category_name}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Quantity</td>
+                                            <td>{{item.quantity}}</td>
+                                        </tr>
+
                                         <tr>
                                             <td class="first-column">Price</td>
-                                            <td class="pro-price">$295</td>
+                                            <td class="pro-price">{{item.product_price}}</td>
                                         </tr>
-                                        
-                                        <tr>
-                                            <td class="first-column">Add to cart</td>
-                                            <td><a href="cart.html" class="check-btn">Add to Cart</a></td>
-                                        </tr>
+
                                         {% comment %} <tr>
                                             <td class="first-column">Rating</td>
                                             <td class="pro-ratting">
@@ -82,13 +95,61 @@ Order-details
                                                 <i class="icon_star"></i>
                                             </td>
                                         </tr> {% endcomment %}
-                                        <tr>
+                                        {% comment %} <tr>
                                             <td class="first-column">Remove</td>
                                             <td class="pro-remove">
                                                 <button><i class="icon-trash"></i></button>
                                             </td>
                                             
+                                        </tr> {% endcomment %}
+
+
+                                        <tr>
+                                            <td class="first-column" colspan="2"><h3><strong>ORDER DETAILS</strong></h3></td>
                                         </tr>
+
+                                        <tr>
+                                            <td class="first-column">Order ID</td>
+                                            <td><b>{{ item.order_id.order_id }}<b></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Total amount</td>
+                                            <td>{{ item.order_id.order_total }}</td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td class="first-column" colspan="2"><h3><strong>DELIVERY DETAILS</strong></h3></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Customer</td>
+                                            <td><b>{{item.order_id.address.name}}<b></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Address</td>
+                                            <td>{{item.order_id.address.address}} , {{item.order_id.address.city}} , {{item.order_id.address.landmark}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Pincode</td>
+                                            <td>{{item.order_id.address.pincode}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column"> District | State</td>
+                                            <td><a href="cart.html" class="check-btn">{{item.order_id.address.district}} | {{item.order_id.address.state}}</a></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Contact</td>
+                                            <td><a href="cart.html" class="check-btn">{{item.order_id.address.mobile}}</a></td>
+                                        </tr>
+                                        
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
@@ -97,6 +158,7 @@ Order-details
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 

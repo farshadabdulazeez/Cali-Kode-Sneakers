@@ -242,7 +242,7 @@ def order_details(request, order_id):
     # except Exception as e:
     #     print(e)
 
-    return render(request, 'order/order_details.html')
+    return render(request, 'order/order_details.html', context)
 
 
 @login_required(login_url='index')
