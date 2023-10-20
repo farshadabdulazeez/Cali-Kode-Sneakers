@@ -16,13 +16,13 @@
             <thead>
               <tr>
                 <th>SL.NO</th>
-                <th>PRODUCT ID</th>
-                <th>PRODUCT NAME</th>
+                {% comment %} <th>PRODUCT ID</th> {% endcomment %}
                 <th>PRODUCT IMAGE</th>
+                <th>PRODUCT NAME</th>
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>STOCK/SIZE</th>
-                <th>OPERATIONS</th>
+                <th>UPDATE</th>
                 <th>ACTIONS</th>
 
               </tr>
@@ -33,21 +33,22 @@
                 {% for i in products %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ i.id }}</td>
-                    <td>{{ i.product_name }}</td>
+                    {% comment %} <td>{{ i.id }}</td> {% endcomment %}
+                    
                     <td>
-                        {% if i.product_image %}
-                        <div style="width: 80px; height: 8  0px;">
-                            <img src="{{ i.product_image.url }}" alt="Small Image"
-                                style="max-width: 100%; max-height: 100%;">
-                        </div>
-                        {% endif %}
-                    </td>
+                      {% if i.product_image %}
+                      <div style="width: 80px; height: 8  0px;">
+                          <img src="{{ i.product_image.url }}" alt="Small Image"
+                              style="max-width: 100%; max-height: 100%;">
+                      </div>
+                      {% endif %}
+                  </td>
+                    <td>{{ i.product_name }}</td>
                     <td>{{ i.selling_price }}</td>
                     <td>{{ i.category.category_name }}</td>
                     <td><a href="{% url 'admin_product_variant' i.id %}"> STOCK/SIZE</a></td>
                     <td><a href="{% url 'admin_edit_product' i.id %}"><i class="bi bi-pencil-fill  me-4"></i></a>
-                      <a href="{% url 'admin_delete_product' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td>
+                      {% comment %} <a href="{% url 'admin_delete_product' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td> {% endcomment %}
                     <td>
                       <form method="post" action="{% url 'admin_control_product' i.id %}">
                       {% csrf_token %}

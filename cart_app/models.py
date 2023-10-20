@@ -1,6 +1,8 @@
 from django.db import models
-from product_app.models import *
 from user_app.models import *
+from product_app.models import *
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 class Cart(models.Model):
@@ -32,16 +34,29 @@ class CartItem(models.Model):
         return f"{self.product.product.product_name} - size : {self.product.product_size.size}"
     
 
-class Checkout(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True)
-    address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, null=True, blank=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    tax = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    grand_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+from django.db import models
+from django.core.validators import MinValueValidator
 
-    class Meta:
-        ordering = ['user']
+class Coupons(models.Model):
+    coupon_code = models.CharField(max_length=25, blank=True, null=True)
+    discount = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        blank=True,
+        null=True,
+    )
+    minimum_order_amount = models.IntegerField(
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True
+    )
+    valid_from = models.DateTimeField(null=True)
+    valid_to = models.DateTimeField(null=True)
+    active = models.BooleanField(default=True)
+    description = models.TextField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.user.email
+        return self.coupon_code
+
 

@@ -11,6 +11,7 @@ urlpatterns = [
     path('otp-verification/<int:user_id>/', views.otp_verification, name ="otp_verification"),
     # path('regenerate-otp/<int:id>/', views.regenerate_otp, name ="regenerate_otp"),
     path('user-profile/', views.user_profile, name ="user_profile"),
+    path("order-details/<int:order_id>/", views.order_details, name="order_details"),
     path('add-address/<int:id>', views.add_address, name ="add_address"),
     path('edit-address/<int:id>/', views.edit_address, name ="edit_address"),
     path('delete-address/<int:address_id>/', views.delete_address, name = "delete_address"),

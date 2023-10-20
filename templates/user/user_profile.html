@@ -69,16 +69,18 @@ User-Profile
                                                                 <th>Quantity</th>
                                                                 <th>Size</th>
                                                                 <th>Status</th>
+                                                                <th>Details</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {% for order in orders %}
+                                                            {% for order in order_product %}
                                                             <tr>
                                                                 <td>{{ order.order_id.order_id }}</td>
                                                                 <td>{{ order.variant.product.product_name }}</td>
                                                                 <td>{{ order.quantity }}</td>
                                                                 <td>{{ order.variant.product_size.size }}</td>
-                                                                <td><a href="" class="check-btn sqr-btn ">View</a></td>
+                                                                <td>{{ order.order_id.status }}</td>
+                                                                <td><a href="{% url 'order_details' order.order_id.id %}" class="check-btn sqr-btn ">View</a></td>
                                                             </tr>
                                                             {% endfor %}
                                                         </tbody>

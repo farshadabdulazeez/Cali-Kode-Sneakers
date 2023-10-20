@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+
+Order-details
+
+{% endblock title %}
+
+{% block content %}
+
+    <div class="main-wrapper">
+        <div class="breadcrumb-area bg-gray">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <ul>
+                        <li>
+                            <a href="index.html">Home</a>
+                        </li>
+                        <li class="active">Order-Details </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="compare-page-wrapper pt-120 pb-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Compare Page Content Start -->
+                        <div class="compare-page-content-wrap">
+                            <div class="compare-table table-responsive">
+                                <table class="table table-bordered mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="first-column">Product</td>
+                                            <td class="product-image-title">
+                                                <a href="product-details.html" class="image">
+                                                    <img class="img-fluid" src="assets/images/product/product-13.jpg" alt="Compare Product">
+                                                </a>
+                                                <h4>Basic Joggin Shorts</h4>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="first-column">Description</td>
+                                            <td class="pro-desc">
+                                                <p>Samsome Note Book Pro 5 is an the best Laptop on this budgeted. You can satisfied
+                                                    after usign this laptop. </p>
+                                            </td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <td class="first-column">Price</td>
+                                            <td class="pro-price">$295</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="first-column">Add to cart</td>
+                                            <td><a href="cart.html" class="check-btn">Add to Cart</a></td>
+                                        </tr>
+                                        {% comment %} <tr>
+                                            <td class="first-column">Rating</td>
+                                            <td class="pro-ratting">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                            </td>
+                                            <td class="pro-ratting">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                            </td>
+                                            <td class="pro-ratting">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                            </td>
+                                        </tr> {% endcomment %}
+                                        <tr>
+                                            <td class="first-column">Remove</td>
+                                            <td class="pro-remove">
+                                                <button><i class="icon-trash"></i></button>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Compare Page Content End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

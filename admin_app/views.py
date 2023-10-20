@@ -1,10 +1,11 @@
 import os
 from order.models import *
+from decimal import Decimal
 from user_app.models import *
 from product_app.models import *
 from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.admin.views.decorators import staff_member_required
@@ -584,6 +585,130 @@ def admin_control_product_variant(request, variant_id):
         print(e)
         return redirect('admin_products')
     
+
+@staff_member_required(login_url='admin_login')
+def admin_coupons(request):
+    context = {}
+    try:
+        coupons = Coupons.objects.all().order_by('-id') 
+        context = {
+            'coupons': coupons,
+        }
+    except Exception as e:
+        print(e)
+    return render(request, 'admin/admin_coupons.html', context)
+
+
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
+def admin_add_coupon(request):
+    try:
+        if request.method == "POST":
+            coupon_code = request.POST["coupon_code"].strip()
+            discount = request.POST["discount"]
+            minimum_amount = request.POST["minimum_amount"]
+            valid_from = request.POST["valid_from"]
+            valid_at = request.POST["valid_at"]
+
+            if float(discount) < 1:
+                messages.error(request, "minimum discount amount should be 1")
+                return redirect("admin_coupons")
+
+            if float(discount) > float(minimum_amount):
+                messages.error(request, "discount has to be less than minimum amount")
+                return redirect("admin_coupons")
+
+            if valid_from > valid_at:
+                messages.error(request, "add validity range properly")
+                return redirect("admin_coupons")
+
+            coupon = Coupons.objects.create(
+                coupon_code=coupon_code,
+                discount=discount,
+                minimum_amount=minimum_amount,
+                valid_from=valid_from,
+                valid_at=valid_at,
+            )
+            coupon.save()
+            messages.success(request, "New coupon added successfully")
+
+    except Exception as e:
+        print(e)
+    return redirect("admin_coupons")
+
+
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
+def admin_edit_coupon(request, coupon_id):
+    try:
+        coupon = Coupons.objects.get(id=coupon_id)
+        if request.method == "POST":
+            coupon_code = request.POST["coupon_code"].strip()
+            new_discount = request.POST["discount"]
+
+            if float(new_discount) < 1:
+                messages.error(request, "minimum discount amount should be 1")
+                return redirect("admin_coupons")
+
+            discount = Decimal(new_discount)
+            minimum_amount = int(request.POST["minimum_amount"])
+
+            if discount >= minimum_amount:
+                messages.error(request, "discount has to be less than minimum amount")
+                return redirect("admin_coupons")
+
+            valid_from = request.POST["valid_from"]
+            valid_at = request.POST["valid_at"]
+
+            if valid_from > valid_at:
+                messages.error(request, "add validity range properly")
+                return redirect("admin_coupons")
+
+            coupon.coupon_code = coupon_code
+            coupon.discount = discount
+            coupon.minimum_amount = minimum_amount
+            coupon.valid_from = valid_from
+            coupon.valid_at = valid_at
+            coupon.save()
+            messages.success(request, "Coupon updated successfully!")
+
+    except Exception as e:
+        print(e)
+    return redirect("admin_coupons")
+
+
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
+def admin_delete_coupon(request, coupon_id):
+    try:
+        coupon = get_object_or_404(Coupons, id=coupon_id)
+        coupon.delete()
+        messages.success(request, "Coupon deleted")
+    except Coupons.DoesNotExist as e:
+        # Handle the case when the coupon is not found
+        messages.error(request, "Coupon not found")
+    except Exception as e:
+        # Handle other exceptions or log them for debugging
+        messages.error(request, "An error occurred while deleting the coupon")
+    return redirect('admin_coupons')
+
+
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
+def admin_activate_coupon(requset, coupon_id):
+    # try:
+    # coupon = Coupons.objects.get(id=coupon_id)
+    # if coupon.active:
+    #     coupon.active = False
+    #     messages.success(requset, "Coupon deactivated")
+    # else:
+    #     coupon.active = True
+    #     messages.success(requset, "Coupon activated")
+    # coupon.save()
+    # except Exception as e:
+    #     print(e)
+    return redirect('admin_coupons')
+
 
 @staff_member_required(login_url='admin_login')
 def admin_order_management(request):

@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from cart_app.models import *
 from order.models import *
 from django.contrib import messages
@@ -16,14 +17,14 @@ def order(request):
     context = {}
     # try:
     user = request.user
-    checkout_items = Checkout.objects.get(user=user)
+    # checkout_items = Checkout.objects.get(user=user)
     cart_items = CartItem.objects.filter(customer=user)
     
     if not cart_items:
         return redirect('index')
 
     context = {
-        'checkout_items': checkout_items,
+        # 'checkout_items': checkout_items,
         'cart_items': cart_items,
     }
     # except Exception as e:

@@ -50,7 +50,7 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
-    # coupon = models.ForeignKey(Coupons, on_delete=models.SET_NULL, null=True, blank=True)
+    coupon = models.ForeignKey(Coupons, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.order_id

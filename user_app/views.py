@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.urls import reverse_lazy
 from .models import *
 from order.models import *
@@ -210,14 +211,38 @@ def user_profile(request):
     context = {}
 
     address = UserAddress.objects.filter(user=user)
-    order = OrderProduct.objects.filter(customer=user)
+    order_product = OrderProduct.objects.filter(customer=user)
 
     context = {
         'address' : address,
-        'orders' : order,
+        'order_product' : order_product,
     }
 
     return render(request, 'user/user_profile.html', context)
+
+
+def order_details(request, order_id):
+
+    order = Order.objects.get(id=order_id)
+    order_items = OrderProduct.objects.filter(order_id=order)
+    order_total = Decimal(order.order_total)
+
+    # shipping_charge = 0
+    # if order_total < 1000 and order_total < 902:
+    #     shipping_charge = 99
+    # else:
+    #     shipping_charge = "Free"
+
+    context = {
+        # "shipping_charge": shipping_charge,
+        "orders": order,
+        "order_items": order_items,
+        }
+
+    # except Exception as e:
+    #     print(e)
+
+    return render(request, 'order/order_details.html')
 
 
 @login_required(login_url='index')
