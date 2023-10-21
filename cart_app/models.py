@@ -34,9 +34,6 @@ class CartItem(models.Model):
         return f"{self.product.product.product_name} - size : {self.product.product_size.size}"
     
 
-from django.db import models
-from django.core.validators import MinValueValidator
-
 class Coupons(models.Model):
     coupon_code = models.CharField(max_length=25, blank=True, null=True)
     discount = models.DecimalField(

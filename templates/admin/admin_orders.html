@@ -29,7 +29,7 @@
               {% for order in orders %}
                     <tr>
                       <td>{{ order.created }} </td> 
-                      <td>{{ order.user.first_name}} {{ order.user.last_name}} </td> 
+                      <td>{{ order.address.name}} </td> 
                       <td>{{ order.order_id }}</td>
                       <td>{{ order.order_total }}</td>
                       <td>{% if order.is_ordered %} PAID {% else %} PENDING {% endif %} </td>
