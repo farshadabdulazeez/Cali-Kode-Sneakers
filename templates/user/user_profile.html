@@ -36,7 +36,7 @@ User-Profile
                                         <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a>
                                         <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
                                         <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i> Account Details & Change Password</a>
-                                        {% comment %} <a href="#change-password" data-toggle="tab"><i class="fa fa-key"></i> Change Password</a> {% endcomment %}
+                                        <a href="#change-password" data-toggle="tab"><i class="fa fa-key"></i> Change Password</a>
                                         <a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@ User-Profile
                                                         </div>
                                                         <br>
                                                     </form>
-                                                    <form action="{% url 'change_password' %}" method="POST">
+                                                    {% comment %} <form action="" method="POST">
                                                         {% csrf_token %}
                                                         
                                                         {% for error in form.non_field_errors %}
@@ -224,20 +224,44 @@ User-Profile
                                                         <button type="submit" class="btn btn-primary " data-toggle="modal" data-target=".bd-example-modal-lgt">
                                                             Change Password
                                                         </button>
-                                                    </form>
+                                                    </form> {% endcomment %}
                                                     
                                                 </div>
                                             </div>
                                         </div> <!-- Single Tab Content End -->
 
-                                        {% comment %} <div class="tab-pane fade" id="change-password" role="tabpanel">
+                                        <!-- Single Tab Content Start -->
+                                        <div class="tab-pane fade" id="change-password" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Change Password</h3>
-                                                <!-- Inside the "Change Password" tab content -->
-                                                
+                                                <form action="{% url 'change_password' %}" method="POST">
+                                                    {% csrf_token %}
+                                                    
+                                                    {% for error in form.non_field_errors %}
+                                                        <div class="alert alert-danger">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                    
+                                                    {% for field in form %}
+                                                        <div class="form-group">
+                                                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                                            {{ field }}
+                                                        </div>
+                                                        {% if field.errors %}
+                                                            <div class="alert alert-danger">
+                                                                {{ field.errors }}
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                    <button type="submit" class="btn btn-primary " data-toggle="modal" data-target=".bd-example-modal-lgt">
+                                                        Change Password
+                                                    </button>
+                                                </form>
                                             </div>
-                                        </div> {% endcomment %}
-                                        
+                                        </div>
+                                        <!-- Single Tab Content End -->
 
                                     </div>
                                 </div> <!-- My Account Tab Content End -->
@@ -292,20 +316,20 @@ User-Profile
                             <label for="district" class="required">District</label>
                             <select class="form-control" id="district" name="district" required>
                                 <option value=""><b>Select District*</b></option>
-                                <option value="Kasarakode">KASARAKODE</option>
-                                <option value="Kannur">KANNUR</option>
-                                <option value="Wayanad">WAYANAD</option>
-                                <option value="Kozhikode">KOZHIKODE</option>
-                                <option value="Malapuram">MALAPPURAM</option>
-                                <option value="Palakkad">PALAKKAD</option>
-                                <option value="Trissur">THRISSUR</option>
-                                <option value="Ernakulam">ERNAKULAM</option>
-                                <option value="Idukki">IDUKKI</option>
-                                <option value="Kottayam">KOTTAYAM</option>
-                                <option value="Alappuzha">ALAPPUZHA</option>
-                                <option value="Pathanamthitta">PATHANAMTHITTA</option>
-                                <option value="Kollam">KOLLAM</option>
-                                <option value="Thiruvananthapuram">THIRUVANANTHAPURAM</option>
+                                <option value="KASARAKODE">KASARAKODE</option>
+                                <option value="KANNUR">KANNUR</option>
+                                <option value="WAYANAD">WAYANAD</option>
+                                <option value="KOZHIKODE">KOZHIKODE</option>
+                                <option value="MALAPPURAM">MALAPPURAM</option>
+                                <option value="PALAKKAD">PALAKKAD</option>
+                                <option value="THRISSUR">THRISSUR</option>
+                                <option value="ERNAKULAM">ERNAKULAM</option>
+                                <option value="IDUKKI">IDUKKI</option>
+                                <option value="KOTTAYAM">KOTTAYAM</option>
+                                <option value="ALAPPUZHA">ALAPPUZHA</option>
+                                <option value="PATHANAMTHITTA">PATHANAMTHITTA</option>
+                                <option value="KOLLAM">KOLLAM</option>
+                                <option value="THIRUVANANTHAPURAM">THIRUVANANTHAPURAM</option>
                             </select>
                         </div>
 
@@ -368,20 +392,20 @@ User-Profile
                             <label for="district" class="required">District</label>
                             <select class="form-control" id="district"  name="district" required>
                                 <option value=""><b>Select District*</b></option>
-                                <option value="Kasarkode" {% if i.district == "Kasarkode" %}selected{% endif %}>KASARAKODE</option>
-                                <option value="Kannur" {% if i.district == "Kannur" %}selected{% endif %}>KANNUR</option>
-                                <option value="Wayanad" {% if i.district == "Wayanad" %}selected{% endif %}>WAYANAD</option>
-                                <option value="Kozhikode" {% if i.district == "Kozhikode" %}selected{% endif %}>KOZHIKODE</option>
-                                <option value="Malapuram" {% if i.district == "Malappuram" %}selected{% endif %}>MALAPPURAM</option>
-                                <option value="Palakkad" {% if i.district == "Palakkad" %}selected{% endif %}>PALAKKAD</option>
-                                <option value="Trissur" {% if i.district == "Thrissur" %}selected{% endif %}>THRISSUR</option>
-                                <option value="Ernakulam" {% if i.district == "Ernakulam" %}selected{% endif %}>ERNAKULAM</option>
-                                <option value="Idukki" {% if i.district == "Idukki" %}selected{% endif %}>IDUKKI</option>
-                                <option value="Kottayam" {% if i.district == "Kottayam" %}selected{% endif %}>KOTTAYAM</option>
-                                <option value="Alappuzha" {% if i.district == "Alappuzha" %}selected{% endif %}>ALAPPUZHA</option>
-                                <option value="Pathanamthitta" {% if i.district == "Pathanamthitta" %}selected{% endif %}>PATHANAMTHITTA</option>
-                                <option value="Kollam" {% if i.district == "Kollam" %}selected{% endif %}>KOLLAM</option>
-                                <option value="Thiruvananthapuram" {% if i.district == "Thiruvananthapuram" %}selected{% endif %}>THIRUVANANTHAPURAM</option>
+                                <option value="KASARAKODE" {% if i.district == "KASARAKODE" %}selected{% endif %}>KASARAKODE</option>
+                                <option value="KANNUR" {% if i.district == "KANNUR" %}selected{% endif %}>KANNUR</option>
+                                <option value="WAYANAD" {% if i.district == "WAYANAD" %}selected{% endif %}>WAYANAD</option>
+                                <option value="KOZHIKODE" {% if i.district == "KOZHIKODE" %}selected{% endif %}>KOZHIKODE</option>
+                                <option value="MALAPPURAM" {% if i.district == "MALAPPURAM" %}selected{% endif %}>MALAPPURAM</option>
+                                <option value="PALAKKAD" {% if i.district == "PALAKKAD" %}selected{% endif %}>PALAKKAD</option>
+                                <option value="THRISSUR" {% if i.district == "THRISSUR" %}selected{% endif %}>THRISSUR</option>
+                                <option value="ERNAKULAM" {% if i.district == "ERNAKULAM" %}selected{% endif %}>ERNAKULAM</option>
+                                <option value="IDUKKI" {% if i.district == "IDUKKI" %}selected{% endif %}>IDUKKI</option>
+                                <option value="KOTTAYAM" {% if i.district == "KOTTAYAM" %}selected{% endif %}>KOTTAYAM</option>
+                                <option value="ALAPPUZHA" {% if i.district == "ALAPPUZHA" %}selected{% endif %}>ALAPPUZHA</option>
+                                <option value="PATHANAMTHITTA" {% if i.district == "PATHANAMTHITTA" %}selected{% endif %}>PATHANAMTHITTA</option>
+                                <option value="KOLLAM" {% if i.district == "KOLLAM" %}selected{% endif %}>KOLLAM</option>
+                                <option value="THIRUVANANTHAPURAM" {% if i.district == "THIRUVANANTHAPURAM" %}selected{% endif %}>THIRUVANANTHAPURAM</option>
                             </select>
                         </div>
 

@@ -723,6 +723,14 @@ def admin_orders(request):
     return render(request, 'admin/admin_orders.html', context)
 
 
+@staff_member_required(login_url='admin_login')
+def admin_orders_detail(request, order_id):
+
+    # order = Order.objects.all().order_by('-order_id')
+
+    return render(request, 'admin/admin_orders_detail.html')
+
+
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_logout(request):
