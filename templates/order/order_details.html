@@ -114,8 +114,27 @@ Order-details
                                         </tr>
 
                                         <tr>
-                                            <td class="first-column">Total amount</td>
+                                            <td class="first-column">Order Issued On</td>
+                                            <td>{{ item.order_id.created }}</td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td class="first-column">Order Total</td>
                                             <td>{{ item.order_id.order_total }}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="first-column">Payment Method</td>
+                                            <td>
+                                                {% if item.payment.payment_method == "cash_on_delivery" %}
+                                                    Cash on Delivery
+                                                {% elif item.payment.payment_method == "Razorpay" %}
+                                                    Razorpay
+                                                {% else %}
+                                                    {{ item.payment.payment_method }}
+                                                {% endif %}
+                                            </td>
                                         </tr>
 
 

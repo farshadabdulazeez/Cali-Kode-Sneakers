@@ -711,7 +711,7 @@ def admin_activate_coupon(requset, coupon_id):
 
 
 @staff_member_required(login_url='admin_login')
-def admin_order_management(request):
+def admin_orders(request):
     context = {}
     # try:
     orders = Order.objects.all().order_by('-order_id')
@@ -720,7 +720,7 @@ def admin_order_management(request):
     }
     # except Exception as e:
     #     print(e)
-    return render(request, 'admin/admin_order_management.html', context)
+    return render(request, 'admin/admin_orders.html', context)
 
 
 @cache_control(no_cache=True, no_store=True)
