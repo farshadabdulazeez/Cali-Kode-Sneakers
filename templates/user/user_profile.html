@@ -30,12 +30,10 @@ User-Profile
                             <div class="row">
                                 <div class="col-lg-3 col-md-4">
                                     <div class="myaccount-tab-menu nav" role="tablist">
-                                        <a href="#dashboad" class="active" data-toggle="tab"><i class="fa fa-dashboard"></i>
-                                            Dashboard</a>
+                                        <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i>Profile</a>
                                         <a href="#orders" data-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a>
                                         <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a>
                                         <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
-                                        <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i> Account Details & Change Password</a>
                                         <a href="#change-password" data-toggle="tab"><i class="fa fa-key"></i> Change Password</a>
                                         <a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
                                     </div>
@@ -45,7 +43,7 @@ User-Profile
                                 <div class="col-lg-9 col-md-8">
                                     <div class="tab-content" id="myaccountContent">
                                         <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade show active" id="dashboad" role="tabpanel">
+                                        {% comment %} <div class="tab-pane fade show active" id="dashboad" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Dashboard</h3>
                                                 <div class="welcome">
@@ -54,7 +52,99 @@ User-Profile
 
                                                 <p class="mb-0">From your account dashboard. you can easily check & view your recent orders, manage your shipping and billing addresses and edit your password and account details.</p>
                                             </div>
+                                        </div> {% endcomment %}
+
+                                        
+
+                                        <div class="tab-pane fade show active" id="account-info" role="tabpanel">
+                                            <div class="myaccount-content">
+                                                <h3>Account Details</h3>
+                                                <div class="account-details-form">
+                                                    <form action="" method="POST">
+                                                        {% csrf_token %}
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="single-input-item">
+                                                                    <label for="first-name" class="required">First Name</label>
+                                                                    <input type="text" id="first-name"  value="{{ user.first_name }}"
+                                                                    name="first_name"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="single-input-item">
+                                                                    <label for="last-name" class="required">Last Name</label>
+                                                                    <input type="text" id="last-name"  value="{{ user.last_name }}"
+                                                                    name="last_name"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="single-input-item">
+                                                            <label for="email" class="required">Email Address</label>
+                                                            <input type="email" id="email" value="{{ user.email }}" name="email" />
+                                                        </div>
+
+                                                        <div class="single-input-item">
+                                                            <label for="display-name" class="required">Mobile Number</label>
+                                                            <input type="text" id="display-name"  value="{{ user.mobile }}"
+                                                            name="mobile" />
+                                                        </div>
+
+                                                        <div class="single-input-item">
+                                                            <label for="display-name" class="required">D.O.B</label>
+                                                            <input type="text" id="display-name"  value="{{ user.date_of_birth }}"
+                                                            name="date_of_birth" />
+                                                        </div>
+                                                        
+                                                        <div class="single-input-item text-center">
+                                                            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lgt" style="border-radius: 0; margin: 0 auto; display: block;">Edit account</button>
+                                                        </div>
+                                                        <br>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
+
+
+                                         <!-- Single Tab Content Start -->
+                                         <!-- Change Password Page -->
+                                        <div class="tab-pane fade" id="change-password" role="tabpanel">
+                                            <div class="myaccount-content">
+                                                <h3>Change Password</h3>
+                                                <form method="post">
+                                                    {% csrf_token %}
+
+                                                    {% comment %} {% for error in messages %}
+                                                        <div class="alert alert-{{ error.tags }}">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %} {% endcomment %}
+
+                                                    <div class="form-group">
+                                                        <label for="current_password" class="form-label">Current Password</label>
+                                                        <input type="password" name="current_password" class="form-control">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="new_password" class="form-label">New Password</label>
+                                                        <input type="password" name="new_password" class="form-control">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="confirm_password" class="form-label">Confirm Password</label>
+                                                        <input type="password" name="confirm_password" class="form-control">
+                                                    </div>
+
+                                                    <button type="submit" class="btn btn-primary" >
+                                                        SAVE CHANGES
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <!-- Single Tab Content End -->
+
+
                                         <!-- Single Tab Content End -->
                                         <!-- Single Tab Content Start -->
                                         <div class="tab-pane fade" id="orders" role="tabpanel">
@@ -154,7 +244,7 @@ User-Profile
                                         
                                         <!-- Single Tab Content End -->
                                         <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade" id="account-info" role="tabpanel">
+                                        {% comment %} <div class="tab-pane fade" id="account-info" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Account Details</h3>
                                                 <div class="account-details-form">
@@ -199,7 +289,7 @@ User-Profile
 
                                                         </div>
                                                         <br>
-                                                    </form>
+                                                    </form> {% endcomment %}
                                                     {% comment %} <form action="" method="POST">
                                                         {% csrf_token %}
                                                         
@@ -225,43 +315,10 @@ User-Profile
                                                             Change Password
                                                         </button>
                                                     </form> {% endcomment %}
-                                                    
+{% comment %}                                                     
                                                 </div>
                                             </div>
-                                        </div> <!-- Single Tab Content End -->
-
-                                        <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade" id="change-password" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <h3>Change Password</h3>
-                                                <form action="{% url 'change_password' %}" method="POST">
-                                                    {% csrf_token %}
-                                                    
-                                                    {% for error in form.non_field_errors %}
-                                                        <div class="alert alert-danger">
-                                                            {{ error }}
-                                                        </div>
-                                                    {% endfor %}
-                                                    
-                                                    {% for field in form %}
-                                                        <div class="form-group">
-                                                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                                            {{ field }}
-                                                        </div>
-                                                        {% if field.errors %}
-                                                            <div class="alert alert-danger">
-                                                                {{ field.errors }}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    
-                                                    <button type="submit" class="btn btn-primary " data-toggle="modal" data-target=".bd-example-modal-lgt">
-                                                        Change Password
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <!-- Single Tab Content End -->
+                                        </div> <!-- Single Tab Content End --> {% endcomment %}
 
                                     </div>
                                 </div> <!-- My Account Tab Content End -->

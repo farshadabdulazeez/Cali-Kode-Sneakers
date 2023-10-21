@@ -39,7 +39,7 @@ urlpatterns = [
     path('admin-activate-coupon/<int:coupon_id>/', views.admin_activate_coupon, name="admin_activate_coupon"),
 
     path('admin-orders/', views.admin_orders, name="admin_orders"),
-    path('admin-orders-detail/<int:order_id>/', views.admin_orders_detail, name="admin_orders_detail"),
+    path('admin-orders-detail/<int:id>/', views.admin_orders_detail, name="admin_orders_detail"),
 
     path('admin-logout/', views.admin_logout, name = "admin_logout"),
     

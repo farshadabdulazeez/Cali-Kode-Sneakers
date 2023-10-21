@@ -72,12 +72,10 @@
                                         <a href="{% url 'register' %}" style="margin-left: 5px;"></i> REGISTER</a>
                                     </div>
                                     {% endif %}
-                                    {% if user.is_authenticated %}
-
+                                    
                                     <div class="header-cart-2">
                                         <a class="cart-active" href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
                                     </div>
-                                    {% endif %}
                                 </div>
                             </div>
                         </div>

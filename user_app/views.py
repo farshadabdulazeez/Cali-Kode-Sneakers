@@ -1,17 +1,16 @@
-from decimal import Decimal
-from django.urls import reverse_lazy
 from .models import *
 from order.models import *
 from product_app.models import *
+from decimal import Decimal
+from django.urls import reverse_lazy
 from django.contrib import auth
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from .forms import PasswordChangingForm
 from django.utils.crypto import get_random_string
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -32,7 +31,6 @@ def index(request):
     }
 
     return render(request, 'user/index.html', context)
-
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -347,9 +345,34 @@ def delete_address(request, address_id):
     return redirect('user_profile')
 
 
-class PasswordChangeView(PasswordChangeView):
-    form_class = PasswordChangingForm
-    success_url = reverse_lazy('password_success')
+@cache_control(no_cache=True, no_store=True)
+def change_password(request, user_id):
+    
+    user = CustomUser.objects.get(id=user_id)
 
-def password_success(request):
+    if request.method == "POST":
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        print(f"Received data: current_password={current_password}, new_password={new_password}, confirm_password={confirm_password}")
+
+        if user.check_password(current_password) and new_password == confirm_password:
+            user.set_password(new_password)
+            user.save()
+            # Update the session's auth hash to prevent automatic logout
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully!")
+            return redirect("user_profile")
+        else:
+            if not user.check_password(current_password):
+                messages.error(request, "Current password is incorrect")
+            else:
+                messages.error(request, "Passwords do not match")
+            return redirect("user_profile")
     return redirect('user_profile')
+
+        
+    # except Exception as e:
+    #     print(e)
+    #     return redirect("user_profile")

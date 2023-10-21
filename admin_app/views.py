@@ -723,12 +723,18 @@ def admin_orders(request):
     return render(request, 'admin/admin_orders.html', context)
 
 
-@staff_member_required(login_url='admin_login')
-def admin_orders_detail(request, order_id):
+@staff_member_required(login_url="admin_login")
+def admin_orders_detail(request, id):
 
-    # order = Order.objects.all().order_by('-order_id')
+    order = Order.objects.get(id=id)
+    
+    order_items = OrderProduct.objects.filter(order_id=order)
+    context = {
+        "order": order,
+        "order_items": order_items,
+    }
+    return render(request, "admin/admin_orders_detail.html", context)
 
-    return render(request, 'admin/admin_orders_detail.html')
 
 
 @cache_control(no_cache=True, no_store=True)
