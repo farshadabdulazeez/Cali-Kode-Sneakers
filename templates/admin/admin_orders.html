@@ -4,7 +4,6 @@
 
 {% block content %}
 
-
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN /</span> ORDERS</h4>
 
@@ -16,41 +15,33 @@
             </div> {% endcomment %}
             <thead>
               <tr>
-                <th>SL.NO</th>
-                <th>ORDER ID</th>
                 <th>DATE</th>
                 <th>CUSTOMER</th>
-                <th>AMOUNT </th>
-                <th>PAYMENT </th>
+                <th>ORDER ID</th>
+                <th>TOTAL</th>
+                <th>PAYMENT</th>
                 <th>STATUS</th>
-                <th>ACTION</th>
+                <th>DETAILS</th>
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-              {% comment %} {% if orders %}
+              {% if orders %}
               {% for order in orders %}
-                  {% if not i.is_superuser %} {% endcomment %}
                     <tr>
-                      <!-- <td>{{ forloop.counter }}</td>
-                      <td>{{ order.order_id }}</td>
                       <td>{{ order.created }} </td> 
-                      <td>{{ order.user.email }}</td>
+                      <td>{{ order.user.first_name}} {{ order.user.last_name}} </td> 
+                      <td>{{ order.order_id }}</td>
                       <td>{{ order.order_total }}</td>
-                      <td>{% if order.payment.is_paid %} Paid {% else %} Pending {% endif %} </td>
-                      <td>{% if order.status %} {{ order.status}} {% else %} Pending {% endif %} </td> -->
-                      {% comment %} <td><a class="btn btn-sm btn-warning" href="{% url 'order_update' order.id %}">Detail</a></td> {% endcomment %}
-
+                      <td>{% if order.is_ordered %} PAID {% else %} PENDING {% endif %} </td>
+                      <td>{% if order.status %} {{ order.status}} {% else %} Pending {% endif %} </td>
+                      <td><a class="btn btn-sm btn-warning" href="">Details</a></td>
                     </tr>
-                  {% comment %} {% endif %}
                 {% endfor %}
-              {% endif %} {% endcomment %}
+              {% endif %}
             </tbody>
-            
           </table>
         </div>
       </div>
     </div>
-    
-
 
 {% endblock content %}

@@ -25,7 +25,7 @@ class Payments(models.Model):
 
 class Order(models.Model):
     STATUS = {
-        ('Order confirmed', 'Order confirmed'),
+        ('ORDER CONFIRMED', 'ORDER CONFIRMED'),
         # ('Shipped', 'Shipped'),
         # ('Out for delivery', 'Out for delivery'),
         # ('Delivered', 'Delivered'),
@@ -45,7 +45,7 @@ class Order(models.Model):
     # discount = models.FloatField(default=0, blank=True)
     # wallet_amount = models.FloatField(default=0, blank=True, null=True)
     # tax = models.FloatField()
-    status = models.CharField(max_length=50, choices=STATUS, default="Order confirmed")
+    status = models.CharField(max_length=50, choices=STATUS, default="ORDER CONFIRMED")
     # ip = models.CharField(null=True, blank=True)
     is_ordered = models.BooleanField(default=False, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
