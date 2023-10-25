@@ -111,7 +111,7 @@ User-Profile
                                         <div class="tab-pane fade" id="change-password" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Change Password</h3>
-                                                <form method="post">
+                                                <form method="post" action="{% url 'change_password' %}">
                                                     {% csrf_token %}
 
                                                     {% comment %} {% for error in messages %}
@@ -120,19 +120,19 @@ User-Profile
                                                         </div>
                                                     {% endfor %} {% endcomment %}
 
-                                                    <div class="form-group">
+                                                    {% comment %} <div class="form-group">
                                                         <label for="current_password" class="form-label">Current Password</label>
                                                         <input type="password" name="current_password" class="form-control">
-                                                    </div>
+                                                    </div> {% endcomment %}
 
                                                     <div class="form-group">
                                                         <label for="new_password" class="form-label">New Password</label>
-                                                        <input type="password" name="new_password" class="form-control">
+                                                        <input type="password" name="new_password" class="form-control" placeholder="Enter your new password">
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label for="confirm_password" class="form-label">Confirm Password</label>
-                                                        <input type="password" name="confirm_password" class="form-control">
+                                                        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm your new password">
                                                     </div>
 
                                                     <button type="submit" class="btn btn-primary" >

@@ -53,6 +53,9 @@ class Coupons(models.Model):
     active = models.BooleanField(default=True)
     description = models.TextField(max_length=100, null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'Coupons'
+        
     def __str__(self):
         return self.coupon_code
 

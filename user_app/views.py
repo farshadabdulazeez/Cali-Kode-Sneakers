@@ -346,33 +346,27 @@ def delete_address(request, address_id):
 
 
 @cache_control(no_cache=True, no_store=True)
-def change_password(request, user_id):
+def change_password(request):
     
-    user = CustomUser.objects.get(id=user_id)
-
-    if request.method == "POST":
-        current_password = request.POST.get("current_password")
-        new_password = request.POST.get("new_password")
-        confirm_password = request.POST.get("confirm_password")
-
-        print(f"Received data: current_password={current_password}, new_password={new_password}, confirm_password={confirm_password}")
-
-        if user.check_password(current_password) and new_password == confirm_password:
-            user.set_password(new_password)
-            user.save()
-            # Update the session's auth hash to prevent automatic logout
-            update_session_auth_hash(request, user)
-            messages.success(request, "Password changed successfully!")
-            return redirect("user_profile")
-        else:
-            if not user.check_password(current_password):
-                messages.error(request, "Current password is incorrect")
-            else:
-                messages.error(request, "Passwords do not match")
-            return redirect("user_profile")
-    return redirect('user_profile')
-
+    if "email" in request.session:
+        return redirect('admin_dashboard')
         
-    # except Exception as e:
-    #     print(e)
-    #     return redirect("user_profile")
+    try:
+        if request.method == "POST":
+            new_password = request.POST.get("new_password")
+            confirm_password = request.POST.get("confirm_password")
+            if new_password == confirm_password:
+                user = request.user
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, "password changed successfully!")
+                return redirect("user_login")
+            else:
+                messages.error(request, "passwords do not match")
+                return redirect("change_password")
+            
+        return redirect('user_profile')
+        
+    except Exception as e:
+        print(e)
+        return redirect("user_profile")
