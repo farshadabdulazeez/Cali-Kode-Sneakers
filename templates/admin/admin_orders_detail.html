@@ -19,49 +19,79 @@
                 <p>{{ order.order_id }}</p>
               </div>
             </div>
+
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">ORDER DATE :</label>
+              <div class="col-sm-10">
+                <p>{{ order.created }}</p>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">ORDER TOTAL :</label>
+              <div class="col-sm-10">
+                <p>{{ order.order_total }}</p>
+              </div>
+            </div>
+
             {% endif %}
 
+            {% if order_items %}
+            {% for item in order_items %}
+
             <div class="row mb-3">
-              <label class="col-sm-2 col-form-label"> CATEGORY :</label>
+              <label class="col-sm-2 col-form-label">CUSTOMER :</label>
               <div class="col-sm-10">
-                <p>{{ product.category.category_name }}</p>
+                <p>{{ item.order_id.address.name }}</p>
               </div>
             </div>
 
             <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">BRAND :</label>
+              <label class="col-sm-2 col-form-label"><strong><h5>PRODUCT NO. {{forloop.counter}} :</h5></strong> PRODUCT IMAGE :</label>
               <div class="col-sm-10">
-                <p>{{ product.product_brand.brand_name }}</p>
+                <img src="{{ item.variant.product.product_image.url }}" alt="product image" style="height: 100%; width: 10%;" />
               </div>
             </div>
 
             <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">IMAGE:</label>
+              <label class="col-sm-2 col-form-label">PRODUCT NAME :</label>
               <div class="col-sm-10">
-                <img src="{{ product.product_image.url }}" alt="product image" style="max-width: 100%;" />
+                <p>{{ item.variant.product.product_name }}</p>
               </div>
             </div>
 
             <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">ORIGINAL PRICE :</label>
+              <label class="col-sm-2 col-form-label">SIZE :</label>
               <div class="col-sm-10">
-                <p>{{ product.original_price }}</p>
+                <p>{{ item.variant.product_size }}</p>
               </div>
             </div>
 
             <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">SELLING PRICE :</label>
+              <label class="col-sm-2 col-form-label">QUANTITY :</label>
               <div class="col-sm-10">
-                <p>{{ product.selling_price }}</p>
+                <p>{{ item.quantity }}</p>
               </div>
             </div>
 
             <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">DESCRIPTION:</label>
+              <label class="col-sm-2 col-form-label">DELIVERY ADDRESS :</label>
               <div class="col-sm-10">
-                <p>{{ product.product_description }}</p>
+                <p>{{ item.order_id.address.address }}, {{ item.order_id.address.city }}, {{ item.order_id.address.landmark }}, 
+                  PINCODE:{{ item.order_id.address.pincode }},
+                  {{ item.order_id.address.district }}, {{ item.order_id.address.state }}</p>
               </div>
             </div>
+
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">CONTACT :</label>
+              <div class="col-sm-10">
+                <p>{{ item.order_id.address.mobile }}</p>
+              </div>
+            </div>
+
+            {% endfor %}
+            {% endif %}
 
           </div>
         </div>
