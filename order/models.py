@@ -30,8 +30,6 @@ class Order(models.Model):
         ('OUT OF DELIVERY', 'OUT OF DELIVERY'),
         ('DELIVERED', 'DELIVERED'),
         ('CANCELLED', 'CANCELLED'),
-        ('RETURN REQUESTED', 'RETURN REQUESTED'),
-        ('RETURN PROCESSING', 'RETURN PROCESSING'),
         ('RETURNED', 'RETURNED'),
     }
     REASON = [

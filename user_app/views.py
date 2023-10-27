@@ -247,23 +247,20 @@ def order_details(request, order_id):
 
 @login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
-def order_cancel(request, id):
+def order_cancel(request, order_id):
 
-    # if request.method == "POST":
-    #     cancel_reason = request.POST.get("cancel_reason")
+    order_item = OrderProduct.objects.get(id=order_id)
+    order = order_item.order_id
 
-    #     # try:
-    #     order = Order.objects.get(id=id)
-    #     if order.status == "ORDER CONFIRMED":
-    #         order.status = "CANCELLED"
-    #         order.cancel_reason = cancel_reason
-    #         order.save()
-    #         return redirect('user_profile') 
-    #     else:
-    #         return redirect('user_profile')  # Handle cases where order status is not 'ORDER CONFIRMED'
-            
-        # except Order.DoesNotExist:
-        #     return redirect('user_profile') 
+    if request.method == "POST":
+        cancel_reason = request.POST.get("cancel_reason")
+
+        if cancel_reason:
+            order_item.order_id.cancel_reason = cancel_reason
+            order_item.order_id.item_cancelled = True  
+            order_item.order_id.status = "CANCELLED"
+            order_item.order_id.save()
+            order_item.save()
         
     return redirect('user_profile')  
 

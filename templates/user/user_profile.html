@@ -90,11 +90,11 @@ User-Profile
                                                             name="mobile" />
                                                         </div>
 
-                                                        <div class="single-input-item">
+                                                        <!-- <div class="single-input-item">
                                                             <label for="display-name" class="required">D.O.B</label>
                                                             <input type="text" id="display-name"  value="{{ user.date_of_birth }}"
                                                             name="date_of_birth" />
-                                                        </div>
+                                                        </div> -->
                                                         
                                                         <div class="single-input-item text-center">
                                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAccountModal" style="border-radius: 0; margin: 0 auto; display: block;">
@@ -174,7 +174,7 @@ User-Profile
                                                                 <td>{{ order.order_id.status }}</td>
                                                                 <td>
                                                                     {% if order.order_id.status == "ORDER CONFIRMED" %}
-                                                                        <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel">CANCEL ORDER</button>
+                                                                        <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel-{{order.order_id.id}}">CANCEL ORDER</button>
                                                                     {% elif order.order_id.status == "DELIVERED" %}
                                                                     <button class="return-btn sqr-btn" data-toggle="modal" data-target="#returnOrderModalLabel-{{order.order_id.id}}">RETURN ORDER</button>
 
@@ -520,10 +520,12 @@ User-Profile
         </div>
         {% endfor %}
         {% endif %}
-
         
         <!-- Cancel Order Modal -->
-        <div class="modal fade" id="cancelOrderModalLabel" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+
+        {% for order in order_product  %}
+
+        <div class="modal fade" id="cancelOrderModalLabel-{{order.order_id.id}}" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -534,7 +536,7 @@ User-Profile
                     </div>
                     <div class="modal-body">
                         <!-- Form with dropdown selection for cancellation reason -->
-                        <form method="post" action="">
+                        <form method="post" action="{% url 'order_cancel' order.id %}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="cancelReason">Reason for Cancellation</label>
@@ -551,6 +553,8 @@ User-Profile
                 </div>
             </div>
         </div>
+
+        {% endfor %}
 
         <!-- Return Order Modal -->
         
