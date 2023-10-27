@@ -736,6 +736,18 @@ def admin_orders_detail(request, id):
     return render(request, "admin/admin_orders_detail.html", context)
 
 
+@staff_member_required(login_url="admin_login")
+def admin_orders_status(request, id):
+
+    if request.method == 'POST':
+
+        new_status = request.POST.get('new_status')
+        order = Order.objects.get(id=id)
+        order.status = new_status
+        order.save()
+
+    return redirect('admin_orders')
+
 
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')

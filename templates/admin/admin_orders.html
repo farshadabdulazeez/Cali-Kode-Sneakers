@@ -15,7 +15,7 @@
             </div> {% endcomment %}
             <thead>
               <tr>
-                <th>ID</th>
+                {% comment %} <th>ID</th> {% endcomment %}
                 <th>DATE</th>
                 <th>CUSTOMER</th>
                 <th>ORDER ID</th>
@@ -29,13 +29,13 @@
               {% if orders %}
               {% for order in orders %}
                     <tr>
-                      <td>{{ order.id }} </td> 
+                      {% comment %} <td>{{ order.id }} </td>  {% endcomment %}
                       <td>{{ order.created }} </td> 
                       <td>{{ order.address.name}} </td> 
                       <td>{{ order.order_id }}</td>
                       <td>{{ order.order_total }}</td>
-                      <td>{% if order.is_ordered %} PAID {% else %} PENDING {% endif %} </td>
-                      <td>{% if order.status %} {{ order.status}} {% else %} Pending {% endif %} </td>
+                      <td>{% if order.is_ordered %} RAZORPAY {% else %} C.O.D {% endif %} </td>
+                      <td>{% if order.status %} {{ order.status}} {% else %} PROCESSING {% endif %} </td>
                       <td><a class="btn btn-sm btn-warning" href="{% url 'admin_orders_detail' order.id %}">Details</a></td>
                     </tr>
                 {% endfor %}

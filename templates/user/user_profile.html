@@ -32,7 +32,7 @@ User-Profile
                                     <div class="myaccount-tab-menu nav" role="tablist">
                                         <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i>Profile</a>
                                         <a href="#orders" data-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a>
-                                        <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a>
+                                        <!-- <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a> -->
                                         <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
                                         <a href="#change-password" data-toggle="tab"><i class="fa fa-key"></i> Change Password</a>
                                         <a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
@@ -97,7 +97,9 @@ User-Profile
                                                         </div>
                                                         
                                                         <div class="single-input-item text-center">
-                                                            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lgt" style="border-radius: 0; margin: 0 auto; display: block;">Edit account</button>
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAccountModal" style="border-radius: 0; margin: 0 auto; display: block;">
+                                                                Edit account
+                                                            </button>
                                                         </div>
                                                         <br>
                                                     </form>
@@ -159,17 +161,32 @@ User-Profile
                                                                 <th>Quantity</th>
                                                                 <th>Size</th>
                                                                 <th>Status</th>
+                                                                <th>Action</th>
                                                                 <th>Details</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             {% for order in order_product %}
-                                                            <tr>
                                                                 <td>{{ order.order_id.order_id }}</td>
                                                                 <td>{{ order.variant.product.product_name }}</td>
                                                                 <td>{{ order.quantity }}</td>
                                                                 <td>{{ order.variant.product_size.size }}</td>
                                                                 <td>{{ order.order_id.status }}</td>
+                                                                <td>
+                                                                    {% if order.order_id.status == "ORDER CONFIRMED" %}
+                                                                        <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel">CANCEL ORDER</button>
+                                                                    {% elif order.order_id.status == "DELIVERED" %}
+                                                                    <button class="return-btn sqr-btn" data-toggle="modal" data-target="#returnOrderModalLabel-{{order.order_id.id}}">RETURN ORDER</button>
+
+                                                                    {% elif order.order_id.status == "RETURNED" %}
+                                                                        <h5> RETURNED </h5>
+                                                                       
+                                                                    {% elif order.order_id.status == "CANCELLED" %}
+                                                                        <h5>ORDER CANCELLED</h5>
+                                                                    {% else %}
+                                                                        <h5>PROCESSING</h5>
+                                                                    {% endif %}
+                                                                </td>
                                                                 <td><a href="{% url 'order_details' order.order_id.id %}" class="check-btn sqr-btn ">View</a></td>
                                                             </tr>
                                                             {% endfor %}
@@ -180,7 +197,7 @@ User-Profile
                                         </div>
                                         <!-- Single Tab Content End -->
                                         <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade" id="download" role="tabpanel">
+                                        <!-- <div class="tab-pane fade" id="download" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Downloads</h3>
                                                 <div class="myaccount-table table-responsive text-center">
@@ -210,7 +227,7 @@ User-Profile
                                                     </table>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <!-- Single Tab Content End -->
                                         <!-- Single Tab Content Start -->
                                         
@@ -329,6 +346,28 @@ User-Profile
             </div>
         </div>
 
+        <!-- Edit profile modal -->
+
+        <div class="modal fade" id="editAccountModal" tabindex="-1" role="dialog" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Add your form or content for editing the account here -->
+                        <!-- For example, you can include form fields for account editing -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- add address modal -->
 
@@ -482,15 +521,71 @@ User-Profile
         {% endfor %}
         {% endif %}
 
-
-        <!-- add account details -->
-
-        <div class="modal fade bd-example-modal-lgt" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lgt">
+        
+        <!-- Cancel Order Modal -->
+        <div class="modal fade" id="cancelOrderModalLabel" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                ...
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form with dropdown selection for cancellation reason -->
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="cancelReason">Reason for Cancellation</label>
+                                <select class="form-control" id="cancelReason" name="cancel_reason">
+                                    <option value="NO LONGER NEEDED" {% if order.cancel_reason == "NO LONGER NEEDED" %}selected{% endif %}>NO LONGER NEEDED</option>
+                                    <option value="FOUND A BETTER DEAL" {% if order.cancel_reason == "FOUND A BETTER DEAL" %}selected{% endif %}>FOUND A BETTER DEAL</option>
+                                    <option value="ORDERED BY MISTAKE" {% if order.cancel_reason == "ORDERED BY MISTAKE" %}selected{% endif %}>ORDERED BY MISTAKE</option>
+                                    <option value="CHANGED MY MIND" {% if order.cancel_reason == "CHANGED MY MIND" %}selected{% endif %}>CHANGED MY MIND</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Return Order Modal -->
+        
+        {% for order in order_product  %}
+
+            
+        <div class="modal fade" id="returnOrderModalLabel-{{order.order_id.id}}" tabindex="-1" role="dialog" aria-labelledby="returnOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="returnOrderModalLabel">Return Order</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form with dropdown selection for return reason -->
+                        <form method="post" action="{% url 'order_return' order.id %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="returnReason">Reason for Return</label>
+                                <select class="form-control" id="returnReason" name="return_reason">
+                                    <option value="DEFECTIVE PRODUCT" {% if order.return_reason == "DEFECTIVE PRODUCT" %}selected{% endif %}>DEFECTIVE PRODUCT</option>
+                                    <option value="RECEIVED WRONG ITEM" {% if order.return_reason == "RECEIVED WRONG ITEM" %}selected{% endif %}>RECEIVED WRONG ITEM</option>
+                                    <option value="ITEM DAMAGED DURING SHIPPING" {% if order.return_reason == "ITEM DAMAGED DURING SHIPPING" %}selected{% endif %}>ITEM DAMAGED DURING SHIPPING</option>
+                                    <option value="CHANGED MY MIND" {% if order.return_reason == "CHANGED MY MIND" %}selected{% endif %}>CHANGED MY MIND</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        {% endfor %}
 
 {% endblock content %}

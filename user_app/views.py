@@ -219,6 +219,8 @@ def user_profile(request):
     return render(request, 'user/user_profile.html', context)
 
 
+@login_required(login_url='index')
+@cache_control(no_cache=True, no_store=True)
 def order_details(request, order_id):
 
     order = Order.objects.get(id=order_id)
@@ -241,6 +243,48 @@ def order_details(request, order_id):
     #     print(e)
 
     return render(request, 'order/order_details.html', context)
+
+
+@login_required(login_url='index')
+@cache_control(no_cache=True, no_store=True)
+def order_cancel(request, id):
+
+    # if request.method == "POST":
+    #     cancel_reason = request.POST.get("cancel_reason")
+
+    #     # try:
+    #     order = Order.objects.get(id=id)
+    #     if order.status == "ORDER CONFIRMED":
+    #         order.status = "CANCELLED"
+    #         order.cancel_reason = cancel_reason
+    #         order.save()
+    #         return redirect('user_profile') 
+    #     else:
+    #         return redirect('user_profile')  # Handle cases where order status is not 'ORDER CONFIRMED'
+            
+        # except Order.DoesNotExist:
+        #     return redirect('user_profile') 
+        
+    return redirect('user_profile')  
+
+
+@login_required(login_url='index')
+@cache_control(no_cache=True, no_store=True)
+def order_return(request, order_id):
+
+    order_item = OrderProduct.objects.get(id=order_id)
+
+    if request.method == 'POST':
+        return_reason = request.POST.get('return_reason')
+        
+        if return_reason:
+            order_item.order_id.return_reason = return_reason
+            order_item.order_id.item_returned = True  
+            order_item.order_id.status = "RETURNED"
+            order_item.order_id.save()
+            order_item.save()
+
+    return redirect('user_profile')  
 
 
 @login_required(login_url='index')

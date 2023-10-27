@@ -16,7 +16,7 @@ Order-details
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li>
-                            <a href="index.html">Home</a>
+                            <a href="{% url 'index' %}">Home</a>
                         </li>
                         <li class="active">Order-Details </li>
                     </ul>
@@ -33,10 +33,12 @@ Order-details
                             <div class="compare-table table-responsive">
                                 <table class="table table-bordered mb-0">
                                     <tbody>
-                                        {% for item in order_items %}
                                         <tr>
                                             <td class="first-column" colspan="2"><h3><strong>PRODUCT DETAILS</strong></h3></td>
                                         </tr>
+                                        
+                                        {% for item in order_items %}
+                                        
                                         <tr>
                                             <td class="first-column">Product Image</td>
                                             <td class="product-image-title">
@@ -71,72 +73,40 @@ Order-details
                                             <td class="pro-price">{{item.product_price}}</td>
                                         </tr>
 
-                                        {% comment %} <tr>
-                                            <td class="first-column">Rating</td>
-                                            <td class="pro-ratting">
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                            </td>
-                                            <td class="pro-ratting">
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                            </td>
-                                            <td class="pro-ratting">
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                            </td>
-                                        </tr> {% endcomment %}
-                                        {% comment %} <tr>
-                                            <td class="first-column">Remove</td>
-                                            <td class="pro-remove">
-                                                <button><i class="icon-trash"></i></button>
-                                            </td>
-                                            
-                                        </tr> {% endcomment %}
-
-
+                                        {% endfor %}
+                                        
                                         <tr>
                                             <td class="first-column" colspan="2"><h3><strong>ORDER DETAILS</strong></h3></td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column">Order ID</td>
-                                            <td><b>{{ item.order_id.order_id }}<b></td>
+                                            <td><b>{{ orders.order_id }}<b></td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column">Order Issued On</td>
-                                            <td>{{ item.order_id.created }}</td>
+                                            <td>{{ orders.created }}</td>
                                         </tr>
 
 
                                         <tr>
                                             <td class="first-column">Order Total</td>
-                                            <td>{{ item.order_id.order_total }}</td>
+                                            <td>{{ orders.order_total }}</td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column">Payment Method</td>
                                             <td>
-                                                {% if item.payment.payment_method == "cash_on_delivery" %}
+                                                {% if orders.payment.payment_method == "cash_on_delivery" %}
                                                     Cash on Delivery
-                                                {% elif item.payment.payment_method == "Razorpay" %}
+                                                {% elif orders.payment.payment_method == "Razorpay" %}
                                                     Razorpay
                                                 {% else %}
-                                                    {{ item.payment.payment_method }}
+                                                    {{ orders.payment.payment_method }}
                                                 {% endif %}
                                             </td>
                                         </tr>
-
 
                                         <tr>
                                             <td class="first-column" colspan="2"><h3><strong>DELIVERY DETAILS</strong></h3></td>
@@ -144,31 +114,30 @@ Order-details
 
                                         <tr>
                                             <td class="first-column">Customer</td>
-                                            <td><b>{{item.order_id.address.name}}<b></td>
+                                            <td><b>{{orders.address.name}}<b></td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column">Address</td>
-                                            <td>{{item.order_id.address.address}} , {{item.order_id.address.city}} , {{item.order_id.address.landmark}}
+                                            <td>{{orders.address.address}} , {{orders.address.city}} , {{orders.address.landmark}}
                                             </td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column">Pincode</td>
-                                            <td>{{item.order_id.address.pincode}}</td>
+                                            <td>{{orders.address.pincode}}</td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column"> District | State</td>
-                                            <td><a href="cart.html" class="check-btn">{{item.order_id.address.district}} | {{item.order_id.address.state}}</a></td>
+                                            <td>{{orders.address.district}} | {{orders.address.state}}</td>
                                         </tr>
 
                                         <tr>
                                             <td class="first-column">Contact</td>
-                                            <td><a href="cart.html" class="check-btn">{{item.order_id.address.mobile}}</a></td>
+                                            <td>{{orders.address.mobile}}</td>
                                         </tr>
-                                        
-                                        {% endfor %}
+
                                     </tbody>
                                 </table>
                             </div>
@@ -180,5 +149,6 @@ Order-details
             {% endif %}
         </div>
     </div>
+
 
 {% endblock content %}

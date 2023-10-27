@@ -34,65 +34,101 @@
               </div>
             </div>
 
+
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">CUSTOMER :</label>
+              <div class="col-sm-10">
+                <p>{{ order.address.name }}</p>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-sm-2 col-form-label">Delivery Address :</label>
+              <div class="col-sm-10">
+                  <p>{{ order.address.address }}, {{ order.address.city }}, {{ order.address.landmark }},
+                      PINCODE : {{ order.address.pincode }},
+                      {{ order.address.district }}, {{ order.address.state }}</p>
+              </div>
+          </div>
+  
+          <div class="row mb-2">
+              <label class="col-sm-2 col-form-label">Contact :</label>
+              <div class="col-sm-10">
+                  <p>{{ order.address.mobile }}</p>
+              </div>
+          </div>
+
             {% endif %}
 
             {% if order_items %}
             {% for item in order_items %}
 
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">CUSTOMER :</label>
-              <div class="col-sm-10">
-                <p>{{ item.order_id.address.name }}</p>
-              </div>
-            </div>
 
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label"><strong><h5>PRODUCT NO. {{forloop.counter}} :</h5></strong> PRODUCT IMAGE :</label>
-              <div class="col-sm-10">
-                <img src="{{ item.variant.product.product_image.url }}" alt="product image" style="height: 100%; width: 10%;" />
+            <div class="card mb-3">
+              <div class="card-body">
+                  <div class="row mb-2">
+                      <label class="col-sm-2 col-form-label"> Product Image :</label>
+                      <div class="col-sm-10">
+                          <img src="{{ item.variant.product.product_image.url }}" alt="product image" class="img-fluid" style="max-height: 100px; max-width: 100px;" />
+                      </div>
+                  </div>
+          
+                  <div class="row mb-2">
+                      <label class="col-sm-2 col-form-label">Product Name :</label>
+                      <div class="col-sm-10">
+                          <p >{{ item.variant.product.product_name }}</p>
+                      </div>
+                  </div>
+          
+                  <div class="row mb-2">
+                      <label class="col-sm-2 col-form-label">Size :</label>
+                      <div class="col-sm-10">
+                          <p >{{ item.variant.product_size }}</p>
+                      </div>
+                  </div>
+          
+                  <div class="row mb-2">
+                      <label class="col-sm-2 col-form-label">Quantity :</label>
+                      <div class="col-sm-10">
+                          <p>{{ item.quantity }}</p>
+                      </div>
+                  </div>
+                  
+                 
               </div>
-            </div>
-
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">PRODUCT NAME :</label>
-              <div class="col-sm-10">
-                <p>{{ item.variant.product.product_name }}</p>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">SIZE :</label>
-              <div class="col-sm-10">
-                <p>{{ item.variant.product_size }}</p>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">QUANTITY :</label>
-              <div class="col-sm-10">
-                <p>{{ item.quantity }}</p>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">DELIVERY ADDRESS :</label>
-              <div class="col-sm-10">
-                <p>{{ item.order_id.address.address }}, {{ item.order_id.address.city }}, {{ item.order_id.address.landmark }}, 
-                  PINCODE:{{ item.order_id.address.pincode }},
-                  {{ item.order_id.address.district }}, {{ item.order_id.address.state }}</p>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">CONTACT :</label>
-              <div class="col-sm-10">
-                <p>{{ item.order_id.address.mobile }}</p>
-              </div>
-            </div>
+          </div>
+          
 
             {% endfor %}
             {% endif %}
-
+            
+            <div>
+              <form method="post" action="{% url 'admin_orders_status' order.id %}">
+                  {% csrf_token %}
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">CHANGE STATUS:</label>
+                    <div class="col-sm-10">
+                        <select name="new_status" class="form-select">
+                            <option value="ORDER CONFIRMED" {% if order.status == "ORDER CONFIRMED" %}selected{% endif %}>ORDER CONFIRMED</option>
+                            <option value="SHIPPED" {% if order.status == "SHIPPED" %}selected{% endif %}>SHIPPED</option>
+                            <option value="OUT OF DELIVERY" {% if order.status == "OUT OF DELIVERY" %}selected{% endif %}>OUT OF DELIVERY</option>
+                            <option value="DELIVERED" {% if order.status == "DELIVERED" %}selected{% endif %}>DELIVERED</option>
+                            <option value="CANCELLED" {% if order.status == "CANCELLED" %}selected{% endif %}>CANCELLED</option>
+                            <option value="RETURN REQUESTED" {% if order.status == "RETURN REQUESTED" %}selected{% endif %}>RETURN REQUESTED</option>
+                            <option value="RETURN PROCESSING" {% if order.status == "RETURN PROCESSING" %}selected{% endif %}>RETURN PROCESSING</option>
+                            <option value="RETURNED" {% if order.status == "RETURNED" %}selected{% endif %}>RETURNED</option>
+                        </select>
+                    </div>
+                </div>
+                
+                  <div class="row mb-3">
+                      <div class="col-sm-10 offset-sm-2">
+                          <button type="submit" class="btn btn-primary">CHANGE STATUS</button>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          
           </div>
         </div>
       </div>

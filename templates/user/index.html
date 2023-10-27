@@ -72,10 +72,13 @@
                                         <a href="{% url 'register' %}" style="margin-left: 5px;"></i> REGISTER</a>
                                     </div>
                                     {% endif %}
+
+                                    {% if user.is_authenticated %}
                                     
                                     <div class="header-cart-2">
                                         <a class="cart-active" href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -122,7 +125,7 @@
                                                     </li>
                                                 </ul> {% endcomment %}
                                             </li>
-                                            <li><a href="#">PAGES </a>
+                                            {% comment %} <li><a href="#">PAGES </a>
                                                 <ul class="sub-menu-style">
                                                     <li><a href="about-us.html">about us </a></li>
                                                     <li><a href="cart.html">cart page</a></li>
@@ -136,14 +139,14 @@
                                                 </ul>
                                             </li>
                                             <li><a href="blog.html">BLOG </a>
-                                                {% comment %} <ul class="sub-menu-style">
+                                                <ul class="sub-menu-style">
                                                     <li><a href="blog.html">blog standard </a></li>
                                                     <li><a href="blog-no-sidebar.html">blog no sidebar </a></li>
                                                     <li><a href="blog-right-sidebar.html">blog right sidebar</a></li>
                                                     <li><a href="blog-details.html">blog details</a></li>
-                                                </ul> {% endcomment %}
+                                                </ul> 
                                             </li>
-                                            <li><a href="contact.html">CONTACT </a></li>
+                                            <li><a href="contact.html">CONTACT </a></li> {% endcomment %}
                                         </ul>
                                     </nav>
                                 </div>
@@ -387,11 +390,11 @@
                                             <img src="{{ i.product_image.url }}" alt="">
                                         </a>
                                        <!-- <span class="pro-badge left bg-red">-10%</span> -->
-                                        <div class="product-action-2 tooltip-style-2">
+                                        {% comment %} <div class="product-action-2 tooltip-style-2">
                                             <button title="Wishlist"><i class="icon-heart"></i></button>
                                             <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
                                             <button title="Compare"><i class="icon-refresh"></i></button>
-                                        </div>
+                                        </div> {% endcomment %}
                                     </div>
                                     <div class="product-content-wrap-2 text-center">
                                         {% comment %} <div class="product-rating-wrap">
@@ -427,7 +430,7 @@
                                             <span class="old-price">{{ i.original_price }}</span>
                                         </div>
                                         <div class="pro-add-to-cart">
-                                            <a href=""> <button title="Add to Cart">Add To Cart</button></a>
+                                            <a href="{% url 'product_details' i.id %}"> <button title="Add to Cart">View Product</button></a>
                                         </div>
                                     </div>
                                 </div>
@@ -778,9 +781,9 @@
                             <ul>
                                 <li><a class="active" href="{% url 'index' %}">home</a></li>
                                 <li><a href="{% url 'products' %}">Shop</a></li>
-                                <li><a href="shop.html">Product </a></li>
+                                {% comment %} <li><a href="shop.html">Pages </a></li>
                                 <li><a href="contact.html">Contact</a></li>
-                                <li><a href="blog.html">Blog.</a></li>
+                                <li><a href="blog.html">Blog.</a></li> {% endcomment %}
                             </ul>
                         </nav>
                     </div>

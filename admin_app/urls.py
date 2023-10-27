@@ -40,6 +40,7 @@ urlpatterns = [
 
     path('admin-orders/', views.admin_orders, name="admin_orders"),
     path('admin-orders-detail/<int:id>/', views.admin_orders_detail, name="admin_orders_detail"),
+    path('admin-orders-status/<int:id>/', views.admin_orders_status, name="admin_orders_status"),
 
     path('admin-logout/', views.admin_logout, name = "admin_logout"),
     

@@ -38,10 +38,11 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
     mobile = models.CharField(max_length=10, unique=True)
-    otp = models.CharField(max_length=6, null=True, blank=True)
+    otp = models.CharField(max_length=6, blank=True, null=True)
     image = models.ImageField(upload_to='profile_images', blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+    wallet = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']
