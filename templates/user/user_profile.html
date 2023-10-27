@@ -352,18 +352,40 @@ User-Profile
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
+                        <h4 class="modal-title" id="editAccountModalLabel">Edit Your Profile</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- Add your form or content for editing the account here -->
-                        <!-- For example, you can include form fields for account editing -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save Changes</button>
+                        <form id="editProfileForm" action="{% url 'user_edit_profile' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="single-input-item">
+                                <label for="edit-first-name" class="required">First Name</label>
+                                <input type="text" id="edit-first-name" name="edit_first_name" value="{{ user.first_name }}" />
+                            </div>
+                            <div class="single-input-item">
+                                <label for="edit-last-name" class="required">Last Name</label>
+                                <input type="text" id="edit-last-name" name="edit_last_name" value="{{ user.last_name }}" />
+                            </div>
+                            <div class="single-input-item">
+                                <label for="edit-email" class="required">Email Address</label>
+                                <input type="email" id="edit-email" name="edit_email" value="{{ user.email }}" />
+                            </div>
+                            <div class="single-input-item">
+                                <label for="edit-mobile" class="required">Mobile Number</label>
+                                <input type="text" id="edit-mobile" name="edit_mobile" value="{{ user.mobile }}" />
+                            </div>
+                            {% comment %} <div class="single-input-item text-center">
+                                <button type="button" class="btn btn-primary" id="saveProfileChanges" style="border-radius: 0; margin: 0 auto; display: block;">
+                                    Save Changes
+                                </button>
+                            </div> {% endcomment %}
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editAccountModal">Save Changes</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

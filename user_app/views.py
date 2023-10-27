@@ -219,6 +219,31 @@ def user_profile(request):
     return render(request, 'user/user_profile.html', context)
 
 
+@login_required(login_url="index")
+def user_edit_profile(request):
+
+    if request.method == "POST":
+        # try:
+        first_name = request.POST.get("edit_first_name")
+        last_name = request.POST.get("edit_last_name")
+        email = request.POST.get("edit_email")
+        mobile = request.POST.get("edit_mobile")
+        user = CustomUser.objects.get(id=request.user.id)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.mobile = mobile
+        user.save()
+        messages.success(request, "Profile details updated!")
+        return redirect("user_profile")
+        # except Exception as e:
+        #     print(e)
+        #     messages.error(request, "An error occurred while updating your profile.")
+        #     return redirect("user_profile")
+    else:
+        return redirect("user_profile")
+
+
 @login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
 def order_details(request, order_id):
