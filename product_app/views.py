@@ -9,7 +9,8 @@ def products(request):
     if 'email' in request.session:
         return redirect('admin_dashboard')
 
-    products = Product.objects.filter(is_available=True)
+    categories = Category.objects.filter(is_active=True)
+    products = Product.objects.filter(category__in=categories, is_available=True)
 
     context = {
         'products' : products,

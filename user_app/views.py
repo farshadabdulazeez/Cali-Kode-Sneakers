@@ -22,8 +22,8 @@ def index(request):
 
     context = {}
 
-    categories = Category.objects.all().order_by('id')
-    products = Product.objects.all()
+    categories = Category.objects.filter(is_active=True).order_by('id')
+    products = Product.objects.filter(category__in=categories)
 
     context = {
         'categories' : categories,
