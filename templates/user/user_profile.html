@@ -36,6 +36,11 @@ User-Profile
                                         <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
                                         <a href="#change-password" data-toggle="tab"><i class="fa fa-key"></i> Change Password</a>
                                         <a href="{% url 'user_logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+                                        
+                                    </div>
+                                    <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                        <h5 style="font-weight: bold;">Wallet Balance</h5>
+                                        <p style="color: #333;">Balance: {{ user.wallet }}</p>
                                     </div>
                                 </div>
                                 <!-- My Account Tab Menu End -->
