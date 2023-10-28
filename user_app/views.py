@@ -328,6 +328,7 @@ def order_cancel(request, order_id):
 def order_return(request, order_id):
 
     order_item = OrderProduct.objects.get(id=order_id)
+    order = order_item.order_id
 
     if request.method == 'POST':
         return_reason = request.POST.get('return_reason')
@@ -338,6 +339,37 @@ def order_return(request, order_id):
             order_item.order_id.status = "RETURNED"
             order_item.order_id.save()
             order_item.save()
+
+            wallet_amount = 0
+                
+            total_amount = Decimal(order.total)
+            wallet_amount = Decimal(order.wallet_amount) 
+            total_decimal = total_amount 
+
+            user = order.user
+
+            payment_method = order_item.payment.payment_method
+
+            if payment_method == "Razorpay":
+                # Refund total amount back to user's wallet for Razorpay payments
+                refund_amount = total_decimal + wallet_amount
+                user.wallet += refund_amount
+                user.save()
+            else:
+                # Refund only the wallet amount for Cash on Delivery
+                user.wallet += wallet_amount
+                user.save()
+
+            # Restock products if the order is cancelled
+            if order.status == "RETURNED":
+                order_products = OrderProduct.objects.filter(order_id=order)
+                for order_product in order_products:
+                    product_variant = order_product.variant
+                    product = product_variant.product
+                    product_variant.stock += order_product.quantity
+                    product_variant.save()
+
+                user.save()
 
     return redirect('user_profile')  
 
