@@ -48,9 +48,9 @@ class Coupons(models.Model):
         null=True,
         blank=True
     )
-    valid_from = models.DateTimeField(null=True, blank=True)
-    valid_to = models.DateTimeField(null=True, blank=True)
-    active = models.BooleanField(default=True, null=True, blank=True)
+    valid_from = models.DateTimeField(null=True)
+    valid_to = models.DateTimeField(null=True)
+    active = models.BooleanField(default=True)
     description = models.TextField(max_length=100, null=True, blank=True)
 
     class Meta:
