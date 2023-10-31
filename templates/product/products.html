@@ -160,17 +160,25 @@
                                     </form>
                                 </div>
                             </div>
+
                             <form action="{% url 'products' %}" method="GET">
-                            <div class="sidebar-widget shop-sidebar-border mb-35 pt-40">
-                                <h4 class="sidebar-widget-title">Categories </h4>
-                                <div class="shop-catigory">
-                                    <ul>
-                                        <li><a href="shop.html">MEN</a></li>
-                                        <li><a href="shop.html">WOMEN</a></li>
-                                        <li><a href="shop.html">KIDS </a></li>
-                                    </ul>
+                                <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                                    <h4 class="sidebar-widget-title">Categories</h4>
+                                    <div class="sidebar-widget-list">
+                                        <ul>
+                                            {% for category in categories %}
+                                                <li>
+                                                    <div class="sidebar-widget-list-left" style="display: flex; align-items: center;">
+                                                        <input type="checkbox" name="category" value="{{ category.category_name }}">
+                                                        <a href="#" style="font-size: 14px; padding-left: 5px;">{{ category.category_name }}</a>
+                                                        <span class="checkmark"></span>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                                
                             <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
                                 <h4 class="sidebar-widget-title">Price Filter</h4>
                                 <div class="price-filter">
@@ -201,7 +209,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
 
                             <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
                                 <h4 class="sidebar-widget-title">BRANDS</h4>
