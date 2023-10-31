@@ -46,7 +46,7 @@ class ProductSize(models.Model):
         ordering = ['size']
 
     def __str__(self):
-        return str(self.size_name)
+        return self.size_name
 
 
 class Product(models.Model):
