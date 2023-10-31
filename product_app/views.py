@@ -15,6 +15,7 @@ def products(request):
 
     context = {
         'products' : products,
+        'product_count': products.count(),
     }
     
     return render(request, 'product/products.html', context)

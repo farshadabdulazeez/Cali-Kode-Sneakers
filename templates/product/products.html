@@ -27,8 +27,7 @@
                                     <a class="active" href="#shop-1" data-toggle="tab"><i class="icon-grid"></i></a>
                                     {% comment %} <a href="#shop-2" data-toggle="tab"><i class="icon-menu"></i></a> {% endcomment %}
                                 </div>
-                                <p>Showing 1 - 20 of 30 results </p>
-                                {% comment %} <p>Showing 1 - {{ products|length }} of {{ product_count }} results</p> {% endcomment %}
+                                <p>Showing 1 - {{ products|length }} of {{ products.count }} results</p>
                             </div></div>
                         <div class="shop-bottom-area">
                             <div class="tab-content jump">
