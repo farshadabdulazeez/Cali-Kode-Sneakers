@@ -25,10 +25,10 @@
                             <div class="shop-topbar-left">
                                 <div class="view-mode nav">
                                     <a class="active" href="#shop-1" data-toggle="tab"><i class="icon-grid"></i></a>
+                                    {% comment %} <a href="#shop-2" data-toggle="tab"><i class="icon-menu"></i></a> {% endcomment %}
                                 </div>
-                                <p>Showing 1 - {{ products|length }} of {{ product_count }} results</p>
+                                <p>Showing 1 - 20 of 30 results </p>
                             </div>
-                            
                             {% comment %} <div class="product-sorting-wrapper">
                                 <div class="product-shorting shorting-style">
                                     <label>View :</label>
@@ -169,189 +169,105 @@
                     <div class="col-lg-3">
                         <div class="sidebar-wrapper sidebar-wrapper-mrg-right">
                             <div class="sidebar-widget mb-40">
-                                    <h4 class="sidebar-widget-title">Search</h4>
-                                    <div class="sidebar-search">
-                                        <form class="sidebar-search-form" action="{% url 'search' %}" method="GET">
-                                            <input type="text" name="search" placeholder="Search here..." value="{{ search_query }}">
-                                            <button type="submit">
-                                                <i class="icon-magnifier"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                                <h4 class="sidebar-widget-title">Search </h4>
+                                <div class="sidebar-search">
+                                    <form class="sidebar-search-form" action="#">
+                                        <input type="text" placeholder="Search here...">
+                                        <button>
+                                            <i class="icon-magnifier"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-
-                            <form action="{% url 'products' %}" method="GET">
                             <div class="sidebar-widget shop-sidebar-border mb-35 pt-40">
-                                <h4 class="sidebar-widget-title">Categories</h4>
-                                <div class="sidebar-widget-list">
+                                <h4 class="sidebar-widget-title">Categories </h4>
+                                <div class="shop-catigory">
                                     <ul>
-                                        {% for category in categories %}
-                                            <li>
-                                                <div class="sidebar-widget-list-left" style="display: flex; align-items: center;">
-                                                    <input type="checkbox" name="category" value="{{ category.category_name }}">
-                                                    <a href="#" style="font-size: 14px; padding-left: 5px;">{{ category.category_name }}</a>
-                                                    <span class="checkmark"></span>
-                                                </div>
-                                            </li>
-                                        {% endfor %}
+                                        <li><a href="shop.html">MEN</a></li>
+                                        <li><a href="shop.html">WOMEN</a></li>
+                                        <li><a href="shop.html">KIDS </a></li>
                                     </ul>
                                 </div>
                             </div>
-                                
                             <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
-                                <h4 class="sidebar-widget-title">Price Filter</h4>
+                                <h4 class="sidebar-widget-title">Price Filter </h4>
                                 <div class="price-filter">
-                                    <div class="sidebar-widget-list">
-                                        <ul>
-                                            <li>
-                                                <div class="sidebar-widget-list-left">
-                                                    <input type="checkbox" name="price" value="0-4999">
-                                                    <a href="#">0 - 4999</a>
-                                                    <span class="checkmark"></span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="sidebar-widget-list-left">
-                                                    <input type="checkbox" name="price" value="5000-9999">
-                                                    <a href="#">5000 - 9999</a>
-                                                    <span class="checkmark"></span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="sidebar-widget-list-left">
-                                                    <input type="checkbox" name="price" value="10000-">
-                                                    <a href="#">10000 and more</a>
-                                                    <span class="checkmark"></span>
-                                                </div>
-                                            </li>
-                                        </ul>
+                                    <span>RANGE :  RS. 1000 - 50000</span>
+                                    <div id="slider-range"></div>
+                                    <div class="price-slider-amount">
+                                        <div class="label-input">
+                                            <input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                                        </div>
+                                        <button type="button">Filter</button>
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
-                            <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
-                                <h4 class="sidebar-widget-title">Brand </h4>
+                            {% comment %} <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                                <h4 class="sidebar-widget-title">Refine By </h4>
                                 <div class="sidebar-widget-list">
                                     <ul>
                                         <li>
                                             <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="brand" value="ADIDAS ORIGINALS">
-                                                <a href="#">ADIDAS ORIGINALS</a>
+                                                <input type="checkbox"> <a href="#">On Sale <span>4</span> </a>
                                                 <span class="checkmark"></span>
                                             </div>
                                         </li>
-
                                         <li>
                                             <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="brand" value="ASICS">
-                                                <a href="#">ASICS</a>
+                                                <input type="checkbox" value=""> <a href="#">New <span>5</span></a>
                                                 <span class="checkmark"></span>
                                             </div>
                                         </li>
-
                                         <li>
                                             <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="brand" value="NIKE">
-                                                <a href="#">NIKE</a>
+                                                <input type="checkbox" value=""> <a href="#">In Stock <span>6</span> </a>
                                                 <span class="checkmark"></span>
                                             </div>
                                         </li>
-
+                                    </ul>
+                                </div>
+                            </div> {% endcomment %}
+                            <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                                <h4 class="sidebar-widget-title">Size </h4>
+                                <div class="sidebar-widget-list">
+                                    <ul>
                                         <li>
                                             <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="brand" value="PUMA">
-                                                <a href="#">PUMA</a>
+                                                <input type="checkbox" value=""> <a href="#">UK 6 </a>
                                                 <span class="checkmark"></span>
                                             </div>
                                         </li>
-
                                         <li>
                                             <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="brand" value="REEBOK">
-                                                <a href="#">REEBOK</a>
+                                                <input type="checkbox" value=""> <a href="#">UK 7 </a>
+                                                <span class="checkmark"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sidebar-widget-list-left">
+                                                <input type="checkbox" value=""> <a href="#">UK 8</a>
+                                                <span class="checkmark"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sidebar-widget-list-left">
+                                                <input type="checkbox" value=""> <a href="#">UK 9</a>
+                                                <span class="checkmark"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sidebar-widget-list-left">
+                                                <input type="checkbox" value=""> <a href="#">UK 10</a>
                                                 <span class="checkmark"></span>
                                             </div>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            
-                            <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
-                                <h4 class="sidebar-widget-title">Size</h4>
-                                <div class="sidebar-widget-list">
-                                    <ul>
-                                        <li>
-                                            <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="size" value="6">
-                                                <a href="#">UK 6</a>
-                                                <span class="checkmark"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="size" value="7">
-                                                <a href="#">UK 7</a>
-                                                <span class="checkmark"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="size" value="8">
-                                                <a href="#">UK 8</a>
-                                                <span class="checkmark"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="size" value="9">
-                                                <a href="#">UK 9</a>
-                                                <span class="checkmark"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="sidebar-widget-list-left">
-                                                <input type="checkbox" name="size" value="10">
-                                                <a href="#">UK 10</a>
-                                                <span class="checkmark"></span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            
-                        </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.addEventListener('change', function() {
-                        this.closest('form').submit();
-                    });
-        
-                    // Add class to highlight selected checkboxes
-                    checkbox.addEventListener('click', function() {
-                        if (this.checked) {
-                            this.parentElement.classList.add('active');
-                        } else {
-                            this.parentElement.classList.remove('active');
-                        }
-                    });
-                });
-            });
-        </script>
-        
-        
-            
         
 {% endblock content %}
-
