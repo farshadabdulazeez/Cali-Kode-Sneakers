@@ -114,7 +114,7 @@ def online_payment(request):
                 product_price=item.product.product.selling_price,
                 ordered=True,
             )
-            variant.stock -= variant.stock - item.quantity
+            variant.stock = variant.stock - item.quantity
             variant.save()
             item.delete()
 
