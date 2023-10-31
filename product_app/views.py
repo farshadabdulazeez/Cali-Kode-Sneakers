@@ -12,6 +12,7 @@ def products(request):
 
     categories = Category.objects.filter(is_active=True)
     products = Product.objects.filter(category__in=categories, is_available=True)
+    sizes = ProductSize.objects.all()
 
     selected_brands = request.GET.getlist('brand')
     selected_sizes = request.GET.getlist('size')
@@ -40,6 +41,7 @@ def products(request):
 
     context = {
         'products': products,
+        'sizes': sizes,
         'product_count': product_count,
         'selected_brands': selected_brands,
         'selected_sizes': selected_sizes,
