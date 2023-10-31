@@ -8,7 +8,7 @@ class Category(models.Model):
     category_name = models.CharField(max_length=150, unique=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     category_image = models.ImageField(upload_to='category_images/')
-    category_description = models.TextField(blank=True, null=True)
+    category_description = models.TextField(null=True)
     is_active = models.BooleanField(default=True, null=False, blank=True)
 
     class Meta:
@@ -27,7 +27,7 @@ class ProductBrand(models.Model):
     brand_name = models.CharField(max_length=150, unique=True)
     slug = models.SlugField(max_length=150, unique=True, blank=True)
     brand_image = models.ImageField(upload_to='brand_images/')
-    brand_description = models.TextField(blank=True, null=True)
+    brand_description = models.TextField(null=True)
 
     class Meta:
         ordering = ['brand_name']
@@ -40,13 +40,12 @@ class ProductBrand(models.Model):
 
 class ProductSize(models.Model):
     size = models.PositiveIntegerField(default=7, unique=True)
-    size_name = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         ordering = ['size']
 
     def __str__(self):
-        return self.size_name
+        return '{}'.format(self.size)
 
 
 class Product(models.Model):
@@ -77,7 +76,7 @@ class Product(models.Model):
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_size = models.ForeignKey(ProductSize, on_delete=models.CASCADE)
-    stock = models.PositiveIntegerField(default=0, blank=True, null=True)
+    stock = models.PositiveIntegerField(default=0)
     product_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
