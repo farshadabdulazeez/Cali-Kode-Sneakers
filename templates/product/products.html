@@ -10,7 +10,7 @@
                 <div class="breadcrumb-content text-center">
                     <ul>
                         <li>
-                            <a href="index.html">Home</a>
+                            <a href="{% url 'index' %}">Home</a>
                         </li>
                         <li class="active">Shop </li>
                     </ul>
@@ -28,26 +28,8 @@
                                     {% comment %} <a href="#shop-2" data-toggle="tab"><i class="icon-menu"></i></a> {% endcomment %}
                                 </div>
                                 <p>Showing 1 - 20 of 30 results </p>
-                            </div>
-                            {% comment %} <div class="product-sorting-wrapper">
-                                <div class="product-shorting shorting-style">
-                                    <label>View :</label>
-                                    <select>
-                                        <option value=""> 20</option>
-                                        <option value=""> 23</option>
-                                        <option value=""> 30</option>
-                                    </select>
-                                </div>
-                                <div class="product-show shorting-style">
-                                    <label>Sort by :</label>
-                                    <select>
-                                        <option value="">Default</option>
-                                        <option value=""> Name</option>
-                                        <option value=""> price</option>
-                                    </select>
-                                </div>
-                            </div> {% endcomment %}
-                        </div>
+                                {% comment %} <p>Showing 1 - {{ products|length }} of {{ product_count }} results</p> {% endcomment %}
+                            </div></div>
                         <div class="shop-bottom-area">
                             <div class="tab-content jump">
                                 <div id="shop-1" class="tab-pane active">
@@ -171,9 +153,9 @@
                             <div class="sidebar-widget mb-40">
                                 <h4 class="sidebar-widget-title">Search </h4>
                                 <div class="sidebar-search">
-                                    <form class="sidebar-search-form" action="#">
-                                        <input type="text" placeholder="Search here...">
-                                        <button>
+                                    <form class="sidebar-search-form" action="{% url 'product_search' %}" method="get">
+                                        <input type="text" name="search" placeholder="Search here..." value="{{ search_query }}">
+                                        <button type="submit">
                                             <i class="icon-magnifier"></i>
                                         </button>
                                     </form>

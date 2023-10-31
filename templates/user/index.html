@@ -145,8 +145,13 @@
                                                     <li><a href="blog-right-sidebar.html">blog right sidebar</a></li>
                                                     <li><a href="blog-details.html">blog details</a></li>
                                                 </ul> 
-                                            </li>
-                                            <li><a href="contact.html">CONTACT </a></li> {% endcomment %}
+                                            </li> {% endcomment %}
+                                            {% if user.is_authenticated %}
+                                                <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
+                                            {% else %}
+                                                <li><a href="{% url 'user_login' %}">PROFILE</a></li>
+                                            {% endif %}
+
                                         </ul>
                                     </nav>
                                 </div>
@@ -779,11 +784,16 @@
                     <div class="footer-menu footer-menu-mrg footer-menu-hover-border">
                         <nav>
                             <ul>
-                                <li><a class="active" href="{% url 'index' %}">home</a></li>
-                                <li><a href="{% url 'products' %}">Shop</a></li>
-                                {% comment %} <li><a href="shop.html">Pages </a></li>
-                                <li><a href="contact.html">Contact</a></li>
-                                <li><a href="blog.html">Blog.</a></li> {% endcomment %}
+                                <li><a class="active" href="/">HOME</a></li>
+                                <li><a href="{% url 'products' %}">SHOP</a></li>
+                                {% if user.is_authenticated %}
+                                    <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'user_login' %}">PROFILE</a></li>
+                                {% endif %}
+
+                                <!-- <li><a href="contact.html">Contact</a></li>
+                                <li><a href="blog.html">Blog.</a></li> -->
                             </ul>
                         </nav>
                     </div>
@@ -791,6 +801,7 @@
                 <div class="footer-middle footer-middle-mrg">
                     <div class="row">
                         <div class="col-lg-3 col-md-3">
+                            
                             <div class="social-style-3-wrap xs-center">
                                 <span>follow us</span>
                                 <div class="social-style-1">
@@ -801,17 +812,19 @@
                                     <a href="#"><i class="icon-social-pinterest"></i></a>
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-lg-6 col-md-6">
                             <div class="contact-info-wrap-2 text-center">
                                 <div class="footer-logo footer-logo-mrg">
                                     <a href="#"><img src="{% static 'user/assets/images/logo/logo.png' %}" alt="logo"></a>
                                 </div>
-                                <p>295 Madison Ave Str, Floor 25th, New York, NY 10010 , USA</p>
-                                <p>(+0024)-877-932-0563</p>
-                                <p>hello@norda.com</p>
+                                <p>CALICUT BEACH ROAD, KERALA, INDIA</p>
+                                <p>(+91) 9895023108</p>
+                                <p>calikodesneakers@gmail.com</p>
                             </div>
                         </div>
+
                         <div class="col-lg-3 col-md-3">
                             <div class="language-style-2-wrap language-style-2-right">
                                 <span>Language</span>
@@ -822,13 +835,14 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div class="footer-bottom copyright text-center">
-                    <p>Copyright © 2021 HasThemes | <a href="https://hasthemes.com/">Built with <span>Norda</span> by HasThemes</a>.</p>
+                    <p>Copyright © 2023 | <a href="/">Built with <span>CaliKode</span> Sneakers</a>.</p>
                 </div>
             </div>
-        </footer>
+        </footer> 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">

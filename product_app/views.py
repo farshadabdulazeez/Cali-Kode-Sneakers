@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from product_app.models import *
 from user_app.models import *
+from django.db.models import Q
 
 
 def products(request):
@@ -43,5 +44,24 @@ def product_details(request, id):
     return render(request, 'product/product_details.html', context)
 
 
+def product_search(request):
+
+    search_query = request.GET.get('search', '')
+    categories = Category.objects.filter(is_active=True)
+    
+    if search_query:
+        products = Product.objects.filter(
+            Q(product_name__icontains=search_query) |
+            Q(brand__brand_name__icontains=search_query) |
+            Q(category__category_name__iexact=search_query)  # Check for an exact match with the category name
+        ).filter(category__in=categories, is_available=True)
+    else:
+        products = Product.objects.filter(category__in=categories, is_available=True)
 
 
+    context = {
+        'products': products,
+        'search_query': search_query,
+    }
+
+    return render(request, 'product/products.html', context)
