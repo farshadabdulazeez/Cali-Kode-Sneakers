@@ -99,9 +99,7 @@
                                       <h5 class="card-text"><p><strong>Name</strong> : {{ address.name }}</p>
                                       <p><strong>Address</strong> : {{ address.address }}, {{ address.landmark }} , {{ address.city }}, P.O: {{ address.pincode }} , {{ address.district }} , {{ address.state }}</p>
                                       <p><strong>Mobile</strong> : {{ address.mobile }}</p>
-                                      <button type="button" class="btn btn-primary" style="border-radius: 0;" data-toggle="modal" data-target="#editModal-{{address.id}}">
-                                        Edit Address
-                                    </button>
+                                      <a href="{% url 'user_profile' %}" role="button" class="btn btn-primary" style=" border-radius: 0;">Update</a>
                                       
 
                                     </div>
@@ -402,20 +400,20 @@
                                 <label for="district" class="required">District</label>
                                 <select class="form-control" id="district" name="district" placeholder="Enter your district" required>
                                     <option value=""><b>Select District*</b></option>
-                                    <option value="KASARAGODE">KASARAGODE</option>
-                                    <option value="KANNUR">KANNUR</option>
-                                    <option value="WAYANAD">WAYANAD</option>
-                                    <option value="KOZHIKODE">KOZHIKODE</option>
-                                    <option value="MALAPPURAM">MALAPPURAM</option>
-                                    <option value="PALAKKAD">PALAKKAD</option>
-                                    <option value="THRISSUR">THRISSUR</option>
-                                    <option value="ERNAKULAM">ERNAKULAM</option>
-                                    <option value="IDUKKI">IDUKKI</option>
-                                    <option value="KOTTAYAM">KOTTAYAM</option>
-                                    <option value="ALAPPUZHA">ALAPPUZHA</option>
-                                    <option value="PATHANAMTHITTA">PATHANAMTHITTA</option>
-                                    <option value="KOLLAM">KOLLAM</option>
-                                    <option value="THIRUVANANTHAPURAM">THIRUVANANTHAPURAM</option>
+                                    <option value="Kasarkode">Kasaragode</option>
+                                    <option value="Kannur">Kannur</option>
+                                    <option value="Wayanad">Wayanad</option>
+                                    <option value="Kozhikode">Kozhikode</option>
+                                    <option value="Malappuram">Malappuram</option>
+                                    <option value="Palakkad">Palakkad</option>
+                                    <option value="Thrissur">Thrissur</option>
+                                    <option value="Ernakulam">Ernakulam</option>
+                                    <option value="Idukki">Idukki</option>
+                                    <option value="Kottayam">Kottayam</option>
+                                    <option value="Alappuzha">Alappuzha</option>
+                                    <option value="Pathanamthitta">Pathanamthitta</option>
+                                    <option value="Kollam">Kollam</option>
+                                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
                                 </select>
                             </div>
     
@@ -435,95 +433,6 @@
             </div>
         </div>
     </div>
-
-    
-    {% if addresses %}
-    {% for address in addresses %}
-
-    <!-- Modal for Editing -->
-    <div class="modal fade" id="editModal-{{address.id}}" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editLabel">Edit Address</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <form action="{% url 'order_page_edit_address' address.id %}" method="post">
-                            {% csrf_token %}
-    
-                            <div class="single-input-item">
-                                <label for="edit-first-name" class="required">Name</label>
-                                <input type="text" id="edit-first-name" name="name" placeholder="Enter your name" value="{{ address.name }}" required/>
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-mobile" class="required">Mobile Number</label>
-                                <input type="text" id="edit-mobile" name="mobile" placeholder="Enter your mobile number" value="{{ address.mobile }}" required/>
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-address" class="required">Address</label>
-                                <input type="text" id="edit-address" name="address" placeholder="Enter your address" value="{{ address.address }}" required/>
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-landmark" class="required">Landmark</label>
-                                <input type="text" id="edit-landmark" name="landmark" placeholder="Enter your nearest landmark" value="{{ address.landmark }}" required/>
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-city" class="required">City</label>
-                                <input type="text" id="edit-city" name="city" placeholder="Enter your city" value="{{ address.city }}" required />
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-pincode" class="required">Pincode</label>
-                                <input type="text" id="edit-pincode" name="pincode" placeholder="Enter your pincode" value="{{ address.pincode }}" required/>
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-district" class="required">District</label>
-                                <select class="form-control" id="edit-district" name="district" required>
-                                <option value="">{{ address.district }}</option>
-                                <option value="KASARAKODE" {% if i.district == "KASARAKODE" %}selected{% endif %}>KASARAKODE</option>
-                                <option value="KANNUR" {% if i.district == "KANNUR" %}selected{% endif %}>KANNUR</option>
-                                <option value="WAYANAD" {% if i.district == "WAYANAD" %}selected{% endif %}>WAYANAD</option>
-                                <option value="KOZHIKODE" {% if i.district == "KOZHIKODE" %}selected{% endif %}>KOZHIKODE</option>
-                                <option value="MALAPPURAM" {% if i.district == "MALAPPURAM" %}selected{% endif %}>MALAPPURAM</option>
-                                <option value="PALAKKAD" {% if i.district == "PALAKKAD" %}selected{% endif %}>PALAKKAD</option>
-                                <option value="THRISSUR" {% if i.district == "THRISSUR" %}selected{% endif %}>THRISSUR</option>
-                                <option value="ERNAKULAM" {% if i.district == "ERNAKULAM" %}selected{% endif %}>ERNAKULAM</option>
-                                <option value="IDUKKI" {% if i.district == "IDUKKI" %}selected{% endif %}>IDUKKI</option>
-                                <option value="KOTTAYAM" {% if i.district == "KOTTAYAM" %}selected{% endif %}>KOTTAYAM</option>
-                                <option value="ALAPPUZHA" {% if i.district == "ALAPPUZHA" %}selected{% endif %}>ALAPPUZHA</option>
-                                <option value="PATHANAMTHITTA" {% if i.district == "PATHANAMTHITTA" %}selected{% endif %}>PATHANAMTHITTA</option>
-                                <option value="KOLLAM" {% if i.district == "KOLLAM" %}selected{% endif %}>KOLLAM</option>
-                                <option value="THIRUVANANTHAPURAM" {% if i.district == "THIRUVANANTHAPURAM" %}selected{% endif %}>THIRUVANANTHAPURAM</option>
-                            </select>
-                            </div>
-    
-                            <div class="single-input-item">
-                                <label for="edit-state" class="required">State</label>
-                                <input type="text" id="edit-state" name="state" placeholder="Enter your state" value="{{ address.state }}" required/>
-                            </div>
-    
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% endfor %}
-    {% endif %}
 
 {% endblock content %}
 
