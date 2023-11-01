@@ -615,6 +615,7 @@ def admin_add_coupon(request):
             minimum_order_amount = float(request.POST.get("minimum_order_amount", 0))
             valid_from = request.POST.get("valid_from", "")
             valid_to = request.POST.get("valid_to", "")
+            description = request.POST.get("description", "") 
 
             if discount < 1:
                 messages.error(request, "The minimum discount amount should be 1.")
@@ -629,6 +630,7 @@ def admin_add_coupon(request):
                     minimum_order_amount=minimum_order_amount,
                     valid_from=valid_from,
                     valid_to=valid_to,
+                    description=description 
                 )
                 coupon.save()
                 messages.success(request, "New coupon added successfully.")

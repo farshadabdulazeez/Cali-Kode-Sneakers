@@ -4,6 +4,8 @@ from order.models import *
 from user_app.models import *
 from .models import *
 from product_app.models import *
+from decimal import Decimal
+from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib import messages
@@ -29,6 +31,8 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
     total = 0
     cart_items = None
     grand_total = 0
+    available_coupons = None
+    selected_coupon = 0
 
     if 'user' in request.session:
 
@@ -44,12 +48,26 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
             cart_items = CartItem.objects.filter(customer=user).order_by('id')   # fetch every cart items related with the cart
 
             for item in cart_items:                    
-                total = total + (float(item.product.product.selling_price) * float(item.quantity))
+                total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
                 
             grand_total = total  # You can add taxes, shipping, and discounts here
 
+            available_coupons = Coupons.objects.filter(
+                active=True,
+                minimum_order_amount__lte=grand_total,  # Check if minimum_order_amount is less than or equal to the grand total
+                valid_from__lte=timezone.now(),
+                valid_to__gte=timezone.now()
+            ).order_by('-discount')  # Order by highest discount first
+
+        except ObjectDoesNotExist:
+            pass
         except Exception as e:
             print(e)
+
+    if request.method == 'POST':
+        coupon_code = request.POST.get("coupon-codes")
+        selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
+        grand_total -= selected_coupon.discount 
 
    
     context = {
@@ -57,6 +75,8 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
         'total' : total,
         'cart_items' : cart_items,
         'grand_total' : grand_total,
+        'available_coupons': available_coupons,
+        'selected_coupon': selected_coupon
     }
 
     return render(request, 'cart/cart.html', context)
@@ -173,6 +193,7 @@ def delete_cart_item(request, variant_id):
 
 @cache_control(no_cache=True, no_store=True)
 def clear_cart(request):
+
     if 'email' in request.session:
         return redirect('admin_dashboard')
     
@@ -187,6 +208,14 @@ def clear_cart(request):
     for cart_item in cart_items:
         cart_item.delete()
     
+    return redirect('cart')
+
+
+def clear_coupon(request):
+
+    if 'selected_coupon' in request.session:
+        del request.session['selected_coupon']
+
     return redirect('cart')
 
 
