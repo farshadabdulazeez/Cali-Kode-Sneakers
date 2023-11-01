@@ -57,7 +57,11 @@
                                     <div class="header-top-right">
                                         <div class="same-style-wrap">
                                             <div class="same-style same-style-border track-order">
-                                                <a href="order-tracking.html">Track Your Order</a>
+                                                {% if user.is_authenticated %}
+                                                    <a href="{% url 'user_profile' %}">Track Your Order</a>
+                                                {% else %}
+                                                    <a href="{% url 'user_login' %}">Track Your Order</a>
+                                                {% endif %}
                                             </div>
                                             {% if user.is_authenticated %}
                                             <div class="header-login-regi d-flex gap-2 align-items-center">
@@ -73,11 +77,11 @@
 
                                         </div>
                                         <div class="social-style-1 social-style-1-mrg">
-                                            <a href="#"><i class="icon-social-twitter"></i></a>
-                                            <a href="#"><i class="icon-social-facebook"></i></a>
-                                            <a href="#"><i class="icon-social-instagram"></i></a>
-                                            <a href="#"><i class="icon-social-youtube"></i></a>
-                                            <a href="#"><i class="icon-social-pinterest"></i></a>
+                                            <a href="https://twitter.com/?lang=en"><i class="icon-social-twitter"></i></a>
+                                            <a href="https://www.facebook.com/"><i class="icon-social-facebook"></i></a>
+                                            <a href="https://www.instagram.com/"><i class="icon-social-instagram"></i></a>
+                                            <a href="https://www.youtube.com/"><i class="icon-social-youtube"></i></a>
+                                            <a href="https://in.pinterest.com/"><i class="icon-social-pinterest"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -98,7 +102,12 @@
                                                 </li>
                                                 <li><a href="{% url 'products' %}">SHOP </a>
                                                 </li>
-                                                <li><a href="#">PAGES </a>
+                                                {% comment %} {% if user.is_authenticated %}
+                                                    <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
+                                                {% else %}
+                                                    <li><a href="{% url 'user_login' %}">PROFILE</a></li>
+                                                {% endif %} {% endcomment %}
+                                                {% comment %} <li><a href="#">PAGES </a>
                                                     <ul class="sub-menu-style">
                                                         <li><a href="about-us.html">about us </a></li>
                                                         <li><a href="c{% url 'cart' %}">Cart</a></li>
@@ -113,14 +122,14 @@
                                                 </li>
                                                 <li><a href="blog.html">BLOG </a>
                                                 </li>
-                                                <li><a href="contact.html">CONTACT </a></li>
+                                                <li><a href="contact.html">CONTACT </a></li> {% endcomment %}
                                             </ul>
                                         </nav>
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-lg-3">
                                     <div class="header-action header-action-flex header-action-mrg-right">
-                                        <div class="same-style-2 header-search-1">
+                                        {% comment %} <div class="same-style-2 header-search-1">
                                             <a class="search-toggle" href="#">
                                                 <i class="icon-magnifier s-open"></i>
                                                 <i class="icon_close s-close"></i>
@@ -131,18 +140,30 @@
                                                     <button class="button-search"><i class="icon-magnifier"></i></button>
                                                 </form>
                                             </div>
-                                        </div>
+                                        </div> {% endcomment %}
                                         <div class="same-style-2">
-                                            <a href="{% url 'user_profile' %}"><i class="icon-user"></i></a>
+                                            {% if user.is_authenticated %}
+                                                <a href="{% url 'user_profile' %}"><i class="icon-user"></i></a>
+                                            {% else %}
+                                                <a href="{% url 'user_login' %}"><i class="icon-user"></i></a>
+                                            {% endif %}
                                         </div>
+                                        
                                         <div class="same-style-2">
                                             <a href="wishlist.html"><i class="icon-heart"></i></a>
                                         </div>
                                         <div class="same-style-2 header-cart">
-                                            <a class="cart-active" href="">
-                                                <a href="{% url 'cart' %}"><i class="icon-basket-loaded"></i>
-                                            </a>
+                                            {% if user.is_authenticated %}
+                                                <a class="cart-active" href="{% url 'cart' %}">
+                                                    <i class="icon-basket-loaded"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'user_login' %}"> <!-- Replace 'user_login' with your actual user login URL name -->
+                                                    <i class="icon-basket-loaded"></i>
+                                                </a>
+                                            {% endif %}
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -224,9 +245,11 @@
                             <ul>
                                 <li><a class="active" href="/">home</a></li>
                                 <li><a href="{% url 'products' %}">Shop</a></li>
-                                <li><a href="shop.html">Pages </a></li>
-                                <li><a href="contact.html">Contact</a></li>
-                                <li><a href="blog.html">Blog.</a></li>
+                                {% if user.is_authenticated %}
+                                    <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'user_login' %}">PROFILE</a></li>
+                                {% endif %}
                             </ul>
                         </nav>
                     </div>
@@ -238,11 +261,11 @@
                             <div class="social-style-3-wrap xs-center">
                                 <span>follow us</span>
                                 <div class="social-style-1">
-                                    <a href="#"><i class="icon-social-twitter"></i></a>
-                                    <a href="#"><i class="icon-social-facebook"></i></a>
-                                    <a href="#"><i class="icon-social-instagram"></i></a>
-                                    <a href="#"><i class="icon-social-youtube"></i></a>
-                                    <a href="#"><i class="icon-social-pinterest"></i></a>
+                                    <a href="https://twitter.com/?lang=en"><i class="icon-social-twitter"></i></a>
+                                    <a href="https://www.facebook.com/"><i class="icon-social-facebook"></i></a>
+                                    <a href="https://www.instagram.com/"><i class="icon-social-instagram"></i></a>
+                                    <a href="https://www.youtube.com/"><i class="icon-social-youtube"></i></a>
+                                    <a href="https://in.pinterest.com/"><i class="icon-social-pinterest"></i></a>
                                 </div>
                             </div>
 

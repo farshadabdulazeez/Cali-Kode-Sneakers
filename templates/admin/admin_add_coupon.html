@@ -16,16 +16,23 @@
               {% csrf_token %}
 
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="coupon_code">Coupon Code:</label>
+                <label class="col-sm-2 col-form-label" for="coupon_code">Coupon Code :</label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="coupon_code" name="coupon_code" placeholder="Coupon Code" required />
                 </div>
               </div>
 
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="description">Description:</label>
+                <label class="col-sm-2 col-form-label" for="discount">Discount Amount:</label>
                 <div class="col-sm-10">
-                  <textarea id="description" class="form-control" name="description" placeholder="Coupon Description" required></textarea>
+                  <input type="number" step="0.01" class="form-control" id="discount" name="discount" placeholder="Discount Amount" required />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="minimum_order_amount">Minimum Order Amount:</label>
+                <div class="col-sm-10">
+                  <input type="number" step="0.01" class="form-control" id="minimum_order_amount" name="minimum_order_amount" placeholder="Minimum Order Amount" required />
                 </div>
               </div>
 
@@ -40,34 +47,6 @@
                 <label class="col-sm-2 col-form-label" for="valid_to">Valid To:</label>
                 <div class="col-sm-10">
                   <input type="date" class="form-control" id="valid_to" name="valid_to" required />
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="discount_amount">Discount Amount:</label>
-                <div class="col-sm-10">
-                  <input type="number" step="0.01" class="form-control" id="discount_amount" name="discount_amount" placeholder="Discount Amount" required />
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="discount">Discount Percentage:</label>
-                <div class="col-sm-10">
-                  <input type="number" step="0.01" class="form-control" id="discount" name="discount" placeholder="Discount Percentage" required />
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="quantity">Quantity:</label>
-                <div class="col-sm-10">
-                  <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity" required />
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="minimum_order_amount">Minimum Order Amount:</label>
-                <div class="col-sm-10">
-                  <input type="number" step="0.01" class="form-control" id="minimum_order_amount" name="minimum_order_amount" placeholder="Minimum Order Amount" required />
                 </div>
               </div>
 

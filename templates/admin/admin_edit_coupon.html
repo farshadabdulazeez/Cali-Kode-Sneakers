@@ -1,146 +1,63 @@
 {% extends 'admin_base.html' %}
-
 {% load static %}
 
 {% block content %}
-
-
 <div class="content-wrapper">
-  <!-- Content -->
-
   <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN / </span> EDIT PRODUCT</h4>
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN /</span> EDIT COUPON</h4>
 
-    <!-- Basic Layout & Basic with Icons -->
     <div class="row">
-      <!-- Basic Layout -->
       <div class="col-xxl">
         <div class="card mb-4">
-          <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">EDIT PRODUCT</h5>
-            <!-- <small class="text-muted float-end">Default label</small> -->
-          </div> 
           <div class="card-body">
-
-            <form enctype="multipart/form-data" method="post" action="">
+            <form method="post" action="">
               {% csrf_token %}
-              
+
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="basic-default-name">PRODUCT NAME :</label>
+                <label class="col-sm-2 col-form-label" for="coupon_code">Coupon Code:</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="basic-default-name" name="product_name" value="{{product.product_name}}" placeholder="Name of the product" required/>
-                </div>
-              </div>
-              
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="basic-default-category"> CATEGORY :</label>
-                <div class="col-sm-10">
-                  <select class="form-select" id="basic-default-category" name="category" required>
-                    <option value="">Select category</option>
-                    {% for category in categories %}
-                      <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>
-                        {{ category.category_name }}
-                      </option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>              
-              
-            
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="basic-default-brand">BRAND :</label>
-                <div class="col-sm-10">
-                  <select class="form-select" id="basic-default-brand" name="product_brand" required>
-                    <option value="">Select brand</option>
-                    {% for brand in brands %}
-                      <option value="{{ brand.id }}" {% if brand.id == product.product_brand.id %}selected{% endif %}>
-                        {{ brand.brand_name }}
-                      </option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>           
-                   
-              
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="basic-default-company">IMAGE UPLOAD : </label>
-                <div class="col-sm-10">
-                  <input
-                    type="file"
-                    class="form-control"
-                    id="basic-default-company"
-                    name="product_image"
-                    required
-                  />
+                  <input type="text" class="form-control" id="coupon_code" name="coupon_code" value="{{ coupon.coupon_code }}" required />
                 </div>
               </div>
 
-              <!-- MULTIPLE IMAGES -->
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label">CURRENT UPLOADS :</label>
+                <label class="col-sm-2 col-form-label" for="discount">Discount Amount:</label>
                 <div class="col-sm-10">
-                  {% if product.product_image %}
-                      <img src="{{ product.product_image.url }}" alt="multiple images" style="width: 10vw;" />
-                   
-                  {% endif %}
-                </div>
-              </div>
-              
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label">NEW IMAGES :</label>
-                <div class="col-sm-10">
-                  <input
-                    type="file"
-                    class="form-control"
-                    name="multiple_images[]"       
-                    multiple
-                  />
+                  <input type="number" step="0.01" class="form-control" id="discount" name="discount" value="{{ coupon.discount }}" required />
                 </div>
               </div>
 
-              
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label" for="basic-default-price">ORIGINAL PRICE :</label>
-              <div class="col-sm-10">
-                <input type="text" class="form-control" id="basic-default-price" name="original_price" placeholder="Original Price" value="{{product.original_price}}" required/>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="minimum_order_amount">Minimum Order Amount:</label>
+                <div class="col-sm-10">
+                  <input type="number" step="0.01" class="form-control" id="minimum_order_amount" name="minimum_order_amount" value="{{ coupon.minimum_order_amount }}" required />
+                </div>
               </div>
-            </div>
-            
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label" for="basic-default-selling-price">SELLING PRICE :</label>
-              <div class="col-sm-10">
-                <input type="text" class="form-control" id="basic-default-selling-price" name="selling_price" value="{{product.selling_price}}" placeholder="Selling Price"/>
-              </div>
-            </div>
-            
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label" for="basic-default-message"> DESCRIPTION : </label>
-              <div class="col-sm-10">
-                <textarea
-                  id="basic-default-message"
-                  class="form-control"
-                  placeholder="Description of the product"
-                  name="product_description"
-                  required
-                  aria-describedby="basic-icon-default-message2"
-                >{{product.product_description}}</textarea>
-              </div>
-            </div>
-            
-            <div class="row justify-content-end">
-              <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary">UPDATE PRODUCT</button>
-              </div>
-            </div>
-            
-          </form>
 
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="valid_from">Valid From:</label>
+                <div class="col-sm-10">
+                  <input type="date" class="form-control" id="valid_from" name="valid_from" value="{{ coupon.valid_from }}" required />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="valid_to">Valid To:</label>
+                <div class="col-sm-10">
+                  <input type="date" class="form-control" id="valid_to" name="valid_to" value="{{ coupon.valid_to }}" required />
+                </div>
+              </div>
+
+              <div class="row justify-content-end">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary">Update Coupon</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
 {% endblock content %}

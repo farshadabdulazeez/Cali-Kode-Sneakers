@@ -16,7 +16,6 @@
             <thead>
               <tr>
                 <th>SL.NO</th>
-                {% comment %} <th>PRODUCT ID</th> {% endcomment %}
                 <th>PRODUCT IMAGE</th>
                 <th>PRODUCT NAME</th>
                 <th>PRICE</th>
@@ -33,8 +32,6 @@
                 {% for i in products %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    {% comment %} <td>{{ i.id }}</td> {% endcomment %}
-                    
                     <td>
                       {% if i.product_image %}
                       <div style="width: 80px; height: 8  0px;">

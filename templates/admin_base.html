@@ -66,7 +66,7 @@
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
             <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
+              {% comment %} <span class="app-brand-logo demo">
                 <svg
                   width="25"
                   viewBox="0 0 25 42"
@@ -120,7 +120,7 @@
                     </g>
                   </g>
                 </svg>
-              </span>
+              </span> {% endcomment %}
               <span class="app-brand-text fw-bolder ms-2" style="text-transform: uppercase;">CALI KODE SNEAKERS</span>
 
             </a>
@@ -164,7 +164,7 @@
 
             <li class="menu-item active">
               <a href="{% url 'admin_brands' %}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="Misc">BRANDS</div>
               </a>
             </li>
@@ -178,8 +178,15 @@
 
             <li class="menu-item active">
               <a href="{% url 'admin_orders' %}" class="menu-link ">
-                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="Misc">ORDERS</div>
+              </a>
+            </li>
+
+            <li class="menu-item active">
+              <a href="{% url 'admin_orders' %}" class="menu-link ">
+                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <div data-i18n="Misc">OFFERS</div>
               </a>
             </li>
 
@@ -310,9 +317,9 @@
                     document.write(new Date().getFullYear());
                   </script> {% endcomment %}
                   CALI KODE SNEAKERS
-                  <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">| INDIA</a>
+                  <a href="#" target="_blank" class="footer-link fw-bolder">| INDIA</a>
                 </div>
-                <div>
+                {% comment %} <div>
                   <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
                   <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
 
@@ -329,7 +336,7 @@
                     class="footer-link me-4"
                     >Support</a
                   >
-                </div>
+                </div> {% endcomment %}
               </div>
             </footer>
             <!-- / Footer -->

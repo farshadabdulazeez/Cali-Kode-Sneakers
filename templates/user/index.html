@@ -73,12 +73,14 @@
                                     </div>
                                     {% endif %}
 
-                                    {% if user.is_authenticated %}
-                                    
                                     <div class="header-cart-2">
-                                        <a class="cart-active" href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
+                                        {% if user.is_authenticated %}
+                                            <a class="cart-active" href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
+                                        {% else %}
+                                            <a class="cart-active" href="{% url 'user_login' %}"><i class="icon-basket-loaded"></i></a>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
+                                    
                                 </div>
                             </div>
                         </div>
@@ -805,11 +807,11 @@
                             <div class="social-style-3-wrap xs-center">
                                 <span>follow us</span>
                                 <div class="social-style-1">
-                                    <a href="#"><i class="icon-social-twitter"></i></a>
-                                    <a href="#"><i class="icon-social-facebook"></i></a>
-                                    <a href="#"><i class="icon-social-instagram"></i></a>
-                                    <a href="#"><i class="icon-social-youtube"></i></a>
-                                    <a href="#"><i class="icon-social-pinterest"></i></a>
+                                    <a href="https://twitter.com/?lang=en"><i class="icon-social-twitter"></i></a>
+                                    <a href="https://www.facebook.com/"><i class="icon-social-facebook"></i></a>
+                                    <a href="https://www.instagram.com/"><i class="icon-social-instagram"></i></a>
+                                    <a href="https://www.youtube.com/"><i class="icon-social-youtube"></i></a>
+                                    <a href="https://in.pinterest.com/"><i class="icon-social-pinterest"></i></a>
                                 </div>
                             </div>
 
