@@ -52,6 +52,7 @@ class Coupons(models.Model):
     valid_to = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    used = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'Coupons'

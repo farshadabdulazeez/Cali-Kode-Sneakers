@@ -43,6 +43,7 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     wallet = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
+    referral_code = models.CharField(max_length=20, unique=True, blank=True, null=True)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']

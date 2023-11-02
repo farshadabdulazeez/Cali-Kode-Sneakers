@@ -291,7 +291,7 @@ def order_cancel(request, order_id):
                 wallet_amount = 0
 
                 
-                total_amount = Decimal(order.total)
+                total_amount = Decimal(order.order_total)
                 wallet_amount = Decimal(order.wallet_amount) 
                 total_decimal = total_amount 
 
@@ -342,7 +342,7 @@ def order_return(request, order_id):
 
             wallet_amount = 0
                 
-            total_amount = Decimal(order.total)
+            total_amount = Decimal(order.order_total)
             wallet_amount = Decimal(order.wallet_amount) 
             total_decimal = total_amount 
 
