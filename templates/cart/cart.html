@@ -133,7 +133,7 @@
                                     </div>
                                     <div class="total-shipping" style="display: flex; align-items: center;">
                                         {% if selected_coupon %}
-                                        <h5 style="margin: 0;">Coupons</h5>
+                                        <h5 style="margin: 0;">Coupon discount</h5>
                                         <span style="margin-left: auto; display: flex; align-items: center;">
                                                 <span style="font-size: 15px; margin-right: 10px;">
                                                     {{ selected_coupon.discount }}
@@ -165,7 +165,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Display coupons in separate alert-style inputs -->
-                        {% for coupon in available_coupons %}
+                        {% for coupon in coupons %}
                             <div class="alert alert-info" role="alert">
                                 <strong>{{ coupon.coupon_code }}</strong> - <strong>{{ coupon.description }}</strong>
                             </div>

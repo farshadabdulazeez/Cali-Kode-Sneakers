@@ -52,6 +52,8 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
                 
             grand_total = total  # You can add taxes, shipping, and discounts here
 
+            coupons = Coupons.objects.filter(active=True)
+
             available_coupons = Coupons.objects.filter(
                 active=True,
                 minimum_order_amount__lte=grand_total,  # Check if minimum_order_amount is less than or equal to the grand total
@@ -68,13 +70,16 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
         coupon_code = request.POST.get("coupon-codes")
         selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
         grand_total -= selected_coupon.discount 
-
+        
+        request.session['selected_coupon_code'] = coupon_code
+        request.session['grand_total'] = float(grand_total)
    
     context = {
         'quantity' : quantity,
         'total' : total,
         'cart_items' : cart_items,
         'grand_total' : grand_total,
+        'coupons' : coupons,
         'available_coupons': available_coupons,
         'selected_coupon': selected_coupon
     }
@@ -212,9 +217,11 @@ def clear_cart(request):
 
 
 def clear_coupon(request):
-
-    if 'selected_coupon' in request.session:
-        del request.session['selected_coupon']
+    if 'selected_coupon_code' in request.session:
+        del request.session['selected_coupon_code']
+        
+    if 'grand_total' in request.session:
+        del request.session['grand_total']
 
     return redirect('cart')
 
@@ -237,24 +244,32 @@ def checkout(request):
 
         if not cart_items:
             return redirect('index')
-        checkout_user = my_user.id
 
         try:
             address = UserAddress.objects.filter(user=my_user)
-
         except Exception as e:
             print(e)
-            messages.error(request, "choose address")
+            messages.error(request, "Choose address")
             return redirect('checkout')
         
-        total = 0
-        grand_total = 0
-
-        cart_items = CartItem.objects.filter(customer=my_user).order_by('id')
+        grand_total = Decimal(0)
+        total = Decimal(0)
 
         for item in cart_items:
-            total = total + (float(item.product.product.selling_price) * float(item.quantity))
-        grand_total = total   
+            grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+            
+
+        # Fetch the stored coupon code from the session
+        selected_coupon_code = request.session.get('selected_coupon_code')
+        if selected_coupon_code:
+            try:
+                selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
+                grand_total -= selected_coupon.discount
+            except Coupons.DoesNotExist:
+                messages.error(request, "Selected coupon not valid")
+                del request.session['selected_coupon_code']  # Clear invalid coupon from session
+                return redirect('checkout')  # Redirect back to prevent processing with invalid coupon
+
 
         if request.method == 'POST':
           
@@ -268,6 +283,17 @@ def checkout(request):
             elif payment_method == "cash_on_delivery":
 
                 user = request.user
+
+                if 'remove_coupon' in request.POST:
+                # If the user chooses to remove the coupon
+                    if 'selected_coupon_code' in request.session:
+                        del request.session['selected_coupon_code']  # Remove the coupon code from the session
+                        # Recalculate the grand total without the coupon discount
+                        grand_total = Decimal(0)
+                        for item in cart_items:
+                            grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+                            
+                total = grand_total
                 
                 payment = Payments.objects.create(
                     user=user,
@@ -319,6 +345,7 @@ def checkout(request):
             'addresses': address,
             'cart_items' : cart_items,
             'grand_total' : grand_total,
+            'selected_coupon_code': selected_coupon_code, 
         }
 
         return render(request, "cart/checkout.html", context)

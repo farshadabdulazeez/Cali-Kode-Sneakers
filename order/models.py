@@ -53,6 +53,7 @@ class Order(models.Model):
     order_note = models.CharField(max_length=150, null=True, blank=True)
     total = models.FloatField(null=True, blank=True)
     order_total = models.FloatField(null=True, blank=True)
+    shipping = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
     discount = models.FloatField(default=0, blank=True)
     wallet_amount = models.FloatField(default=0, blank=True, null=True)
