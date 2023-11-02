@@ -1,4 +1,5 @@
 import datetime
+import json
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from order.models import *
 from user_app.models import *
@@ -7,6 +8,7 @@ from product_app.models import *
 from decimal import Decimal
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.cache import cache_control
@@ -256,9 +258,8 @@ def checkout(request):
         total = Decimal(0)
 
         for item in cart_items:
-            grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+            grand_total = sum(Decimal(item.product.product.selling_price) * Decimal(item.quantity) for item in cart_items)
             
-
         # Fetch the stored coupon code from the session
         selected_coupon_code = request.session.get('selected_coupon_code')
         if selected_coupon_code:
@@ -278,6 +279,7 @@ def checkout(request):
             payment_method = request.POST['payment_method']
             
             if payment_method == "razorpayPayment":
+
                 return redirect('online_payment')
             
             elif payment_method == "cash_on_delivery":

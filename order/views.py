@@ -36,15 +36,16 @@ def order(request):
 @cache_control(no_cache=True, no_store=True)
 def proceed_to_pay(request):
 
-    cart = request.GET.get("grand_total")
+    total_amount = 0
+    total_amount = request.GET.get("grand_total")
 
     user = request.user
     cart = CartItem.objects.filter(customer=user)
 
-    total_amount = 0   
-    for item in cart:
-        total_amount = total_amount + item.product.product.selling_price * item.quantity
-    print(total_amount)
+    # total_amount = 0   
+    # for item in cart:
+    #     total_amount = total_amount + item.product.product.selling_price * item.quantity
+    # print(total_amount)
 
     return JsonResponse({
         'total_amount' : total_amount,
@@ -65,9 +66,26 @@ def online_payment(request):
 
     cart_items = CartItem.objects.filter(customer=my_user).order_by('id')
 
+    # if 'grand_total' in request.session:
+    #     grand_total = Decimal(request.session.get('grand_total', 0)) 
+    # else:
+    #     for item in cart_items:
+    #         total = total + (float(item.product.product.selling_price) * float(item.quantity))
+    # grand_total = total  
     for item in cart_items:
-        total = total + (float(item.product.product.selling_price) * float(item.quantity))
-    grand_total = total   
+        grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+
+    # Fetch the stored coupon code from the session
+    selected_coupon_code = request.session.get('selected_coupon_code')
+    if selected_coupon_code:
+        try:
+            selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
+            grand_total -= selected_coupon.discount
+        except Coupons.DoesNotExist:
+            messages.error(request, "Selected coupon not valid")
+            del request.session['selected_coupon_code']  # Clear invalid coupon from session
+            return redirect('checkout') 
+
 
     if request.method == 'POST':
         address_id = request.POST.get('address_id')
@@ -127,7 +145,6 @@ def online_payment(request):
                 "order_id": order_id,
             }
             )
-
 
     context = {
         'selected_address' : selected_address,

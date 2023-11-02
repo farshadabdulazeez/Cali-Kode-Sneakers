@@ -14,6 +14,7 @@ jQuery(document).ready(function($) {
         var district = $("[name='district']").val();
         var state = $("[name='state']").val();
         var grand_total = $("[name='grand_total']").val();
+        console.log(grand_total);
         var token = $("[name='csrfmiddlewaretoken']").val();
 
         console.log(address_id, grand_total);
