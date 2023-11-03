@@ -47,12 +47,12 @@
                     <div class="header-top header-top-ptb-2 border-bottom-1">
                         <div class="row align-items-center">
                             <div class="col-xl-4 col-lg-5">
-                                <div class="search-wrap-2">
+                                {% comment %} <div class="search-wrap-2">
                                     <form action="#">
                                         <input placeholder="Type anything & Hit enter" type="text">
                                         <button class="button-search"><i class="icon-magnifier"></i></button>
                                     </form>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                             <div class="col-xl-4 col-lg-2">
                                 <div class="logo text-center">
@@ -304,27 +304,28 @@
         <div class="slider-area">
             <div class="container">
                 <div class="hero-slider-active-1 nav-style-2 dot-style-2 dot-style-2-position-1 dot-style-2-active-black">
-                    <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" style="background-image:url({% static 'user/assets/images/slider/hm-2-slider-1.jpg' %});">
+                    <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" 
+                    style="background-image:url({% static 'user\assets\images\blog\WhiteSneakersEveryBudgetMain2.jpg' %});">
                         <div class="row">
                             <div class="col-12">
                                 <div class="hero-slider-content-2 slider-animated-1">
                                     <h1 class="animated"><span>White Sneakers : </span><br>Your Canvas of Expression</h1>
                                     <p class="animated">Welcome to a realm of white sneakers that redefine footwear. Experience the ideal blend of contemporary style and unmatched comfort. It's not just about fashion; it's about feeling good in every step.</p>
                                     <div class="btn-style-2">
-                                        <a class="animated" href="product-details.html">Explore now <i class="icon-arrow-right"></i></a>
+                                        <a class="animated" href="{% url 'products' %}">Explore now <i class="icon-arrow-right"></i></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" style="background-image:url({% static 'user/assets/images/slider/hm-2-slider-2.jpg' %});">
+                    <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" style="background-image:url({% static 'user\assets\images\banner\banner-white2.webp' %});">
                         <div class="row">
                             <div class="col-12">
                                 <div class="hero-slider-content-2 slider-animated-1">
-                                    <h1 class="animated"><span>Basic</span> Color <br>Teen Collection</h1>
-                                    <p class="animated">Lorem ipsum dolor sit amet, consectetur adipis elit. Nunc imperdiet, nulla.</p>
+                                    <h1 class="animated"><span>White</span> Color <br>Teen Collection</h1>
+                                    <p class="animated">Welcome to a world of pristine white sneakers crafted for women and kids. Embrace a fusion of modern style and unparalleled comfort. It's more than just fashion; it's about stepping forward with confidence and ease.</p>
                                     <div class="btn-style-2">
-                                        <a class="animated" href="product-details.html">explore now <i class="icon-arrow-right"></i></a>
+                                        <a class="animated" href="{% url 'products' %}">explore now <i class="icon-arrow-right"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -677,7 +678,7 @@
 
 
 
-        <div class="deal-area pt-150 pb-130 bg-img" style="background-image:url({% static 'user/assets/images/bg/bg-1.jpg' %});">
+        <div class="deal-area pt-150 pb-130 bg-img" style="background-image:url({% static 'user\assets\images\banner\banner-white1.jpg' %});">
             <div class="container">
                 <div class="deal-content-1">
                     <span>deal of the day</span>
@@ -697,55 +698,55 @@
             <div class="container">
                 <div class="section-title-2 text-center mb-45">
                     <h2><span>Press</span> & Lookbook</h2>
-                    <p>Explore the world’s fashon around you, up to date fashion trending and more</p>
+                    <p>Fresh kicks, hot off the press—Stay ahead with our sneaker newsletter updates</p>
                 </div>
                 <div class="border-bottom-2 blog-area-pb">
                     <div class="row">
                         <div class="col-lg-4 col-md-6">
                             <div class="blog-wrap mb-30">
                                 <div class="blog-img mb-25">
-                                    <a href="blog-details.html"><img src="{% static 'user/assets/images/blog/blog-1.jpg' %}" alt="blog-img"></a>
+                                    <a href="blog-details.html"><img src="{% static 'user\assets\images\blog\1659606468-kendall-jenner-new-balance-ft.jpg' %}" alt="blog-img"></a>
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
                                         <ul>
-                                            <li><a href="#">News </a></li>
-                                            <li>May 25, 2020</li>
+                                            <li><a href="https://www.vogue.com/article/best-minimal-white-sneakers">Article </a></li>
+                                            <li>October 21, 2023</li>
                                         </ul>
                                     </div>
-                                    <h3><a href="blog-details.html">Five things you only know if you’re at Chanel's Hamburg Show</a></h3>
+                                    <h3><a href="https://www.vogue.com/article/best-minimal-white-sneakers">Simply the Best White Sneakers—Plus the Ones With Kaia and Kendall’s Stamp of Approval</a></h3>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="blog-wrap mb-30">
                                 <div class="blog-img mb-25">
-                                    <a href="blog-details.html"><img src="{% static 'user/assets/images/blog/blog-2.jpg' %}" alt="blog-img"></a>
+                                    <a href="https://www.highsnobiety.com/p/fear-of-god-runway-show/"><img src="{% static 'user\assets\images\blog\Fear_of_God_atm_016.jpg' %}" alt="blog-img"></a>
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
                                         <ul>
-                                            <li><a href="#">Inspiration </a></li>
-                                            <li>May 25, 2020</li>
+                                            <li><a href="https://www.highsnobiety.com/p/fear-of-god-runway-show">Lookbook</a></li>
+                                            <li>March 21, 2023</li>
                                         </ul>
                                     </div>
-                                    <h3><a href="blog-details.html">Basic colord mixed - trendind 2020</a></h3>
+                                    <h3><a href="https://www.highsnobiety.com/p/fear-of-god-runway-show/">No elevated essentials at FEAR OF GOD'S first fashion show</a></h3>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="blog-wrap mb-30">
                                 <div class="blog-img mb-25">
-                                    <a href="blog-details.html"><img src="{% static 'user/assets/images/blog/blog-3.jpg' %}" alt="blog-img"></a>
+                                    <a href="https://www.vogue.com/article/virgil-abloh-biography-career-timeline"><img src="{% static 'user\assets\images\blog\va.webp' %}" alt="blog-img"></a>
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
                                         <ul>
-                                            <li><a href="#">Lookbook </a></li>
-                                            <li>May 25, 2020</li>
+                                            <li><a href="https://www.vogue.com/article/virgil-abloh-biography-career-timeline">Inspiration</a></li>
+                                            <li>March 28, 2018</li>
                                         </ul>
                                     </div>
-                                    <h3><a href="blog-details.html">Calvin Klein Shoes Collection 2020, Activites Summer</a></h3>
+                                    <h3><a href="https://www.vogue.com/article/virgil-abloh-biography-career-timeline">A Brief History of Virgil Abloh’s Meteoric Rise</a></h3>
                                 </div>
                             </div>
                         </div>

@@ -34,6 +34,15 @@ class CartItem(models.Model):
         return f"{self.product.product.product_name} - size : {self.product.product_size.size}"
     
 
+class Wishlist(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.product.product_name
+    
+
 class Coupons(models.Model):
     coupon_code = models.CharField(max_length=25, blank=True, null=True)
     discount = models.DecimalField(

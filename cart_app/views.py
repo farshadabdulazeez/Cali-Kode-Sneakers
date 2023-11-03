@@ -280,9 +280,56 @@ def clear_coupon(request):
 
 
 def wishlist(request):
+    context = {}
+    if request.user.is_authenticated:
+        try:
+            my_user = request.user
+            user = CustomUser.objects.get(id=my_user.id)
+            wishlist_items = Wishlist.objects.filter(user=user)
+            
+            # Fetching product variants associated with the wishlist items
+            product_variants = [item.variant for item in wishlist_items]
 
-    return render(request, 'cart/wishlist.html')
+            context = {"wishlist": wishlist_items, "product_variants": product_variants}
+            return render(request, "cart/wishlist.html", context)
+        except Exception as e:
+            print(e)
+            return render(request, "cart/wishlist.html", context)
+    else:
+        return redirect("user_login")
 
+@login_required(login_url="index")
+def add_to_wishlist(request, variant_id):
+    user = request.user
+    try:
+        variant = ProductVariant.objects.get(id=variant_id)
+        product_id = request.GET.get('product_id') 
+
+        # You might want to validate if the product_id belongs to the variant's product here
+        
+        if Wishlist.objects.filter(user=user, variant=variant).exists():
+            return redirect("wishlist")
+
+        # Create Wishlist item associating the variant and the user
+        wishlist = Wishlist.objects.create(user=user, variant=variant)
+        wishlist.save()
+        messages.success(request, "Product added to wishlist")
+        return redirect("wishlist")
+    except Exception as e:
+        print(e)
+        return redirect("index")
+    
+
+@login_required(login_url="index")
+def delete_wishlist(request, wishlist_id):
+    try:
+        wishlist = Wishlist.objects.get(id=wishlist_id)
+        wishlist.delete()
+        return redirect("wishlist")
+    except Exception as e:
+        print(e)
+        return redirect("wishlist")
+    
 
 @cache_control(no_cache=True, no_store=True)
 @login_required(login_url='user_login')

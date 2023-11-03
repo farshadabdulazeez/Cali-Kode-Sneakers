@@ -105,32 +105,17 @@
                                     </ul>
                                 </div>
                             </div>
-                            <!-- <div class="pro-details-quality">
-                                <span>Quantity:</span>
-                                <div class="cart-plus-minus">
-                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1">
-                                </div>
-                            </div> -->
 
                             <div class="pro-details-action-wrap">
                                 <div class="pro-details-add-to-cart">
                                     {% comment %} <a title="Add to Cart" href="{% url 'add_cart_item' product_id %}">Add To Cart </a> {% endcomment %}
-                                    
                                     <button type="submit" class="btn btn-primary" style="border-radius:0" title="Add to Cart">Add to cart</button>
                                 </div>
                                 <div class="pro-details-action">
-                                    <a title="Add to Wishlist" href="#"><i class="icon-heart"></i></a>
+                                    <a title="Add to Wishlist" href=""><i class="icon-heart"></i></a>
                                     <a title="Refresh" href="javascript:location.reload(true);">
                                         <i class="icon-refresh"></i>
                                     </a>
-                                    
-                                    <!-- <a class="social" title="Social" href="#"><i class="icon-share"></i></a>
-                                    <div class="product-dec-social">
-                                        <a class="facebook" title="Facebook" href="#"><i class="icon-social-facebook"></i></a>
-                                        <a class="twitter" title="Twitter" href="#"><i class="icon-social-twitter"></i></a>
-                                        <a class="instagram" title="Instagram" href="#"><i class="icon-social-instagram"></i></a>
-                                        <a class="pinterest" title="Pinterest" href="#"><i class="icon-social-pinterest"></i></a>
-                                    </div> -->
                                 </div>
                             </div>
                             </form>
@@ -160,34 +145,38 @@
                                 <div class="specification-wrap table-responsive">
                                     <table>
                                         <tbody>
+                                            {% if product %}
+
                                             <tr>
-                                                <td class="title width1">Name</td>
-                                                <td>Salwar Kameez</td>
+                                                <td class="title width1">PRODUCT NAME</td>
+                                                <td>{{product.product_name}}</td>
                                             </tr>
                                             <tr>
-                                                <td class="title width1">SKU</td>
-                                                <td>0x48e2c</td>
+                                                <td class="title width1">ORIGINAL PRICE</td>
+                                                <td>{{product.original_price}}</td>
                                             </tr>
+                                            
                                             <tr>
-                                                <td class="title width1">Models</td>
-                                                <td>FX 829 v1</td>
+                                                <td class="title width1">SELLING PRICE</td>
+                                                <td>{{product.selling_price}}</td>
                                             </tr>
+
                                             <tr>
-                                                <td class="title width1">Categories</td>
-                                                <td>Digital Print</td>
+                                                <td class="title width1">SELLING PRICE</td>
+                                                <td>{{product.category.category_name}}</td>
                                             </tr>
+
                                             <tr>
-                                                <td class="title width1">Size</td>
-                                                <td>60’’ x 40’’</td>
+                                                <td class="title width1">DESCRIPTION</td>
+                                                <td>{{product.product_description}}</td>
                                             </tr>
+
+                                            {% endif %}
                                             <tr>
-                                                <td class="title width1">Brand </td>
-                                                <td>Individual Collections</td>
+                                                <td class="title width1">COLOUR</td>
+                                                <td>WHITE</td>
                                             </tr>
-                                            <tr>
-                                                <td class="title width1">Color</td>
-                                                <td>Black, White</td>
-                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>

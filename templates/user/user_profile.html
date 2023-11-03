@@ -135,11 +135,13 @@ User-Profile
                                                     <div class="form-group">
                                                         <label for="new_password" class="form-label">New Password</label>
                                                         <input type="password" name="new_password" class="form-control" placeholder="Enter your new password">
+                                                        <span class="error-message"></span>
                                                     </div>
-
+                                        
                                                     <div class="form-group">
                                                         <label for="confirm_password" class="form-label">Confirm Password</label>
                                                         <input type="password" name="confirm_password" class="form-control" placeholder="Confirm your new password">
+                                                        <span class="error-message"></span>
                                                     </div>
 
                                                     <button type="submit" style="border-radius: 0;" class="btn btn-primary" >
@@ -618,5 +620,44 @@ User-Profile
         </div>
 
         {% endfor %}
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelector("#change-password-form").addEventListener("submit", function(event) {
+                    var isValid = true;
+        
+                    function showError(input, message) {
+                        var errorSpan = input.nextElementSibling;
+                        errorSpan.textContent = message;
+                        isValid = false;
+                    }
+        
+                    function removeError(input) {
+                        input.nextElementSibling.textContent = '';
+                    }
+        
+                    var newPassword = document.querySelector("input[name=new_password]");
+                    var confirmNewPassword = document.querySelector("input[name=confirm_password]");
+        
+                    var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        
+                    if (!passwordPattern.test(newPassword.value.trim())) {
+                        showError(newPassword, "Password must contain at least 8 characters with at least one uppercase letter, one lowercase letter, and one number.");
+                    } else {
+                        removeError(newPassword);
+                    }
+        
+                    if (newPassword.value.trim() !== confirmNewPassword.value.trim()) {
+                        showError(confirmNewPassword, "Passwords do not match.");
+                    } else {
+                        removeError(confirmNewPassword);
+                    }
+        
+                    if (!isValid) {
+                        event.preventDefault();
+                    }
+                });
+            });
+        </script>
 
 {% endblock content %}

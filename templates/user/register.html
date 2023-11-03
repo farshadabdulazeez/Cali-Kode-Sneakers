@@ -32,15 +32,6 @@
                                         <div class="login-register-form">
                                             <form action="" method="post">
                                                 {% csrf_token %}
-                                                {% if messages %}
-                                                    <div class="messages alert alert-danger">
-                                                        {% for message in messages %}
-                                                            <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
-                                                                {{ message }}
-                                                            </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
                                                 <input type="text" name="first_name" placeholder="First name" required>
                                                 <input type="text" name="last_name" placeholder="Last name">
                                                 <input type="text" name="user_name" placeholder="User name" required>
@@ -67,6 +58,80 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelector("form").addEventListener("submit", function(event) {
+                    var isValid = true;
+        
+                    // Get form fields
+                    var firstName = document.querySelector("input[name=first_name]");
+                    var lastName = document.querySelector("input[name=last_name]");
+                    var userName = document.querySelector("input[name=user_name]");
+                    var email = document.querySelector("input[name=email]");
+                    var mobile = document.querySelector("input[name=mobile]");
+                    var password = document.querySelector("input[name=password]");
+                    var confirmPassword = document.querySelector("input[name=confirm_password]");
+        
+                    // Validation patterns
+                    var namePattern = /^[A-Za-z\s]+$/;
+                    var userNamePattern = /^[A-Za-z0-9_-]{3,16}$/;
+                    var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                    var mobilePattern = /^(?:(?:\+\d{2}-)?[9876]\d{9})$/;
+                    var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        
+                    // Validation for first name
+                    if (!namePattern.test(firstName.value.trim())) {
+                        isValid = false;
+                        alert("Please enter a valid first name.");
+                        event.preventDefault();
+                    }
+        
+                    // Validation for last name
+                    if (!namePattern.test(lastName.value.trim())) {
+                        isValid = false;
+                        alert("Please enter a valid last name.");
+                        event.preventDefault();
+                    }
+        
+                    // Validation for username
+                    if (!userNamePattern.test(userName.value.trim())) {
+                        isValid = false;
+                        alert("Please enter a valid username (3-16 characters: letters, numbers, underscore, or hyphen).");
+                        event.preventDefault();
+                    }
+        
+                    // Validation for email
+                    if (!emailPattern.test(email.value.trim())) {
+                        isValid = false;
+                        alert("Please enter a valid email address.");
+                        event.preventDefault();
+                    }
+        
+                    // Validation for mobile
+                    if (!mobilePattern.test(mobile.value.trim())) {
+                        isValid = false;
+                        alert("Please enter a valid mobile number.");
+                        event.preventDefault();
+                    }
+        
+                    // Validation for password
+                    if (!passwordPattern.test(password.value.trim())) {
+                        isValid = false;
+                        alert("Password must contain at least 8 characters with at least one uppercase letter, one lowercase letter, and one number.");
+                        event.preventDefault();
+                    }
+        
+                    // Validation for password match
+                    if (password.value.trim() !== confirmPassword.value.trim()) {
+                        isValid = false;
+                        alert("Passwords do not match.");
+                        event.preventDefault();
+                    }
+                });
+            });
+        </script>
+        
 
 {% endblock content %}
      
