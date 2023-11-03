@@ -66,7 +66,7 @@ def register(request):
             return redirect('register')
         else:
             if password == confirm_password:
-                user = CustomUser.objects.create_user(email, password=password, mobile=mobile, first_name=first_name)
+                user = CustomUser.objects.create_user(email, password=password, mobile=mobile, first_name=first_name, last_name=last_name)
                 user_id = user.id
                 otp = get_random_string(length=6, allowed_chars='1234567890')
 
