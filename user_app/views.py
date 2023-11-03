@@ -1,3 +1,4 @@
+import uuid
 from .models import *
 from order.models import *
 from product_app.models import *
@@ -49,6 +50,10 @@ def register(request):
         mobile = request.POST.get('mobile')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
+        if not request.POST["referral"]:
+            referral = "calikode"
+        else:
+            referral = request.POST["referral"]
 
         existing_email = CustomUser.objects.filter(email=email)
         existing_mobile = CustomUser.objects.filter(mobile=mobile)
@@ -85,6 +90,32 @@ Thank you for using Cali Kode Sneakers!
             
                 user.otp = otp
                 user.save()
+
+                # Referral code handling
+                referred_user = None
+                if referral != "calikode":
+                    try:
+                        referred_user = CustomUser.objects.get(referral_code=referral)
+                    except CustomUser.DoesNotExist:
+                        referred_user = None
+
+                if referred_user:
+                    # Credit the referred user's wallet
+                    referred_user.wallet += 250
+                    referred_user.save()
+
+                    # Create a transaction entry for the referred user
+                    UserTransaction.objects.create(user=referred_user, transaction_type='credited', amount=250.00)
+
+                    # Credit the referrer's wallet as well
+                    user.wallet += 250
+                    user.save()
+
+                    # Create a transaction entry for the referrer
+                    UserTransaction.objects.create(user=user, transaction_type='credited', amount=250.00)
+
+                    messages.success(request, 'Referral code applied. Wallets credited for both users.')
+                    
                 return redirect('otp_verification', user_id)
             else:
                  messages.error(request, "Passwords do not match!")
@@ -92,6 +123,10 @@ Thank you for using Cali Kode Sneakers!
 
     return render(request, 'user/register.html')
 
+
+def generate_ref_code():
+    code = str(uuid.uuid4()).replace("-", "")[:12]
+    return code
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -139,6 +174,35 @@ def otp_verification(request, user_id):
                 user.is_verified = True
                 user.otp = ''
                 user.save()
+                
+                referral_code = generate_ref_code()
+                user.referral_code = referral_code
+                user.save()
+
+                referred_user = None
+                if 'referral' in request.POST:
+                    try:
+                        referred_user = CustomUser.objects.get(referral_code=request.POST['referral'])
+                    except CustomUser.DoesNotExist:
+                        referred_user = None
+
+                if referred_user:
+                    # Credit the referred user's wallet
+                    referred_user.wallet += 250
+                    referred_user.save()
+
+                    # Create a transaction entry for the referred user
+                    UserTransaction.objects.create(user=referred_user, transaction_type='credited', amount=250.00)
+
+                    # Credit the referrer's wallet as well
+                    user.wallet += 250
+                    user.save()
+
+                    # Create a transaction entry for the referrer
+                    UserTransaction.objects.create(user=user, transaction_type='credited', amount=250.00)
+
+                    messages.success(request, 'Referral code verified. Wallets credited for both users.')
+
                 messages.success(request, "Account successfully verified, Login now.")
                 return redirect('user_login')
             else:
