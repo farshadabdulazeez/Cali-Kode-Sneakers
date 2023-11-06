@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from product_app.models import *
@@ -38,7 +39,10 @@ def products(request):
             return HttpResponse("Invalid price range format. Please use 'min-max' format.", status=400)
 
     product_count = products.count()
-
+    
+    for product in products:
+        product.percentage_discount = calculate_percentage_discount(product.selling_price, product.original_price)
+        
     context = {
         'products': products,
         'sizes': sizes,
@@ -54,6 +58,12 @@ def products(request):
     return render(request, 'product/products.html', context)
 
 
+def calculate_percentage_discount(selling_price, original_price):
+    if original_price > 0:
+        discount = ((original_price - selling_price) / original_price) * 100
+        return Decimal(discount).quantize(Decimal('0'))
+
+
 def product_details(request, id):
 
     products = Product.objects.all()
@@ -65,6 +75,7 @@ def product_details(request, id):
     all_products = Product.objects.all()
     variant = ProductVariant.objects.filter(product=product_id)
     multiple_images = MultipleImages.objects.filter(product=product_id).order_by('-id')
+
 
     context = {
         'product': single_product,

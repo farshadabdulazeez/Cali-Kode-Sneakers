@@ -7,6 +7,8 @@ urlpatterns = [
     path('order-page-edit-address/<int:id>', views.order_page_edit_address, name ="order_page_edit_address"),
     path('proceed-to-pay/', views.proceed_to_pay, name="proceed_to_pay"),
     path('online-payment/', views.online_payment, name = "online_payment"),
+    path('order-confirmed/<int:order_id>/', views.order_confirmed, name = "order_confirmed"),
     path('order-confirmed/', views.order_confirmed, name = "order_confirmed"),
+
 
 ]

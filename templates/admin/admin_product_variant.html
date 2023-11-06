@@ -16,13 +16,11 @@
             <thead>
               <tr>
                 <th>SL.NO</th>
-                <th>ID</th>
                 <th>NAME</th>
                 <th>IMAGE</th>
-                <th>PRICE</th>
                 {% comment %} <th>CATEGORY</th> {% endcomment %}
                 <th>STOCK</th>
-                <th>VARIANT SIZE</th>
+                <th>SIZE</th>
                 <th>OPERATIONS</th>
                 <th>ACTIONS</th>
 
@@ -36,7 +34,6 @@
                 
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ i.id }}</td>
                     <td>{{ i.product.product_name }}</td>
                     <td>
                         {% if i.product.product_image %}
@@ -46,7 +43,6 @@
                         </div>
                         {% endif %}
                     </td>
-                    <td>{{ i.product.selling_price }}</td>
                     {% comment %} <td>{{ i.category.category_name }}</td> {% endcomment %}
                     <td>{{ i.stock }}</td>
                     <td>{{ i.product_size.size }}</td>

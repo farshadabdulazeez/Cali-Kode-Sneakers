@@ -10,6 +10,7 @@ class Category(models.Model):
     category_image = models.ImageField(upload_to='category_images/')
     category_description = models.TextField(null=True)
     is_active = models.BooleanField(default=True, null=False, blank=True)
+    offer = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         ordering = ['category_name']
@@ -28,6 +29,8 @@ class ProductBrand(models.Model):
     slug = models.SlugField(max_length=150, unique=True, blank=True)
     brand_image = models.ImageField(upload_to='brand_images/')
     brand_description = models.TextField(null=True)
+    is_active = models.BooleanField(default=True)
+    offer = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         ordering = ['brand_name']
@@ -60,6 +63,7 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     is_available = models.BooleanField(default=True)
+    offer = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         ordering = ['product_name']

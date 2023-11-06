@@ -1,49 +1,43 @@
 {% extends 'admin_base.html' %}
 
-{% load static %}
-
 {% block content %}
-
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN /</span> ORDERS</h4>
 
     <div class="card">
-        <div class="table-responsive text-nowrap">
-          <table class="table table-hover">
-            {% comment %} <div class="mt-3 pr-4 text-end">
-                <button class="btn btn-primary me-3" type="submit"><a class="text-white" href="{% url 'admin_add_category' %}"> ADD CATEGORY</a></button>
-            </div> {% endcomment %}
-            <thead>
-              <tr>
-                {% comment %} <th>ID</th> {% endcomment %}
-                <th>DATE</th>
-                <th>CUSTOMER</th>
-                <th>ORDER ID</th>
-                <th>TOTAL</th>
-                <th>PAYMENT</th>
-                <th>STATUS</th>
-                <th>DETAILS</th>
-              </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-              {% if orders %}
-              {% for order in orders %}
+        <div class="table-responsive">
+            <table class="table table-responsive">
+                
+                <thead>
                     <tr>
-                      {% comment %} <td>{{ order.id }} </td>  {% endcomment %}
-                      <td>{{ order.created }} </td> 
-                      <td>{{ order.address.name}} </td> 
-                      <td>{{ order.order_id }}</td>
-                      <td>{{ order.order_total }}</td>
-                      <td>{% if order.is_ordered %} RAZORPAY {% else %} C.O.D {% endif %} </td>
-                      <td>{% if order.status %} {{ order.status}} {% else %} PROCESSING {% endif %} </td>
-                      <td><a class="btn btn-sm btn-warning" href="{% url 'admin_orders_detail' order.id %}">Details</a></td>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Order ID</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Details</th>
                     </tr>
-                {% endfor %}
-              {% endif %}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                    {% if orders %}
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.created }}</td>
+                        <td>{{ order.address.name }}</td>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ order.order_total }}</td>
+                        <td>{% if order.is_ordered %}RAZORPAY{% else %}C.O.D{% endif %}</td>
+                        <td>{% if order.status %}{{ order.status }}{% else %}PROCESSING{% endif %}</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="{% url 'admin_orders_detail' order.id %}">Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
-      </div>
     </div>
-
-{% endblock content %}
+</div>
+{% endblock %}

@@ -1,4 +1,7 @@
 import uuid
+from django.utils import timezone
+import random
+import string
 from .models import *
 from order.models import *
 from product_app.models import *
@@ -16,7 +19,11 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404, redirect, render
-
+from product_app.views import calculate_percentage_discount
+# Order invoice modules
+from io import BytesIO
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 
 def index(request):
@@ -24,11 +31,16 @@ def index(request):
     context = {}
 
     categories = Category.objects.filter(is_active=True).order_by('id')
-    products = Product.objects.filter(category__in=categories)
+    products = Product.objects.filter(category__in=categories, is_available=True)
+
+    for product in products:
+        product.percentage_discount = calculate_percentage_discount(product.selling_price, product.original_price)
+
 
     context = {
         'categories' : categories,
-        'products' : products
+        'products' : products,
+        
     }
 
     return render(request, 'user/index.html', context)
@@ -317,74 +329,59 @@ def order_details(request, order_id):
     order_items = OrderProduct.objects.filter(order_id=order)
     order_total = Decimal(order.order_total)
 
-    # shipping_charge = 0
-    # if order_total < 1000 and order_total < 902:
-    #     shipping_charge = 99
-    # else:
-    #     shipping_charge = "Free"
-
     context = {
-        # "shipping_charge": shipping_charge,
         "orders": order,
         "order_items": order_items,
         }
 
-    # except Exception as e:
-    #     print(e)
-
     return render(request, 'order/order_details.html', context)
 
 
-@login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
 def order_cancel(request, order_id):
-        
+    if request.method == "POST":
         order_item = OrderProduct.objects.get(id=order_id)
         order = order_item.order_id
-        
-        if request.method == "POST":
-            cancel_reason = request.POST.get("cancel_reason")
+        cancel_reason = request.POST.get("cancel_reason")
 
-            if cancel_reason:
-                order.cancel_reason = cancel_reason
-                order.item_cancelled = True
-                order.status = "CANCELLED"
-                order.save()
-                order_item.save()
+        if cancel_reason:
+            order.cancel_reason = cancel_reason
+            order.item_cancelled = True
+            order.status = "CANCELLED"
+            order.save()
+            order_item.save()
 
-                wallet_amount = 0
+            total_amount = Decimal(order.order_total)
+            wallet_amount = Decimal(order.wallet_amount) if order.wallet_amount else Decimal(0)
+            user = order.user
+            payment_method = order_item.payment.payment_method
 
-                
-                total_amount = Decimal(order.order_total)
-                wallet_amount = Decimal(order.wallet_amount) 
-                total_decimal = total_amount 
+            if payment_method == "Razorpay":
+                # Refund total amount back to user's wallet for Razorpay payments
+                refund_amount = total_amount + wallet_amount
+            else:
+                # Refund only the wallet amount for other payment methods like Cash on Delivery
+                refund_amount = wallet_amount
 
-                user = order.user
+            if user.wallet is None:
+                user.wallet = Decimal(0)
 
-                payment_method = order_item.payment.payment_method
+            user.wallet += refund_amount
+            user.save()
 
-                if payment_method == "Razorpay":
-                    # Refund total amount back to user's wallet for Razorpay payments
-                    refund_amount = total_decimal + wallet_amount
-                    user.wallet += refund_amount
-                    user.save()
-                else:
-                    # Refund only the wallet amount for Cash on Delivery
-                    user.wallet += wallet_amount
-                    user.save()
+            # Restock products if the order is cancelled
+            if order.status == "CANCELLED":
+                order_products = OrderProduct.objects.filter(order_id=order)
+                for order_product in order_products:
+                    product_variant = order_product.variant
+                    product_variant.stock += order_product.quantity
+                    product_variant.save()
 
-                # Restock products if the order is cancelled
-                if order.status == "CANCELLED":
-                    order_products = OrderProduct.objects.filter(order_id=order)
-                    for order_product in order_products:
-                        product_variant = order_product.variant
-                        product = product_variant.product
-                        product_variant.stock += order_product.quantity
-                        product_variant.save()
-
-                    user.save()
+                user.save()
         
         return redirect('user_profile')
+    # Handle GET requests or other cases not covered in the post request
+    return redirect('user_profile')  # Or redirect to the appropriate page in case of a GET request
 
 
 @login_required(login_url='index')
@@ -435,7 +432,51 @@ def order_return(request, order_id):
 
                 user.save()
 
-    return redirect('user_profile')  
+    return redirect('user_profile')
+
+
+# @login_required(login_url='index')
+# def generate_invoice_number(request):
+#     last_invoice = Order.objects.filter(user=request.user).last()
+#     if not last_invoice:
+#         return 'INV-0001'
+#     invoice_parts = last_invoice.order_id.split('-')
+#     if len(invoice_parts) < 2:
+#         return 'INV-0001'
+#     invoice_no = invoice_parts[1]
+#     new_invoice_no = str(int(invoice_no) + 1).zfill(4)
+#     return 'INV-' + new_invoice_no
+ 
+
+@login_required(login_url='index')
+def order_invoice(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order_items = OrderProduct.objects.filter(order_id=order)
+    order_total = Decimal(order.order_total)
+    invoice_number = f"INV-{order.order_id}"
+
+    context = {
+        "orders": order,
+        "order_items": order_items,
+        "invoice_number": invoice_number,
+    }
+
+    # Render the HTML template
+    template = get_template('user/order_invoice.html')
+    html = template.render(context)
+
+    # Create a PDF file
+    result = BytesIO()
+    pdf = pisa.CreatePDF(BytesIO(html.encode("UTF-8")), result)
+
+    # Return the PDF file as a response
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+
+        return response
+
+    return HttpResponse("Error generating PDF", status=500)
 
 
 @login_required(login_url='index')
@@ -565,3 +606,4 @@ def change_password(request):
     except Exception as e:
         print(e)
         return redirect("user_profile")
+

@@ -3,67 +3,58 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN /</span> PRODUCTS</h4>
 
     <div class="card">
-        <div class="table-responsive text-nowrap">
-          <table class="table table-hover">
-            <div class="mt-3 pr-4 text-end">
-                <button class="btn btn-primary me-3" type="submit"><a class="text-white" href="{% url 'admin_add_product' %}"> CREATE NEW PRODUCT</a></button>
-            </div>
-            <thead>
-              <tr>
-                <th>SL.NO</th>
-                <th>PRODUCT IMAGE</th>
-                <th>PRODUCT NAME</th>
-                <th>PRICE</th>
-                <th>CATEGORY</th>
-                <th>STOCK/SIZE</th>
-                <th>UPDATE</th>
-                <th>ACTIONS</th>
-
-              </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-                
-            <tbody>
-                {% for i in products %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>
-                      {% if i.product_image %}
-                      <div style="width: 80px; height: 8  0px;">
-                          <img src="{{ i.product_image.url }}" alt="Small Image"
-                              style="max-width: 100%; max-height: 100%;">
-                      </div>
-                      {% endif %}
-                  </td>
-                    <td>{{ i.product_name }}</td>
-                    <td>{{ i.selling_price }}</td>
-                    <td>{{ i.category.category_name }}</td>
-                    <td><a href="{% url 'admin_product_variant' i.id %}"> STOCK/SIZE</a></td>
-                    <td><a href="{% url 'admin_edit_product' i.id %}"><i class="bi bi-pencil-fill  me-4"></i></a>
-                      {% comment %} <a href="{% url 'admin_delete_product' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td> {% endcomment %}
-                    <td>
-                      <form method="post" action="{% url 'admin_control_product' i.id %}">
-                      {% csrf_token %}
-                      {% if i.is_available %}
-                          <button type="submit" class="btn btn-primary">LIST</button>
-                      {% else %}
-                          <button type="submit" class="btn btn-danger">UNLIST</button> 
-                      {% endif %}
-                      </form>
-                  </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-
-          </table>
+        <div class="table-responsive">
+            <table class="table table-responsive">
+                <div class="mt-3 pr-4 text-end">
+                    <button class="btn btn-primary me-3" type="submit"><a class="text-white" href="{% url 'admin_add_product' %}"> ADD NEW PRODUCT</a></button>
+                </div>
+                <thead>
+                    <tr>
+                        <th>SL.NO</th>
+                        <th>IMAGE</th>
+                        <th>NAME</th>
+                        <th>PRICE</th>
+                        <th>CATEGORY</th>
+                        <th>STOCK/SIZE</th>
+                        <th>EDIT</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in products %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>
+                            {% if i.product_image %}
+                            <div style="width: 80px; height: 80px;">
+                                <img src="{{ i.product_image.url }}" alt="Small Image" style="max-width: 100%; max-height: 100%;">
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ i.product_name }}</td>
+                        <td>{{ i.selling_price }}</td>
+                        <td>{{ i.category.category_name }}</td>
+                        <td><a href="{% url 'admin_product_variant' i.id %}"> STOCK/SIZE</a></td>
+                        <td><a href="{% url 'admin_edit_product' i.id %}"><i class="bi bi-pencil-fill  me-4"></i></a></td>
+                        <td>
+                            <form method="post" action="{% url 'admin_control_product' i.id %}">
+                                {% csrf_token %}
+                                {% if i.is_available %}
+                                <button type="submit" class="btn btn-primary">LIST</button>
+                                {% else %}
+                                <button type="submit" class="btn btn-danger">UNLIST</button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-      </div>
     </div>
-    
-
+</div>
 {% endblock content %}

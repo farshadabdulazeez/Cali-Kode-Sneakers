@@ -439,7 +439,7 @@ def checkout(request):
                     variant.save()
                     item.delete()
 
-                return redirect('order_confirmed')
+                return redirect('order_confirmed', order_id )
         
         context = {
             'addresses': address,

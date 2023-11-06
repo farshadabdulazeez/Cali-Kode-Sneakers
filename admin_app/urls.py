@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin-add-brand/', views.admin_add_brand, name="admin_add_brand"),
     path('admin-edit-brand/<int:id>', views.admin_edit_brand, name="admin_edit_brand"),
     path('admin-delete-brand/<int:id>', views.admin_delete_brand, name="admin_delete_brand"),
+    path('admin-control-brand/<int:id>', views.admin_control_brand, name="admin_control_brand"),
 
     path('admin-coupons/', views.admin_coupons, name="admin_coupons"),
     path('admin-add-coupon/', views.admin_add_coupon, name="admin_add_coupon"),
@@ -43,5 +44,6 @@ urlpatterns = [
     path('admin-orders-status/<int:id>/', views.admin_orders_status, name="admin_orders_status"),
 
     path('admin-logout/', views.admin_logout, name = "admin_logout"),
+
     
 ]

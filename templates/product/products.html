@@ -42,7 +42,10 @@
                                                     <a href="{% url 'product_details' product.id %}">
                                                         <img src="{{product.product_image.url}}" alt="">
                                                     </a>
-                                                    {% comment %} <span class="pro-badge left bg-red">-20%</span> {% endcomment %}
+                                                    {% if product.percentage_discount > 0 and product.selling_price != product.original_price %}
+                                                        <span class="pro-badge left bg-red">-{{ product.percentage_discount }}%</span>
+                                                    {% endif %}
+
                                                     {% comment %} <div class="product-action-2 tooltip-style-2">
                                                         <button title="Wishlist"><i class="icon-heart"></i></button>
                                                         <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
@@ -62,9 +65,12 @@
                                                     </div> {% endcomment %}
                                                     <h3>{{product.product_name}}</a></h3>
                                                     <div class="product-price-2">
-                                                        <span class="new-price">{{product.selling_price}}</span>
-                                                        <span class="old-price">{{product.original_price}}</span>
+                                                        <span class="new-price">{{ product.selling_price }}</span>
+                                                        {% if product.selling_price != product.original_price %}
+                                                            <span class="old-price">{{ product.original_price }}</span>
+                                                        {% endif %}
                                                     </div>
+                                                    
                                                 </div>
                                                 <div class="product-content-wrap-2 product-content-position text-center">
                                                     {% comment %} <div class="product-rating-wrap">

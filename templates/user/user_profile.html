@@ -47,20 +47,6 @@ User-Profile
                                 <!-- My Account Tab Content Start -->
                                 <div class="col-lg-9 col-md-8">
                                     <div class="tab-content" id="myaccountContent">
-                                        <!-- Single Tab Content Start -->
-                                        {% comment %} <div class="tab-pane fade show active" id="dashboad" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <h3>Dashboard</h3>
-                                                <div class="welcome">
-                                                    <p>Hello, <strong>Alex Tuntuni</strong> (If Not <strong>Tuntuni !</strong><a href="login-register.html" class="logout"> Logout</a>)</p>
-                                                </div>
-
-                                                <p class="mb-0">From your account dashboard. you can easily check & view your recent orders, manage your shipping and billing addresses and edit your password and account details.</p>
-                                            </div>
-                                        </div> {% endcomment %}
-
-                                        
-
                                         <div class="tab-pane fade show active" id="account-info" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Account Details</h3>
@@ -75,6 +61,7 @@ User-Profile
                                                                     name="first_name"/>
                                                                 </div>
                                                             </div>
+
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
                                                                     <label for="last-name" class="required">Last Name</label>
@@ -94,12 +81,6 @@ User-Profile
                                                             <input type="text" id="display-name"  value="{{ user.mobile }}"
                                                             name="mobile" />
                                                         </div>
-
-                                                        <!-- <div class="single-input-item">
-                                                            <label for="display-name" class="required">D.O.B</label>
-                                                            <input type="text" id="display-name"  value="{{ user.date_of_birth }}"
-                                                            name="date_of_birth" />
-                                                        </div> -->
                                                         
                                                         <div class="single-input-item text-center">
                                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAccountModal" style="border-radius: 0; margin: 0 auto; display: block;">
@@ -170,6 +151,7 @@ User-Profile
                                                                 <th>Status</th>
                                                                 <th>Action</th>
                                                                 <th>Details</th>
+                                                                <th>Invoice</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -194,7 +176,12 @@ User-Profile
                                                                         <h5>PROCESSING</h5>
                                                                     {% endif %}
                                                                 </td>
-                                                                <td><a href="{% url 'order_details' order.order_id.id %}" class="check-btn sqr-btn ">View</a></td>
+                                                                <td><a href="{% url 'order_details' order.order_id.id %}" class="check-btn sqr-btn">View</a></td>
+                                                                <td>
+                                                                    <a href="{% url 'order_invoice' order.order_id.id %}" class="invoice-btn">
+                                                                        <i class="fas fa-file-download"></i> 
+                                                                    </a>
+                                                                </td>
                                                             </tr>
                                                             {% endfor %}
                                                         </tbody>
@@ -202,43 +189,7 @@ User-Profile
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
-                                        <!-- <div class="tab-pane fade" id="download" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <h3>Downloads</h3>
-                                                <div class="myaccount-table table-responsive text-center">
-                                                    <table class="table table-bordered">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Product</th>
-                                                                <th>Date</th>
-                                                                <th>Expire</th>
-                                                                <th>Download</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Haven - Free Real Estate PSD Template</td>
-                                                                <td>Aug 22, 2018</td>
-                                                                <td>Yes</td>
-                                                                <td><a href="#" class="check-btn sqr-btn "><i class="fa fa-cloud-download"></i> Download File</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>HasTech - Profolio Business Template</td>
-                                                                <td>Sep 12, 2018</td>
-                                                                <td>Never</td>
-                                                                <td><a href="#" class="check-btn sqr-btn "><i class="fa fa-cloud-download"></i> Download File</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
                                         
-
                                         <div class="tab-pane fade" id="address-edit" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Billing Address</h3>
@@ -265,85 +216,6 @@ User-Profile
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
-                                        {% comment %} <div class="tab-pane fade" id="account-info" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <h3>Account Details</h3>
-                                                <div class="account-details-form">
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="first-name" class="required">First Name</label>
-                                                                    <input type="text" id="first-name"  value="{{ user.first_name }}"
-                                                                    name="first_name"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="last-name" class="required">Last Name</label>
-                                                                    <input type="text" id="last-name"  value="{{ user.last_name }}"
-                                                                    name="last_name"/>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="single-input-item">
-                                                            <label for="email" class="required">Email Address</label>
-                                                            <input type="email" id="email" value="{{ user.email }}" name="email" />
-                                                        </div>
-
-                                                        <div class="single-input-item">
-                                                            <label for="display-name" class="required">Mobile Number</label>
-                                                            <input type="text" id="display-name"  value="{{ user.mobile }}"
-                                                            name="mobile" />
-                                                        </div>
-
-                                                        <div class="single-input-item">
-                                                            <label for="display-name" class="required">D.O.B</label>
-                                                            <input type="text" id="display-name"  value="{{ user.date_of_birth }}"
-                                                            name="date_of_birth" />
-                                                        </div>
-                                                        
-                                                        <div class="single-input-item">
-                                                            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lgt">Edit account</button>                                       
-
-                                                        </div>
-                                                        <br>
-                                                    </form> {% endcomment %}
-                                                    {% comment %} <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        
-                                                        {% for error in form.non_field_errors %}
-                                                            <div class="alert alert-danger">
-                                                                {{ error }}
-                                                            </div>
-                                                        {% endfor %}
-                                                        
-                                                        {% for field in form %}
-                                                            <div class="form-group">
-                                                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                                                {{ field }}
-                                                            </div>
-                                                            {% if field.errors %}
-                                                                <div class="alert alert-danger">
-                                                                    {{ field.errors }}
-                                                                </div>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                        
-                                                        <button type="submit" class="btn btn-primary " data-toggle="modal" data-target=".bd-example-modal-lgt">
-                                                            Change Password
-                                                        </button>
-                                                    </form> {% endcomment %}
-{% comment %}                                                     
-                                                </div>
-                                            </div>
-                                        </div> <!-- Single Tab Content End --> {% endcomment %}
-
                                     </div>
                                 </div> <!-- My Account Tab Content End -->
                             </div>
@@ -659,5 +531,6 @@ User-Profile
                 });
             });
         </script>
+        
 
 {% endblock content %}

@@ -100,10 +100,12 @@ def admin_add_category(request):
             if existing_category.exists():
                 messages.error(request, 'Category exists!')
                 return redirect('admin_add_category')
+            
             category = Category(
                 category_name = category_name,
                 category_description = request.POST['category_description'],
                 slug= category_slug,
+                offer=request.POST.get('category_offer')
             )
 
             if request.FILES:
@@ -137,6 +139,11 @@ def admin_edit_category(request, id):
                 category.category_image = request.FILES['category_image']
             category.category_name = request.POST['category_name']
             category.category_description = request.POST['category_description']
+            # Check if offer field exists in the form submission
+            if 'category_offer' in request.POST:
+                category_offer = int(request.POST['category_offer'])
+                category.offer = category_offer
+                
             category.save()
 
             messages.success(request, "Category Updated!")
@@ -242,9 +249,6 @@ def admin_add_brand(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_brand(request, id):
-
-    context = {}
-
     try:
         brand = ProductBrand.objects.get(id=id)
 
@@ -255,7 +259,7 @@ def admin_edit_brand(request, id):
             brand.slug = slug
             brand.brand_description = request.POST['brand_description']
 
-            if request.FILES:
+            if 'brand_image' in request.FILES:
                 if brand.brand_image:
                     os.remove(brand.brand_image.path)
                 brand.brand_image = request.FILES['brand_image']
@@ -263,7 +267,7 @@ def admin_edit_brand(request, id):
             brand.save()
             messages.success(request, "Brand updated")
             return redirect('admin_brand')
-        
+
         context = {
             'brand': brand,
         }
@@ -272,14 +276,43 @@ def admin_edit_brand(request, id):
     
     except Exception as e:
         print(e)
-
         return redirect('admin_brands')
-
+    
 
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
-def admin_delete_brand(request):
-    return render(request, 'admin/admin_delete_brand.html')
+def admin_delete_brand(request, id):
+    try:
+        brand = ProductBrand.objects.get(id=id)
+        if brand:
+            brand.delete()
+            messages.success(request, "Brand deleted successfully!")
+            return redirect('admin_brands')
+    except ProductBrand.DoesNotExist:
+        messages.error(request, "Brand does not exist.")
+        return redirect('admin_brands')
+    
+
+@cache_control(no_cache=True, no_store=True)
+@staff_member_required(login_url='admin_login')
+def admin_control_brand(request, id):
+    try:
+        brand = ProductBrand.objects.get(id=id)
+        if brand.is_active:
+            brand.is_active = False
+            messages.success(request, "Brand unlisted!")
+        else:
+            brand.is_active = True
+            messages.success(request, "Brand listed!")
+        brand.save()
+    except ProductBrand.DoesNotExist:
+        messages.error(request, "Brand not found.")
+    except Exception as e:
+        print(e)
+        messages.error(request, "An error occurred.")
+
+    return redirect('admin_brands')
+
 
 
 @staff_member_required(login_url='admin_login')
@@ -318,6 +351,7 @@ def admin_add_product(request):
             brand = request.POST['brand']
             original_price = int(request.POST['original_price'])
             selling_price = int(request.POST['selling_price'])
+            product_offer = int(request.POST['product_offer'])
 
             # single image fetching
             try:
@@ -335,13 +369,19 @@ def admin_add_product(request):
             product.category = Category.objects.get(id=category)
             product.brand = ProductBrand.objects.get(id=brand)
             product.original_price = original_price
+
+            if product_offer > 0 :
+                offer_amount = (original_price * product_offer)//100
+                if (original_price - offer_amount) < selling_price : 
+                    selling_price = original_price - offer_amount
+                    
             product.selling_price = selling_price
             product.product_description = request.POST['product_description']
             product.save()
 
             # multiple image fetching
             try:
-                multiple_images = request.FILES.getlist('multiple_images[]')
+                multiple_images = request.FILES.getlist('multiple_images', None)
                 if multiple_images:
                     for image in multiple_images:
                         photo = MultipleImages.objects.create(
@@ -389,8 +429,15 @@ def admin_edit_product(request, id):
             product_name = request.POST['product_name']
             category = request.POST['category']
             brand = request.POST['brand']
-            original_price = request.POST['original_price']
-            selling_price = request.POST['selling_price']
+            original_price = float(request.POST.get('original_price'))
+            selling_price = float(request.POST.get('selling_price'))
+            product_offer = int(request.POST.get('product_offer'))
+
+            if product_offer > 0:
+                offer_amount = (original_price * product_offer) / 100
+                # Calculate the new selling price based on the offer
+                selling_price = original_price - offer_amount
+
             single_image = request.FILES.get('product_image', None)
 
             multiple_images = request.FILES.getlist('multiple_images')
@@ -402,21 +449,13 @@ def admin_edit_product(request, id):
                 product.product_image = single_image
 
             if multiple_images:
-                if multiple_images:
-                    for existing_image in MultipleImages.objects.filter(product=product):
-                        existing_image.images.delete()
-                        existing_image.delete()
-                    for image in multiple_images:
-                        photo = MultipleImages.objects.create(
-                            product=product,
-                            images=image,
-                        )
-                else:
-                    for image in multiple_images:
-                        photo = MultipleImages.objects.create(
-                            product=product,
-                            images=image,
-                        )
+            # Clear existing multiple images for the product
+                MultipleImages.objects.filter(product=product).delete()
+
+                # Add new multiple images
+                for image in multiple_images:
+                    MultipleImages.objects.create(product=product, images=image)
+
 
             product.product_name = product_name
             product.category = Category.objects.get(id=category)
@@ -425,7 +464,6 @@ def admin_edit_product(request, id):
             product.selling_price = selling_price
 
             product.save()
-            # Multi_image.save()
             messages.success(request, "Product updated successfully!")
             return redirect('admin_products')
     except Exception as e:
@@ -496,7 +534,6 @@ def admin_add_product_variant(request,product_id):
     if request.method == 'POST':
         size_id = request.POST['size']
         stock = request.POST['stock']
-        product_price = request.POST['product_price']
         variant_size = ProductSize.objects.get(id=size_id)
 
         try:
@@ -511,11 +548,6 @@ def admin_add_product_variant(request,product_id):
                 product_size=variant_size,
                 stock=stock,
             )
-
-        if product_price:
-            variant.product_price = product_price
-        variant.save()
-
         return redirect('admin_product_variant', product_id)
 
     context = {
@@ -532,11 +564,9 @@ def admin_edit_product_variant(request):
     try:
         if request.method == 'POST':
             id = request.POST['id']
-            price = request.POST['price']
             stock = request.POST['stock']
             variant = ProductVariant.objects.get(id=id)
             product_id = variant.product
-            variant.product_price = price
             variant.stock = stock
             variant.save()
 
@@ -548,7 +578,7 @@ def admin_edit_product_variant(request):
     except Exception as e:
         print(e)
 
-    return redirect('admin_dashboard')
+    return redirect('admin_product_variant')
 
 
 @cache_control(no_cache=True, no_store=True)

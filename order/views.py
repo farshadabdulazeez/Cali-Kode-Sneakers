@@ -15,20 +15,18 @@ from django.views.decorators.cache import cache_control
 def order(request):
 
     context = {}
-    # try:
-    user = request.user
-    # checkout_items = Checkout.objects.get(user=user)
-    cart_items = CartItem.objects.filter(customer=user)
-    
-    if not cart_items:
-        return redirect('index')
+    try:
+        user = request.user
+        cart_items = CartItem.objects.filter(customer=user)
+        
+        if not cart_items:
+            return redirect('index')
 
-    context = {
-        # 'checkout_items': checkout_items,
-        'cart_items': cart_items,
-    }
-    # except Exception as e:
-    #     print(e)
+        context = {
+            'cart_items': cart_items,
+        }
+    except Exception as e:
+        print(e)
     return render(request, 'order/order_confirmed.html', context)
 
 
@@ -154,9 +152,14 @@ def online_payment(request):
     return render(request, 'order/online_payment.html', context)
 
 
-def order_confirmed(request):
+def order_confirmed(request, order_id=None):
 
-    return render (request, 'order/order_confirmed.html')
+    if order_id is None:
+        order_id = "2038473462134"
+    context = {
+        "order_number":order_id
+    }
+    return render(request, "order/order_confirmed.html", context)
 
 
 @login_required(login_url='index')

@@ -24,39 +24,33 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6">
                         <div class="product-details-tab">
-                            <div class="pro-dec-big-img-slider">
+                            <div class=" pro-dec-big-img-slider slick-initialized slick-slider">
                                 <div class="easyzoom-style">
                                     <div class="easyzoom easyzoom--overlay">
+                                        <!-- Main Product Image -->
                                         <a href="{{ product.product_image.url }}">
-                                            <img src="{{ product.product_image.url }}" alt="">
+                                            <img src="{{ product.product_image.url }}" alt="" >
                                         </a>
                                     </div>
-                                    <a class="easyzoom-pop-up img-popup" href="{{ product.product_image.url }}"><i class="icon-size-fullscreen"></i></a>
+                                    <a class="easyzoom-pop-up img-popup" data-fancybox="gallery" href="{{ product.product_image.url }}">
+                                        <i class="icon-size-fullscreen"></i>
+                                    </a>
+                                    
                                 </div>
-                                {% comment %} <div class="easyzoom-style">
-                                    <div class="easyzoom easyzoom--overlay">
-                                        <a href="{{ product.product_image.url }}">
-                                            <img src="{{ product.product_image.url }}" alt="">
-                                        </a>
-                                    </div>
-                                    <a class="easyzoom-pop-up img-popup" href="{% static 'user/assets/images/product-details/b-large-2.jpg' %}"><i class="icon-size-fullscreen"></i></a>
-                                </div>{% endcomment %}
                             </div>
-                            
-                            {% if multiple_images %}
-                            {% for image in multiple_images %}
-                            <div class="product-dec-slider-small product-dec-small-style1">
-                                <div class="product-dec-small active">
-                                    <img src="{{ image.images.url }}" alt="">
-                                </div>
-                                {% comment %} <div class="product-dec-small">
-                                    <img src="{% static 'user/assets/images/product-details/small-2.jpg' %}" alt="">
-                                </div>{% endcomment %}
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-
                         </div>
+                        {% comment %} <div class="product-dec-slider-small product-dec-small-style1" style="overflow: hidden;">
+                            <!-- Multiple Product Images -->
+                            <div class="product-dec-small-container" style="display: flex; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;">
+                                {% if multiple_images %}
+                                    {% for image in multiple_images %}
+                                        <div class="product-dec-small" style="flex: 0 0 auto; margin-right: 10px;">
+                                            <img src="{{ image.images.url }}" alt="" style="width: 100px; height: auto; display: block;">
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div> {% endcomment %}
                     </div>
                     <div class="col-lg-6 col-md-6">
                         <div class="product-details-content pro-details-content-mrg">
@@ -84,7 +78,9 @@
                             <p>{{ product.product_description }}</p>
                             <div class="pro-details-price">
                                 <span class="new-price">{{ product.selling_price }}</span>
-                                <span class="old-price">{{ product.original_price }}</span>
+                                {% if product.original_price != product.selling_price %}
+                                    <span class="old-price">{{ product.original_price }}</span>
+                                {% endif %}
                             </div>
                         <form method="post" action="{% url 'add_cart_item' product_id %}">
                             {% csrf_token %}
@@ -112,7 +108,7 @@
                                     <button type="submit" class="btn btn-primary" style="border-radius:0" title="Add to Cart">Add to cart</button>
                                 </div>
                                 <div class="pro-details-action">
-                                    <a title="Add to Wishlist" href=""><i class="icon-heart"></i></a>
+                                    {% comment %} <a title="Add to Wishlist" href=""><i class="icon-heart"></i></a> {% endcomment %}
                                     <a title="Refresh" href="javascript:location.reload(true);">
                                         <i class="icon-refresh"></i>
                                     </a>
@@ -132,7 +128,7 @@
                             <a class="active" data-toggle="tab" href="#des-details1">Description</a>
                             <a data-toggle="tab" href="#des-details2">Specification</a>
                             {% comment %} <a data-toggle="tab" href="#des-details3">Meterials </a> {% endcomment %}
-                            <a data-toggle="tab" href="#des-details4">Reviews and Ratting </a>
+                            {% comment %} <a data-toggle="tab" href="#des-details4">Reviews and Ratting </a> {% endcomment %}
                         </div>
                         <div class="tab-content dec-review-bottom">
                             <div id="des-details1" class="tab-pane active">
@@ -557,6 +553,15 @@
     
 
 {% endif %}
+
+<script>
+    $(document).ready(function() {
+        $("[data-fancybox='gallery']").fancybox({
+            // Your Fancybox options here
+        });
+    });
+</script>
+
 
 {% endblock %}
 
