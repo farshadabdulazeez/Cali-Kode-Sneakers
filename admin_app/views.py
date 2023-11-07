@@ -807,22 +807,47 @@ def admin_banner(request):
         return render(request, "admin/admin_banner.html", context)
     
 
+
 @staff_member_required(login_url="admin_login")
-def admin_edit_banner(request, banner_id):
+def admin_banner(request):
+    context = {}
     try:
-        banner = Banner.objects.get(id=banner_id)
-        if request.method == "POST":
-            image = request.FILES.get("image")
-            if image:
-                banner.image = image
-            else:
-                banner.image = banner.image
-            banner.save()
-            messages.success(request, "Updated Successfully")
-            return redirect("admin_banner")
+        banners = Banner.objects.all().order_by('id')
+        context = {
+            "banners": banners,
+        }
+        return render(request, "admin/admin_banner.html", context)
 
     except Exception as e:
         print(e)
+        return render(request, "admin/admin_banner.html", context)
+    
+
+@staff_member_required(login_url="admin_login")
+def admin_edit_banner(request, banner_id):
+    try:
+        banner = get_object_or_404(Banner, id=banner_id)
+
+        if request.method == "POST":
+            name = request.POST.get("name")  
+            image = request.FILES.get("image") 
+
+            if name:
+                banner.name = name
+
+            if image:
+                banner.image = image
+
+            banner.save()
+            messages.success(request, "Banner Updated Successfully")
+            return redirect("admin_banner")
+
+        # Render the form for GET requests
+        return render(request, "admin/admin_edit_banner.html", {'banner': banner})
+
+    except Exception as e:
+        print(e)
+        messages.error(request, "Failed to update the banner.")
         return redirect("admin_banner")
 
 

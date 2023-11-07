@@ -23,14 +23,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% if brands %}
-                    {% for i in brands %}
+                    {% if banners %}
+                    {% for banner in banners %}
                     <tr>
                         <td>{{ forloop.counter }} </td>
-                        <td><img src="{{ i.brand_image.url }}" width="100" height="120"></td>
-                        <td>{{ i.brand_name }}</td>
+                        <td><img src="{{ banner.image.url }}" width="163" height="123"></td>
+                        <td>{{ banner.name }}</td>
                         <td>
-                            {% comment %} <a href="{% url 'admin_edit_banner' i.id %}"><i class="bi bi-pencil-fill me-4"></i></a> {% endcomment %}
+                        <a href="{% url 'admin_edit_banner' banner.id %}"><i class="bi bi-pencil-fill me-4"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
