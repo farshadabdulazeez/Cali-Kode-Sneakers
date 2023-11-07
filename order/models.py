@@ -4,9 +4,6 @@ from product_app.models import *
 from cart_app.models import *
 
 
-# Create your models here.
-
-
 class Payments(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
     payment_id = models.CharField(max_length=200, null=True, blank=True)

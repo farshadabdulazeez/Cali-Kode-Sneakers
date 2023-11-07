@@ -102,3 +102,11 @@ class MultipleImages(models.Model):
         return self.product.product_name
     
 
+class Banner(models.Model):
+    name = models.CharField(max_length=50, blank=True, null=True)
+    image = models.ImageField(upload_to="banner_images/", blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    
+

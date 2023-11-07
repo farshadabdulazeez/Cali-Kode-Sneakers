@@ -127,6 +127,13 @@
                 <div data-i18n="Misc">ORDERS</div>
               </a>
             </li>
+
+            <li class="menu-item active">
+              <a href="{% url 'admin_banner' %}" class="menu-link ">
+                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <div data-i18n="Misc">BANNERS</div>
+              </a>
+            </li>
             
           </ul>
         </aside>
@@ -320,6 +327,10 @@
 
     <!-- Page JS -->
     <script src="{% static 'admin/assets/js/dashboards-analytics.js' %}"></script>
+
+    <!-- Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

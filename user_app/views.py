@@ -34,6 +34,10 @@ def index(request):
     products = Product.objects.filter(category__in=categories, is_available=True)
 
     for product in products:
+        if product.category.offer:
+            offer_percentage = product.category.offer
+            new_selling_price = product.original_price - (product.original_price * offer_percentage / 100)
+            product.selling_price = new_selling_price
         product.percentage_discount = calculate_percentage_discount(product.selling_price, product.original_price)
 
 

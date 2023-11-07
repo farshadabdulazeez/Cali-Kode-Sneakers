@@ -41,6 +41,10 @@ def products(request):
     product_count = products.count()
     
     for product in products:
+        if product.category.offer:
+            offer_percentage = product.category.offer
+            new_selling_price = product.original_price - (product.original_price * offer_percentage / 100)
+            product.selling_price = new_selling_price
         product.percentage_discount = calculate_percentage_discount(product.selling_price, product.original_price)
         
     context = {
@@ -76,6 +80,10 @@ def product_details(request, id):
     variant = ProductVariant.objects.filter(product=product_id)
     multiple_images = MultipleImages.objects.filter(product=product_id).order_by('-id')
 
+    if single_product.category.offer:
+        offer_percentage = single_product.category.offer
+        new_selling_price = single_product.original_price - (single_product.original_price * offer_percentage / 100)
+        single_product.selling_price = new_selling_price
 
     context = {
         'product': single_product,

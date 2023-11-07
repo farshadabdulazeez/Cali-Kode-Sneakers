@@ -792,6 +792,40 @@ def admin_orders_status(request, id):
     return redirect('admin_orders')
 
 
+@staff_member_required(login_url="admin_login")
+def admin_banner(request):
+    context = {}
+    try:
+        banners = Banner.objects.all()
+        context = {
+            "banners": banners,
+        }
+        return render(request, "admin/admin_banner.html", context)
+
+    except Exception as e:
+        print(e)
+        return render(request, "admin/admin_banner.html", context)
+    
+
+@staff_member_required(login_url="admin_login")
+def admin_edit_banner(request, banner_id):
+    try:
+        banner = Banner.objects.get(id=banner_id)
+        if request.method == "POST":
+            image = request.FILES.get("image")
+            if image:
+                banner.image = image
+            else:
+                banner.image = banner.image
+            banner.save()
+            messages.success(request, "Updated Successfully")
+            return redirect("admin_banner")
+
+    except Exception as e:
+        print(e)
+        return redirect("admin_banner")
+
+
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_logout(request):
