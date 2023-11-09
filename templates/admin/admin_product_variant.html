@@ -88,6 +88,7 @@
         </div>
         <div class="modal-body">
           <label for="variantId">Product Name </label>
+          <input type="hidden" name="id" value="{{i.id}}">
           <input class = "form-control" type="text" name="name" id="variantId" value="{{ i.product.product_name }}" readonly>
             
           <label for="variantId">Size </label>

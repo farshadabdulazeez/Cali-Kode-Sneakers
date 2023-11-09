@@ -1,9 +1,150 @@
 {% extends 'admin_base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">ADMIN /</span> DASHBOARD</h4>
+   <div class="card">
+    <div class="card-header">
+        <h5 class="card-title" style="text-align: center; font-weight: bold;">SALES REPORT</h5>
+    </div>
+    <div class="card-body" style="display: flex; justify-content: space-between;">
+        <div style="flex: 1;">
+            <h5>ORDER STATUS COUNT</h5>
+            <canvas id="orderCountsChart" width="100" height="100"></canvas>
+        </div>
+        <div style="flex: 1;">
+            <h5>PAYMENT METHODS</h5>
+            <canvas id="paymentMethodCountsChart" width="100" height="100"></canvas>
+        </div>
+        <div style="flex: 1;">
+            <h5>Total Orders Count</h5>
+            <canvas id="totalOrdersChart" width="100" height="100"></canvas>
+        </div>
+    </div>
+{% comment %} </div> {% endcomment %}
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var totalProfitCanvas = document.getElementById('orderCountsChart').getContext('2d');
+        var orderCountsChart = new Chart(totalProfitCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Delivered', 'Returned', 'Cancelled'],
+                datasets: [{
+                    data: [{{ successfull_orders_count }},
+                    {{ returned_orders_count }},
+                    {{ cancelled_orders_count }},],
+                    backgroundColor: ['green', 'blue', 'red']
+                }]
+            }
+        });
 
+        var totalRevenueCanvas = document.getElementById('paymentMethodCountsChart').getContext('2d');
+        var paymentMethodCountsChart = new Chart(totalRevenueCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Cash on Delivery', 'Online payment'],
+                datasets: [{
+                    data: [{{ cash_on_delivery_count }},
+                    {{ razorpay_count }},],
+                    backgroundColor: ['orange', 'purple']
+                }]
+            }
+        });
+
+        var totalOrdersCanvas = document.getElementById('totalOrdersChart').getContext('2d');
+        var totalOrdersChart = new Chart(totalOrdersCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Orders', 'Other'],
+                datasets: [{
+                    data: [{{ order_count }}, 100 - {{ order_count }}],
+                    backgroundColor: ['blue', 'yellow']
+                }]
+            }
+        });
+    </script>
+
+    <div class="card" style="margin-top: 20px;">
+      <div class="card-header">
+          <h5 class="card-title" style="text-align: center; font-weight: bold;">MONTHLY REPORTS</h5>
+      </div>
+      <div class="card-body">
+          <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+      </div>
+  <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+  
+  <script>
+      var monthlySalesData = JSON.parse('{{ monthly_sales_data|escapejs|safe }}');
+  
+      new Chart("myChart", {
+          type: "bar",
+          data: {
+              labels: monthlySalesData.xValues,
+              datasets: [{
+                  backgroundColor: monthlySalesData.barColors,
+                  data: monthlySalesData.yValues
+              }]
+          },
+          options: {
+              maintainAspectRatio: false,
+              aspectRatio: 2,
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  },
+                  x: {
+                      type: 'category',
+                      labels: monthlySalesData.xValues
+                  }
+              },
+              legend: { display: false },
+              title: {
+                  display: true,
+                  text: "Monthly Sales Report"
+              }
+          }
+      });
+
+      var canvas = document.getElementById('myChart');
+      canvas.style.margin = 'auto';
+      canvas.style.display = 'block';
+      canvas.style.width = '120%'; // Set the width of the canvas
+      canvas.style.height = '420px';
+
+  </script>
+  
+  <table id="myTable" class="table table-striped" style="width:100%">
+      <thead>
+          <tr>
+              <th>ORDER ID</th>
+              <th>CUSTOMER</th>
+              <th>ORDER DATE</th>
+              <th>TOTAL</th>
+              <th>ORDER STATUS</th>
+              <td rowspan="{{ orders|length }}">
+                  <a href="{% url 'admin_sales_report' %}?pdf" class="btn btn-primary">Download as PDF</a>
+              </td>
+          </tr>
+      </thead>
+      <tbody>
+          {% for order in orders %}
+          <tr>
+              <td>{{order.order_id}}</td>
+              <td>{{order.address.name}}</td>
+              <td>{{order.created}}</td>
+              <td>{{order.order_total}}</td>
+              <td>{{order.status}}</td>
+              <td><a href="{% url 'admin_order_details' order.order_id %}" class="check-btn sqr-btn">View</a></td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  </div>
+</div>
 
 {% endblock content %}

@@ -304,8 +304,11 @@
         <div class="slider-area">
             <div class="container">
                 <div class="hero-slider-active-1 nav-style-2 dot-style-2 dot-style-2-position-1 dot-style-2-active-black">
+                    
+                    {% if firstBanner %}
+                    
                     <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" 
-                    style="background-image:url({% static 'user\assets\images\blog\WhiteSneakersEveryBudgetMain2.jpg' %});">
+                    style="background-image:url({{ firstBanner.image.url }});">
                         <div class="row">
                             <div class="col-12">
                                 <div class="hero-slider-content-2 slider-animated-1">
@@ -318,7 +321,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" style="background-image:url({% static 'user\assets\images\blog\banner-white2.webp' %});">
+                    {% endif %}
+
+                    {% if secondBanner %}
+
+                    <div class="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-center bg-img hm2-slider-bg" style="background-image:url({{ secondBanner.image.url }});">
                         <div class="row">
                             <div class="col-12">
                                 <div class="hero-slider-content-2 slider-animated-1">
@@ -331,6 +338,9 @@
                             </div>
                         </div>
                     </div>
+
+                    {% endif %}
+
                 </div>
             </div>
         </div>
@@ -683,9 +693,9 @@
             </div>
         </div>
 
+        {% if thirdBanner%}
 
-
-        <div class="deal-area pt-150 pb-130 bg-img" style="background-image:url({% static 'user\assets\images\blog\banner-white1.jpg' %});">
+        <div class="deal-area pt-150 pb-130 bg-img" style="background-image:url({{ thirdBanner.image.url }});">
             <div class="container">
                 <div class="deal-content-1">
                     <span>deal of the day</span>
@@ -701,6 +711,9 @@
                 </div>
             </div>
         </div>
+
+        {% endif %}
+
         <div class="blog-area pt-115">
             <div class="container">
                 <div class="section-title-2 text-center mb-45">

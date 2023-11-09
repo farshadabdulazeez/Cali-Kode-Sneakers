@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Invoice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Define your styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .company-details {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .invoice-title {
+            font-size: 32px;
+            text-transform: uppercase;
+            margin: 0;
+            margin-bottom: 20px;
+        }
+        .invoice-header {
+            margin-bottom: 40px;
+        }
+        .invoice-details {
+            margin-top: 20px;
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .first-column {
+            font-weight: bold;
+        }
+        .invoice-btn i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="invoice-header">
+            <h2 class="invoice-title">INVOICE</h2>
+            <div class="company-details">
+                <strong><p>
+                    CALIKODE SNEAKERS<br>
+                    BLOCK.NO.7, CALICUT BEACH ROAD, KERALA, INDIA<br>
+                    +91 8129026217<br>
+                    calikodesneakers@gmail.com
+                </p></strong>
+            </div>
+            <strong><p>INVOICE NUMBER: {{ invoice_number }}</p></strong>
+        </div>
+        <div class="invoice-details">
+            <table class="invoice-table">
+                <tbody>
+                    
+                    {% for item in order_items %}
+                    
+                    <tr>
+                        <td class="first-column">PRODUCT ({{forloop.counter}})</td>
+                        <td>{{ item.variant.product.product_name }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <td class="first-column">ORDER ID</td>
+                        <td>{{ orders.order_id }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first-column">ISSUED ON</td>
+                        <td>{{ orders.created }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first-column">TOTAL AMOUNT</td>
+                        <td>{{ orders.order_total }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first-column">CUSTOMER</td>
+                        <td>{{ orders.address.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first-column">DELIVERY</td>
+                        <td>{{ orders.address.address }}, {{ orders.address.city }}, {{ orders.address.landmark }},
+                            {{ orders.address.pincode }}, {{ orders.address.district }}, {{ orders.address.state }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="first-column">PAYMENT METHOD</td>
+                        <td>
+                            {% if orders.payment.payment_method == "cash_on_delivery" %}
+                                Cash on Delivery
+                            {% elif orders.payment.payment_method == "Razorpay" %}
+                                Razorpay
+                            {% else %}
+                                {{ orders.payment.payment_method }}
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

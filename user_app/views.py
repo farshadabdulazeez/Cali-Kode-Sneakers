@@ -32,6 +32,9 @@ def index(request):
 
     categories = Category.objects.filter(is_active=True).order_by('id')
     products = Product.objects.filter(category__in=categories, is_available=True)
+    firstBanner = Banner.objects.get(name="firstBanner")
+    SecondBanner = Banner.objects.get(name="secondBanner")
+    thirdBanner = Banner.objects.get(name="thirdBanner")
 
     for product in products:
         if product.category.offer:
@@ -44,7 +47,9 @@ def index(request):
     context = {
         'categories' : categories,
         'products' : products,
-        
+        'firstBanner' : firstBanner,
+        'SecondBanner' : SecondBanner,
+        'thirdBanner' : thirdBanner
     }
 
     return render(request, 'user/index.html', context)

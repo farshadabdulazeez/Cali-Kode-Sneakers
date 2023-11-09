@@ -1,5 +1,5 @@
+import json
 import os
-
 from django.forms import ValidationError
 from order.models import *
 from decimal import Decimal
@@ -7,10 +7,16 @@ from user_app.models import *
 from product_app.models import *
 from django.contrib import messages
 from django.http import HttpResponse
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
+from django.db.models.functions import TruncDate
 from django.contrib.admin.views.decorators import staff_member_required
+from io import BytesIO
+from django.template.loader import get_template
+from xhtml2pdf import pisa 
+from django.db.models.functions import ExtractMonth
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -37,7 +43,122 @@ def admin_login(request):
 @staff_member_required(login_url='admin_login')
 def admin_dashboard(request):
 
-    return render(request, 'admin/admin_dashboard.html')
+    order = 0 * [12]
+    order_count = 0 * [12]
+    cancelled_orders_count = 0
+    returned_orders_count = 0
+    successfull_orders_count = 0
+    cash_on_delivery_count = 0
+    razorpay_count = 0
+
+    orders = Order.objects.all().order_by('id')
+    order_count = orders.count()
+    order_total = Order.objects.aggregate(total = Sum('order_total'))['total']
+    cancelled_orders = Order.objects.filter(status="CANCELLED")
+    returned_orders = Order.objects.filter(status="RETURNED")
+    successfull_orders = Order.objects.filter(status="DELIVERED")
+    cancelled_orders_count = Order.objects.filter(status="CANCELLED").count()
+    returned_orders_count = Order.objects.filter(status="RETURNED").count()
+    successfull_orders_count = Order.objects.filter(status="DELIVERED").count()
+    cash_on_delivery_count = Payments.objects.filter(payment_method ='cash_on_delivery').count()
+    razorpay_count = Payments.objects.filter(payment_method ='Razorpay').count()
+    total_revenue = Order.objects.aggregate(total_revenue = Sum('order_total'))['total_revenue']
+    total_revenue = float(total_revenue)
+    total_profit = total_revenue * 0.20
+
+    # Generate a dictionary with all months
+    months = {
+        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr',
+        5: 'May', 6: 'Jun', 7: 'Jul', 8: 'Aug',
+        9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
+    }
+
+    # Retrieve the monthly sales data
+    monthly_sales = (
+        Order.objects.annotate(month=ExtractMonth('created'))
+        .values('month')
+        .annotate(total_sales=Sum('order_total'))
+        .order_by('month')
+    )
+
+    # Prepare an empty dictionary for monthly sales
+    monthly_sales_data = {month: 0 for month in months.values()}
+
+    # Update the dictionary with sales data where available
+    for month_data in monthly_sales:
+        month_name = months[month_data['month']]
+        monthly_sales_data[month_name] = month_data['total_sales']
+
+    # Convert the data to JSON for Chart.js
+    monthly_sales_json = json.dumps({
+    'xValues': list(months.values()),  # Month names
+    'yValues': list(monthly_sales_data.values()),  # Sales data for each month
+    'barColors': ["red", "green", "blue", "orange", "brown"]  # Colors
+})
+
+
+    context = {
+        'orders' : orders,
+        'order_count' : order_count,
+        'order_total' : order_total,
+        'cancelled_orders' : cancelled_orders,
+        'returned_orders' : returned_orders,
+        'successfull_orders' : successfull_orders,
+        'cancelled_orders_count' : cancelled_orders_count,
+        'returned_orders_count' : returned_orders_count,
+        'successfull_orders_count' : successfull_orders_count,
+        'cash_on_delivery_count' : cash_on_delivery_count,
+        'razorpay_count' : razorpay_count,
+        'total_revenue' : total_revenue,
+        'total_profit' : total_profit,
+        'monthly_sales_data': monthly_sales_json,
+    }
+
+    return render(request, 'admin/admin_dashboard.html', context)
+
+
+@staff_member_required(login_url='admin_login') 
+def admin_order_details(request, order_id):
+    order = Order.objects.get(order_id=order_id)
+    order_items = OrderProduct.objects.filter(order_id=order)
+    order_total = Decimal(order.order_total)
+    invoice_number = f"INV-{order.order_id}"
+
+    context = {
+        "orders": order,
+        "order_items": order_items,
+        "invoice_number" : invoice_number,
+    }
+
+    return render(request, 'admin/admin_order_details.html', context)
+
+
+@staff_member_required(login_url='admin_login') 
+def admin_sales_report(request):
+
+    orders = Order.objects.all().order_by('id')
+
+    context = {
+        'orders' : orders
+    }
+
+    if 'pdf' in request.GET:  # Check if the request asks for PDF download
+        template_path = 'admin/admin_sales_report.html'  # Your HTML template path
+
+        # Render template
+        template = get_template(template_path)
+        html = template.render(context)
+
+        # Create a PDF
+        response = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response)
+
+        if not pdf.err:
+            # Return PDF as a downloadable file
+            response.seek(0)
+            return HttpResponse(response, content_type='application/pdf')
+
+    return render(request, 'admin/admin_sales_report.html', context)
 
 
 @staff_member_required(login_url='admin_login')
@@ -314,7 +435,6 @@ def admin_control_brand(request, id):
     return redirect('admin_brands')
 
 
-
 @staff_member_required(login_url='admin_login')
 def admin_products(request):
 
@@ -563,6 +683,7 @@ def admin_add_product_variant(request,product_id):
 def admin_edit_product_variant(request):
     try:
         if request.method == 'POST':
+
             id = request.POST['id']
             stock = request.POST['stock']
             variant = ProductVariant.objects.get(id=id)
@@ -805,7 +926,6 @@ def admin_banner(request):
     except Exception as e:
         print(e)
         return render(request, "admin/admin_banner.html", context)
-    
 
 
 @staff_member_required(login_url="admin_login")

@@ -19,10 +19,6 @@ urlpatterns = [
     path('delete-address/<int:address_id>/', views.delete_address, name = "delete_address"),
     # path('forgot-password/', views.forgot_password, name = "forgot_password"),
     path('change-password/', views.change_password, name = "change_password"),
-    # path('password-success/', views.password_success,name="password_success"),
     path('user-logout/', views.user_logout, name = "user_logout"),
-
-    # path('subscribe/', views.subscribe, name="subscribe"),
-    # path('test/', views.test, name='test'),
 
 ]

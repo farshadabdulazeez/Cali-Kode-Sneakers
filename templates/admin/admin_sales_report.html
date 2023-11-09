@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SALES REPORT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Define your styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .company-details {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .invoice-title {
+            font-size: 32px;
+            text-transform: uppercase;
+            margin: 0;
+            margin-bottom: 20px;
+        }
+        .invoice-header {
+            margin-bottom: 40px;
+        }
+        .invoice-details {
+            margin-top: 20px;
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .first-column {
+            font-weight: bold;
+        }
+        .invoice-btn i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="invoice-header">
+            <h2 class="invoice-title">SALES DATA</h2>
+            <div class="company-details">
+                <strong><p>
+                    CALIKODE SNEAKERS<br>
+                    BLOCK.NO.7, CALICUT BEACH ROAD, KERALA, INDIA<br>
+                    +91 8129026217<br>
+                    calikodesneakers@gmail.com
+                </p></strong>
+            </div>
+        </div>
+        <div class="invoice-details">
+            <table class="table table-bordered table-hover" style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #000; background-color: #f2f2f2; padding: 8px;">SL NO.</th>
+                        <th style="border: 1px solid #000; background-color: #f2f2f2; padding: 8px;">ORDER ID</th>
+                        <th style="border: 1px solid #000; background-color: #f2f2f2; padding: 8px;">CUSTOMER</th>
+                        <th style="border: 1px solid #000; background-color: #f2f2f2; padding: 8px;">ORDER DATE</th>
+                        <th style="border: 1px solid #000; background-color: #f2f2f2; padding: 8px;">TOTAL</th>
+                        <th style="border: 1px solid #000; background-color: #f2f2f2; padding: 8px;">ORDER STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td style="border: 1px solid #000; padding: 8px;">{{ forloop.counter }}</td>
+                        <td style="border: 1px solid #000; padding: 8px;">{{ order.order_id }}</td>
+                        <td style="border: 1px solid #000; padding: 8px;">{{ order.address.name }}</td>
+                        <td style="border: 1px solid #000; padding: 8px;">{{ order.created }}</td>
+                        <td style="border: 1px solid #000; padding: 8px;">{{ order.order_total }}</td>
+                        <td style="border: 1px solid #000; padding: 8px;">{{ order.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

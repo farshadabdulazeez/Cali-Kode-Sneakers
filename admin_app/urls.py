@@ -1,9 +1,15 @@
 from django.urls import path 
 from . import views
 
+
 urlpatterns = [
+
+
     path('', views.admin_login, name="admin_login"),
     path('admin-dashboard/', views.admin_dashboard, name="admin_dashboard"),
+    path('admin/order-details/<int:order_id>/', views.admin_order_details, name="admin_order_details"),
+    path('admin-sales-report/', views.admin_sales_report, name="admin_sales_report"),
+    # path('admin/download-orders-pdf/', views.admin_download_orders_pdf, name='admin_download_orders_pdf'),
 
     path('admin-users/', views.admin_users, name="admin_users"),
     path('admin-users-control/<int:id>', views.admin_users_control, name="admin_users_control"),
@@ -13,7 +19,6 @@ urlpatterns = [
     path('admin-edit-category/<int:id>', views.admin_edit_category, name="admin_edit_category"),
     # path('admin-delete-category/<int:id>', views.admin_delete_category, name="admin_delete_category"),
     path('admin-control-category/<int:id>', views.admin_control_category, name="admin_control_category"),
-
 
     path('admin-products/', views.admin_products, name="admin_products"),
     path('admin-add-product/', views.admin_add_product, name="admin_add_product"),
