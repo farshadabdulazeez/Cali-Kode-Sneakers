@@ -178,26 +178,36 @@
                             <div class="col-5">
                                 <div class="mobile-logo">
                                     <a href="index.html">
-                                        <img alt="" src="{% static 'user/assets/images/logo/logo.png' %}">
+                                        <img alt="" src="{% static 'user\assets\images\logo\cali-kode-logo-rectangle.png' %}">
                                     </a>
                                 </div>
                             </div>
                             <div class="col-7">
                                 <div class="header-action header-action-flex">
                                     <div class="same-style-2">
-                                        <a href="login-register.html"><i class="icon-user"></i></a>
+                                        {% if user.is_authenticated %}
+                                            <a href="{% url 'user_profile' %}"><i class="icon-user"></i></a>
+                                        {% else %}
+                                            <a href="{% url 'user_login' %}"><i class="icon-user"></i></a>
+                                        {% endif %}
                                     </div>
-                                    <div class="same-style-2">
+                                    {% comment %} <div class="same-style-2">
                                         <a href="wishlist.html"><i class="icon-heart"></i><span class="pro-count red">0</span></a>
-                                    </div>
+                                    </div> {% endcomment %}
                                     <div class="same-style-2 header-cart">
-                                        <a class="cart-active" href="#">
-                                            <i class="icon-basket-loaded"></i><span class="pro-count red">02</span>
-                                        </a>
+                                        {% if user.is_authenticated %}
+                                            <a class="cart-active" href="{% url 'cart' %}">
+                                                <i class="icon-basket-loaded"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'user_login' %}"> <!-- Replace 'user_login' with your actual user login URL name -->
+                                                <i class="icon-basket-loaded"></i>
+                                            </a>
+                                        {% endif %}
                                     </div>
-                                    <div class="same-style-2 main-menu-icon">
+                                    {% comment %} <div class="same-style-2 main-menu-icon">
                                         <a class="mobile-header-button-active" href="#"><i class="icon-menu"></i> </a>
-                                    </div>
+                                    </div> {% endcomment %}
                                 </div>
                             </div>
                         </div>

@@ -73,13 +73,13 @@
                                     </div>
                                     {% endif %}
 
-                                    <div class="header-cart-2">
+                                    {% comment %} <div class="header-cart-2">
                                         {% if user.is_authenticated %}
                                             <a class="cart-active" href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
                                         {% else %}
                                             <a class="cart-active" href="{% url 'user_login' %}"><i class="icon-basket-loaded"></i></a>
                                         {% endif %}
-                                    </div>
+                                    </div> {% endcomment %}
                                     
                                 </div>
                             </div>
@@ -163,14 +163,15 @@
                 </div>
                 <div class="header-small-device small-device-ptb-1">
                     <div class="row align-items-center">
-                        <div class="col-6">
+                        <div class="col-12 text-center"> <!-- Updated the column class to take up the full width and centered text -->
                             <div class="mobile-logo">
                                 <a href="index.html">
-                                    <img src="{% static 'user/assets/images/logo/logo.png' %}">
+                                    <img src="{% static 'user\assets\images\logo\cali-kode-logo-rectangle.png' %}" class="img-fluid" alt="Your Logo">
                                 </a>
                             </div>
                         </div>
-                        <div class="col-6">
+                    
+                        {% comment %} <div class="col-6">
                             <div class="header-action header-action-flex">
                                 <div class="same-style-2">
                                     <a href="login-register.html"><i class="icon-user"></i></a>
@@ -180,11 +181,10 @@
                                         <i class="icon-basket-loaded"></i>
                                     </a>
                                 </div>
-                                {% comment %} <div class="same-style-2 main-menu-icon">
+                                <div class="same-style-2 main-menu-icon">
                                     <a class="mobile-header-button-active" href="#"><i class="icon-menu"></i> </a>
-                                </div> {% endcomment %}
-                            </div>
-                        </div>
+                                </div> 
+                            </div> {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -698,15 +698,14 @@
         <div class="deal-area pt-150 pb-130 bg-img" style="background-image:url({{ thirdBanner.image.url }});">
             <div class="container">
                 <div class="deal-content-1">
-                    <span>deal of the day</span>
-                    <h2><span>50% OFF</span> Basic <br>Tee Flavor</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipis elit. Nunc imperdiet, nulla.</p>
+                    <span>Deal of the MONTH</span>
+                    <h2><span>50% OFF on<br> KIDS SNEAKERS</span></h2>
+                    <p>Step into savings! Enjoy a fantastic 50% off on all kids' sneakers this month. Give their little feet the comfort and style they deserve without breaking the bank. Hurry, lace up the deals before they walk away.</p>
                     <div class="timer-wrap">
-                        <h4>Expires in:</h4>
-                        <div class="timer-style-1" id="timer-1-active"></div>
+                        <div class="timer-style-1"></div>
                     </div>
                     <div class="deal-btn">
-                        <a href="product-details.html">Buy now</a>
+                        <a href="{% url 'products' %}">Buy now</a>
                     </div>
                 </div>
             </div>
