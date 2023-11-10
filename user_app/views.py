@@ -31,7 +31,7 @@ def index(request):
     context = {}
 
     categories = Category.objects.filter(is_active=True).order_by('id')
-    products = Product.objects.filter(category__in=categories, is_available=True)
+    products = Product.objects.filter(category__in=categories, is_available=True)[:8]
     firstBanner = Banner.objects.get(name="firstBanner")
     SecondBanner = Banner.objects.get(name="secondBanner")
     thirdBanner = Banner.objects.get(name="thirdBanner")
