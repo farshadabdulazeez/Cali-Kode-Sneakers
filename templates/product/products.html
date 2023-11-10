@@ -149,7 +149,7 @@
                                         <li><a class="prev" href="?page={{ products.previous_page_number }}"><i class="icon-arrow-left"></i></a></li>
                                     {% endif %}
                                     {% for i in products.paginator.page_range %}
-                                        <li><a {% if i == products.number %}class="active"{% endif %} href="?page={{ i }}">{{ i }}</a></li>
+                                        <li><a {% if i == products.number %}class="active"{% endif %} href="?page={{ i }}{% if selected_sizes %}&size={{ selected_sizes|join:"," }}{% endif %}">{{ i }}</a></li>
                                     {% endfor %}
                                     {% if products.has_next %}
                                         <li><a class="next" href="?page={{ products.next_page_number }}"><i class="icon-arrow-right"></i></a></li>
