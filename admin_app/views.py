@@ -16,7 +16,13 @@ from django.contrib.admin.views.decorators import staff_member_required
 from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa 
-from django.db.models.functions import ExtractMonth
+from django.db.models.functions import ExtractMonth, ExtractYear, ExtractDay
+from django.db.models import Sum, Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import datetime
+from django.utils.dateparse import parse_date
+from django.utils.timezone import make_aware
+from datetime import timedelta
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -43,6 +49,9 @@ def admin_login(request):
 @staff_member_required(login_url='admin_login')
 def admin_dashboard(request):
 
+    if 'email' not in request.session:  # Check for the absence of 'email' in session
+        return redirect('admin_login')
+
     order = 0 * [12]
     order_count = 0 * [12]
     cancelled_orders_count = 0
@@ -65,6 +74,91 @@ def admin_dashboard(request):
     total_revenue = Order.objects.aggregate(total_revenue = Sum('order_total'))['total_revenue']
     total_revenue = float(total_revenue)
     total_profit = total_revenue * 0.20
+    # Inside your admin_dashboard view
+    product_sales = OrderProduct.objects.values('variant__product').annotate(sales=Sum('quantity')).order_by('-sales')
+
+    # Get the top-selling products based on the number of sales
+    top_selling_products = product_sales.filter(sales__gt=0).order_by('-sales')[:5]
+
+
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # Retain the full dataset for pagination
+    orders = Order.objects.all().order_by('id')
+
+    if start_date and end_date:
+        try:
+            start_datetime = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+            # Increment the end date by one day to make it inclusive
+            end_datetime = make_aware(datetime.strptime(end_date, '%Y-%m-%d')) + timedelta(days=1)
+            
+            filtered_orders = orders.filter(created__range=(start_datetime, end_datetime))
+        except ValueError:
+            return HttpResponse("Invalid date format. Please use YYYY-MM-DD format.")
+    else:
+        filtered_orders = orders
+
+    # Search functionality
+    query = request.GET.get('q')
+    if query:
+        filtered_orders = filtered_orders.filter(
+            Q(order_id__icontains=query) | Q(address__name__icontains=query)
+        )
+
+    # Pagination
+    page = request.GET.get('page', 1)
+    paginator = Paginator(filtered_orders, 10)
+    try:
+        orders = paginator.page(page)
+    except PageNotAnInteger:
+        orders = paginator.page(1)
+    except EmptyPage:
+        orders = paginator.page(paginator.num_pages)
+
+    # Retrieve the daily sales data
+    daily_sales = (
+        Order.objects.annotate(day=ExtractDay('created'))
+        .values('day')
+        .annotate(total_sales=Sum('order_total'))
+        .order_by('day')
+    )
+
+    # Prepare an empty dictionary for daily sales
+    daily_sales_data = {day: 0 for day in range(1, 32)}  # Assuming days range from 1 to 31
+
+    # Update the dictionary with sales data where available
+    for day_data in daily_sales:
+        day = day_data['day']
+        daily_sales_data[day] = day_data['total_sales']
+
+    daily_sales_json = json.dumps({
+        'xValues': list(range(1, 32)),  # Days range
+        'yValues': list(daily_sales_data.values()),  # Sales data for each day
+        'barColors': ["red", "green", "blue", "orange", "brown"]  # Colors
+    })
+
+    # Retrieve the yearly sales data
+    yearly_sales = (
+        Order.objects.annotate(year=ExtractYear('created'))
+        .values('year')
+        .annotate(total_sales=Sum('order_total'))
+        .order_by('year')
+    )
+
+    # Prepare an empty dictionary for yearly sales
+    yearly_sales_data = {year: 0 for year in range(2022, 2030)}  # Adjust the year range as needed
+
+    # Update the dictionary with sales data where available
+    for year_data in yearly_sales:
+        year = year_data['year']
+        yearly_sales_data[year] = year_data['total_sales']
+
+    yearly_sales_json = json.dumps({
+        'xValues': list(range(2022, 2030)),  # Year range
+        'yValues': list(yearly_sales_data.values()),  # Sales data for each year
+        'barColors': ["red", "green", "blue", "orange", "brown"]  # Colors
+    })
 
     # Generate a dictionary with all months
     months = {
@@ -112,6 +206,11 @@ def admin_dashboard(request):
         'total_revenue' : total_revenue,
         'total_profit' : total_profit,
         'monthly_sales_data': monthly_sales_json,
+        'daily_sales_data': daily_sales_json,
+        'yearly_sales_data': yearly_sales_json,
+        'start_date': start_date,
+        'end_date': end_date,
+        'top_selling_products': top_selling_products,
     }
 
     return render(request, 'admin/admin_dashboard.html', context)
@@ -119,6 +218,10 @@ def admin_dashboard(request):
 
 @staff_member_required(login_url='admin_login') 
 def admin_order_details(request, order_id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     order = Order.objects.get(order_id=order_id)
     order_items = OrderProduct.objects.filter(order_id=order)
     order_total = Decimal(order.order_total)
@@ -135,6 +238,9 @@ def admin_order_details(request, order_id):
 
 @staff_member_required(login_url='admin_login') 
 def admin_sales_report(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     orders = Order.objects.all().order_by('id')
 
@@ -164,6 +270,9 @@ def admin_sales_report(request):
 @staff_member_required(login_url='admin_login')
 def admin_users(request):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     context = {}
     try:
         users = CustomUser.objects.all().order_by('id')
@@ -179,6 +288,9 @@ def admin_users(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_users_control(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     try:
         user = CustomUser.objects.get(id=id)
@@ -196,6 +308,9 @@ def admin_users_control(request, id):
 @staff_member_required(login_url='admin_login')
 def admin_category(request):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     context = {}
     try:
         categories = Category.objects.all().order_by('id')
@@ -211,6 +326,9 @@ def admin_category(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_category(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     try:
         if request.method == 'POST':
@@ -245,6 +363,9 @@ def admin_add_category(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_category(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     try:
         category = Category.objects.get(id=id)
@@ -299,6 +420,9 @@ def admin_edit_category(request, id):
 @staff_member_required(login_url='admin_login')
 def admin_control_category(request, id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     try:
         category = Category.objects.get(id=id)
         if category.is_active:
@@ -319,6 +443,9 @@ def admin_control_category(request, id):
 @staff_member_required(login_url='admin_login')
 def admin_brands(request):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     context = {}
 
     brands = ProductBrand.objects.all()
@@ -332,6 +459,10 @@ def admin_brands(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_brand(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     if request.method == 'POST':
         brand_name = request.POST['brand_name']
         brand_description = request.POST['brand_description']
@@ -370,6 +501,10 @@ def admin_add_brand(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_brand(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         brand = ProductBrand.objects.get(id=id)
 
@@ -403,6 +538,10 @@ def admin_edit_brand(request, id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_delete_brand(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         brand = ProductBrand.objects.get(id=id)
         if brand:
@@ -417,6 +556,10 @@ def admin_delete_brand(request, id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_control_brand(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         brand = ProductBrand.objects.get(id=id)
         if brand.is_active:
@@ -438,6 +581,9 @@ def admin_control_brand(request, id):
 @staff_member_required(login_url='admin_login')
 def admin_products(request):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     context = {}
 
     try:
@@ -455,6 +601,9 @@ def admin_products(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_product(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     categories = Category.objects.all()
     brands = ProductBrand.objects.all()
@@ -527,6 +676,9 @@ def admin_add_product(request):
 @staff_member_required(login_url='admin_login')
 def admin_edit_product(request, id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     product = Product.objects.get(id=id)
     product_category = product.category
     product_brand = product.brand
@@ -596,6 +748,9 @@ def admin_edit_product(request, id):
 @staff_member_required(login_url='admin_login')
 def admin_delete_product(request, id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     product = Product.objects.get(id=id)
     if product.product_image:
         if len(product.product_image) != 0:
@@ -609,6 +764,9 @@ def admin_delete_product(request, id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_control_product(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     try:
         product = Product.objects.get(id=id)
@@ -629,6 +787,9 @@ def admin_control_product(request, id):
 @staff_member_required(login_url='admin_login')
 def admin_product_variant(request, product_id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     context = {}
 
     variant = ProductVariant.objects.filter(product=product_id)
@@ -644,6 +805,9 @@ def admin_product_variant(request, product_id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_product_variant(request,product_id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     context = {}
 
@@ -681,6 +845,10 @@ def admin_add_product_variant(request,product_id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_product_variant(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         if request.method == 'POST':
 
@@ -706,6 +874,9 @@ def admin_edit_product_variant(request):
 @staff_member_required(login_url='admin_login')
 def admin_delete_product_variant(request, variant_id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     try:
         variant = ProductVariant.objects.get(id=variant_id)
         product = variant.product
@@ -725,6 +896,9 @@ def admin_delete_product_variant(request, variant_id):
 @staff_member_required(login_url='admin_login')
 def admin_control_product_variant(request, variant_id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     try:
         variant = ProductVariant.objects.get(id=variant_id)
         product_id = variant.product.id
@@ -741,6 +915,10 @@ def admin_control_product_variant(request, variant_id):
 
 @staff_member_required(login_url='admin_login')
 def admin_coupons(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     context = {}
     try:
         coupons = Coupons.objects.all().order_by('-id') 
@@ -757,6 +935,9 @@ def admin_coupons(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_coupon(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
 
     if request.method == "POST":
 
@@ -798,6 +979,10 @@ def admin_add_coupon(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_coupon(request, coupon_id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         coupon = get_object_or_404(Coupons, id=coupon_id)
 
@@ -846,6 +1031,10 @@ def admin_edit_coupon(request, coupon_id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_delete_coupon(request, coupon_id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         coupon = get_object_or_404(Coupons, id=coupon_id)
         coupon.delete()
@@ -860,6 +1049,10 @@ def admin_delete_coupon(request, coupon_id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_activate_coupon(request, coupon_id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     try:
         coupon = Coupons.objects.get(id=coupon_id)
         if coupon.active:
@@ -876,6 +1069,10 @@ def admin_activate_coupon(request, coupon_id):
 
 @staff_member_required(login_url='admin_login')
 def admin_orders(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     context = {}
     # try:
     orders = Order.objects.all().order_by('-order_id')
@@ -890,6 +1087,9 @@ def admin_orders(request):
 @staff_member_required(login_url="admin_login")
 def admin_orders_detail(request, id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     order = Order.objects.get(id=id)
     
     order_items = OrderProduct.objects.filter(order_id=order)
@@ -903,6 +1103,9 @@ def admin_orders_detail(request, id):
 @staff_member_required(login_url="admin_login")
 def admin_orders_status(request, id):
 
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     if request.method == 'POST':
 
         new_status = request.POST.get('new_status')
@@ -915,6 +1118,10 @@ def admin_orders_status(request, id):
 
 @staff_member_required(login_url="admin_login")
 def admin_banner(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     context = {}
     try:
         banners = Banner.objects.all()
@@ -930,6 +1137,10 @@ def admin_banner(request):
 
 @staff_member_required(login_url="admin_login")
 def admin_banner(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     context = {}
     try:
         banners = Banner.objects.all().order_by('id')
@@ -945,6 +1156,10 @@ def admin_banner(request):
 
 @staff_member_required(login_url="admin_login")
 def admin_edit_banner(request, banner_id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+
     try:
         banner = get_object_or_404(Banner, id=banner_id)
 
@@ -974,6 +1189,9 @@ def admin_edit_banner(request, banner_id):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_logout(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
     logout(request)
     request.session.flush()
     return redirect('admin_login')
