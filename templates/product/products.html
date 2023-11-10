@@ -143,14 +143,20 @@
                                     </div>
                                 </div>
                             </div>
-                            {% comment %} <div class="pro-pagination-style text-center mt-10">
+                            <div class="pro-pagination-style text-center mt-10">
                                 <ul>
-                                    <li><a class="prev" href="#"><i class="icon-arrow-left"></i></a></li>
-                                    <li><a class="active" href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a class="next" href="#"><i class="icon-arrow-right"></i></a></li>
+                                    {% if products.has_previous %}
+                                        <li><a class="prev" href="?page={{ products.previous_page_number }}"><i class="icon-arrow-left"></i></a></li>
+                                    {% endif %}
+                                    {% for i in products.paginator.page_range %}
+                                        <li><a {% if i == products.number %}class="active"{% endif %} href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endfor %}
+                                    {% if products.has_next %}
+                                        <li><a class="next" href="?page={{ products.next_page_number }}"><i class="icon-arrow-right"></i></a></li>
+                                    {% endif %}
                                 </ul>
-                            </div> {% endcomment %}
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="col-lg-3">
