@@ -365,9 +365,10 @@ def order_cancel(request, order_id):
             user = order.user
             payment_method = order_item.payment.payment_method
 
-            if payment_method == "Razorpay":
+            if payment_method == "Razorpay" or payment_method == "walletPayment" :
                 # Refund total amount back to user's wallet for Razorpay payments
                 refund_amount = total_amount + wallet_amount
+            
             else:
                 # Refund only the wallet amount for other payment methods like Cash on Delivery
                 refund_amount = wallet_amount
@@ -420,7 +421,7 @@ def order_return(request, order_id):
 
             payment_method = order_item.payment.payment_method
 
-            if payment_method == "Razorpay":
+            if payment_method == "Razorpay" or payment_method == "walletPayment":
                 # Refund total amount back to user's wallet for Razorpay payments
                 refund_amount = total_decimal + wallet_amount
                 user.wallet += refund_amount

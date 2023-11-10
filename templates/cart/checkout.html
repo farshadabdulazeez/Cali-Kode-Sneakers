@@ -116,7 +116,7 @@
                                 <h3>Your order</h3>
                                 <div class="your-order-wrap gray-bg-4">
                                     <div class="your-order-info-wrap">
-                                        {% comment %} <div class="your-order-info">
+                                        <div class="your-order-info">
                                             <ul>
                                                 <li>Product <span>Total</span></li>
                                             </ul>
@@ -125,19 +125,19 @@
                                         {% for item in cart_items %}
                                         <div class="your-order-middle">
                                             <ul>
-                                                <li>{{ item.product.product.product_name }}<span><b>{{ item.product.product.selling_price }}<b></span></li>
+                                                <li>{{ item.product.product.product_name }}<span>{{ item.product.product.selling_price }}</span></li>
                                             </ul>
                                         </div>
                                         
                                         {% endfor %}
-                                        {% endif %}  {% endcomment %}
-                                        {% comment %} <div class="your-order-info order-subtotal">
+                                        {% endif %}  
+                                        <div class="your-order-info order-subtotal">
                                             <ul>
-                                                <li>Subtotal <span>{{ sub_total }}</span></li>
+                                                <li>DELIVERY <span>FREE</span></li>
                                             </ul>
                                         </div> 
                                         
-                                        <div class="your-order-info order-shipping">
+                                        {% comment %} <div class="your-order-info order-shipping">
                                             <ul>
                                                 <li>
                                                     Coupon discount:
@@ -148,7 +148,7 @@
                                                     {% endif %}
                                                 </li>
                                             </ul>
-                                        </div> {% endcomment %}
+                                        </div>  {% endcomment %}
                                         <div class="your-order-info order-total">
                                             <ul>
                                                 {% if grand_total %}
@@ -170,9 +170,9 @@
                                         </div>
                                        
                                         <div class="pay-top sin-payment">
-                                            <input id="payment-method-wallet" class="input-checkbox" type="checkbox" value="walletPayment" name="wallet_amount">
+                                            <input id="payment-method-wallet" class="input-radio" type="radio" value="walletPayment" name="payment_method">
                                             <label for="payment-method-wallet">Wallet payment</label>
-                                        </div>
+                                        </div> 
                                     </div>
                                 </div>
                                 

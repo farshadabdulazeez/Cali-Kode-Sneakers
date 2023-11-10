@@ -280,56 +280,56 @@ def clear_coupon(request):
     return redirect('cart')
 
 
-def wishlist(request):
-    context = {}
-    if request.user.is_authenticated:
-        try:
-            my_user = request.user
-            user = CustomUser.objects.get(id=my_user.id)
-            wishlist_items = Wishlist.objects.filter(user=user)
+# def wishlist(request):
+#     context = {}
+#     if request.user.is_authenticated:
+#         try:
+#             my_user = request.user
+#             user = CustomUser.objects.get(id=my_user.id)
+#             wishlist_items = Wishlist.objects.filter(user=user)
             
-            # Fetching product variants associated with the wishlist items
-            product_variants = [item.variant for item in wishlist_items]
+#             # Fetching product variants associated with the wishlist items
+#             product_variants = [item.variant for item in wishlist_items]
 
-            context = {"wishlist": wishlist_items, "product_variants": product_variants}
-            return render(request, "cart/wishlist.html", context)
-        except Exception as e:
-            print(e)
-            return render(request, "cart/wishlist.html", context)
-    else:
-        return redirect("user_login")
+#             context = {"wishlist": wishlist_items, "product_variants": product_variants}
+#             return render(request, "cart/wishlist.html", context)
+#         except Exception as e:
+#             print(e)
+#             return render(request, "cart/wishlist.html", context)
+#     else:
+#         return redirect("user_login")
 
-@login_required(login_url="index")
-def add_to_wishlist(request, variant_id):
-    user = request.user
-    try:
-        variant = ProductVariant.objects.get(id=variant_id)
-        product_id = request.GET.get('product_id') 
+# @login_required(login_url="index")
+# def add_to_wishlist(request, variant_id):
+#     user = request.user
+#     try:
+#         variant = ProductVariant.objects.get(id=variant_id)
+#         product_id = request.GET.get('product_id') 
 
-        # You might want to validate if the product_id belongs to the variant's product here
+#         # You might want to validate if the product_id belongs to the variant's product here
         
-        if Wishlist.objects.filter(user=user, variant=variant).exists():
-            return redirect("wishlist")
+#         if Wishlist.objects.filter(user=user, variant=variant).exists():
+#             return redirect("wishlist")
 
-        # Create Wishlist item associating the variant and the user
-        wishlist = Wishlist.objects.create(user=user, variant=variant)
-        wishlist.save()
-        messages.success(request, "Product added to wishlist")
-        return redirect("wishlist")
-    except Exception as e:
-        print(e)
-        return redirect("index")
+#         # Create Wishlist item associating the variant and the user
+#         wishlist = Wishlist.objects.create(user=user, variant=variant)
+#         wishlist.save()
+#         messages.success(request, "Product added to wishlist")
+#         return redirect("wishlist")
+#     except Exception as e:
+#         print(e)
+#         return redirect("index")
     
 
-@login_required(login_url="index")
-def delete_wishlist(request, wishlist_id):
-    try:
-        wishlist = Wishlist.objects.get(id=wishlist_id)
-        wishlist.delete()
-        return redirect("wishlist")
-    except Exception as e:
-        print(e)
-        return redirect("wishlist")
+# @login_required(login_url="index")
+# def delete_wishlist(request, wishlist_id):
+#     try:
+#         wishlist = Wishlist.objects.get(id=wishlist_id)
+#         wishlist.delete()
+#         return redirect("wishlist")
+#     except Exception as e:
+#         print(e)
+#         return redirect("wishlist")
     
 
 @cache_control(no_cache=True, no_store=True)
@@ -441,6 +441,75 @@ def checkout(request):
                     item.delete()
 
                 return redirect('order_confirmed', order_id )
+        
+            
+            elif payment_method == "walletPayment":
+                
+                user = request.user
+
+                # Assuming 'wallet' is the field in your user model representing the wallet balance
+                wallet_amount = user.wallet
+
+                # Calculate the total amount from the cart items
+                grand_total = Decimal(0)
+                for item in cart_items:
+                    grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+
+                # Check if the user has sufficient balance in the wallet
+                if wallet_amount >= grand_total:
+                    # Deduct the amount from the wallet
+                    user.wallet -= grand_total
+                    user.save()
+
+                    payment = Payments.objects.create(
+                        user=user,
+                        payment_method=payment_method,
+                        total_amount=grand_total,
+                    )
+                    payment.save()
+
+                    order = Order.objects.create(
+                        user=user,
+                        address=delivery_address,
+                        payment=payment,
+                        total=grand_total,
+                        order_total=grand_total,
+                    )
+                    order.save()
+
+                    # Creating order with the current date and order id
+                    yr = int(datetime.date.today().strftime('%Y'))
+                    dt = int(datetime.date.today().strftime('%d'))
+                    mt = int(datetime.date.today().strftime('%m'))
+                    d = datetime.date(yr, mt, dt)
+                    current_date = d.strftime("%Y%m%d")
+                    order_id = current_date + str(order.id)  # Creating order id
+                    order.order_id = order_id
+
+                    order.save()
+
+                    # Process cart items and create order items
+                    cart_items = CartItem.objects.filter(customer=my_user)
+                    for item in cart_items:
+                        variant = ProductVariant.objects.get(id=item.product.id)
+                        order_item = OrderProduct.objects.create(
+                            customer=my_user,
+                            order_id=order,
+                            payment_id=payment.id,
+                            variant=variant,
+                            quantity=item.quantity,
+                            product_price=item.product.product.selling_price,
+                            ordered=True,
+                        )
+                        variant.stock = variant.stock - item.quantity
+                        variant.save()
+                        item.delete()
+
+                    return redirect('order_confirmed', order_id)
+
+                else:
+                    # Redirect the user to an error page or handle insufficient funds as needed
+                    return redirect('insufficient_funds_error_page')
         
         context = {
             'addresses': address,

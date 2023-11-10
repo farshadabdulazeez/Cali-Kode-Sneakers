@@ -27,7 +27,15 @@
                         <td>{{ order.address.name }}</td>
                         <td>{{ order.order_id }}</td>
                         <td>{{ order.order_total }}</td>
-                        <td>{% if order.is_ordered %}RAZORPAY{% else %}C.O.D{% endif %}</td>
+                        <td>
+                            {% if order.payment.payment_method == "Razorpay" %}
+                                RAZORPAY
+                            {% elif order.payment.payment_method == "walletPayment" %}
+                                WALLET
+                            {% else %}
+                                CASH ON DELIVERY
+                            {% endif %}
+                        </td>
                         <td>{% if order.status %}{{ order.status }}{% else %}PROCESSING{% endif %}</td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="{% url 'admin_orders_detail' order.id %}">Details</a>
