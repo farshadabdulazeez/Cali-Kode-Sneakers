@@ -1154,6 +1154,7 @@ def admin_banner(request):
         return render(request, "admin/admin_banner.html", context)
     
 
+@cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url="admin_login")
 def admin_edit_banner(request, banner_id):
 

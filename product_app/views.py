@@ -103,6 +103,7 @@ def product_details(request, id):
         offer_percentage = single_product.category.offer
         new_selling_price = single_product.original_price - (single_product.original_price * offer_percentage / 100)
         single_product.selling_price = new_selling_price
+        
 
     context = {
         'product': single_product,

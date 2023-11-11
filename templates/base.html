@@ -36,6 +36,10 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    {% comment %} ALERTIFY JS {% endcomment %}
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+
     <!-- Use the minified version files listed below for better performance and remove the files listed above 
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css">
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css">
@@ -321,6 +325,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
 
+{% comment %} ALERTIFY JS {% endcomment %}
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>  
+<script>
+    alertify.set('notifier','position', 'top-right');
+    {% for message in messages %}
+
+    alertify.success('{{ message }}');
+
+    {% endfor %}
+</script>
+
 <!-- Use the minified version files listed below for better performance and remove the files listed above  
 <script src="assets/js/vendor/vendor.min.js"></script>
 <script src="assets/js/plugins/plugins.min.js"></script>  -->
@@ -333,6 +348,15 @@
 
 {% endblock scripts %}
 
+    <script src="{% static 'user/assets/js/zoomsl.js' %}"></script>
+	<script src="{% static 'user/assets/js/zoomsl.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+          $(".big_img").imagezoomsl({
+              zoomrange:[-4,-4]
+          })
+        })
+    </script>
 
 <!-- Razorpay payment method ckeckout -->
 <script src="{% static 'user/assets/js/checkout.js' %}"></script>

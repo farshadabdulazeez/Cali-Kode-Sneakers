@@ -86,33 +86,39 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
     grand_total = 0
     available_coupons = None
     selected_coupon = 0
+    coupons = None  # Define coupons here
 
     if 'user' in request.session:
-
         user = request.user
         try:
-            cart = Cart.objects.get(cart_id=_cart_id(request))  # fetching the cart id
-
+            cart = Cart.objects.get(cart_id=_cart_id(request))
         except ObjectDoesNotExist:
             pass
 
         try:
+            cart_items = CartItem.objects.filter(customer=user).order_by('id')
 
-            cart_items = CartItem.objects.filter(customer=user).order_by('id')   # fetch every cart items related with the cart
+            for item in cart_items:
+                # Check if the product has a category offer
+                if item.product.product.category.offer:
+                    offer_percentage = item.product.product.category.offer
+                    discounted_price = item.product.product.original_price - (
+                        item.product.product.original_price * offer_percentage / 100
+                    )
+                    total += Decimal(discounted_price) * Decimal(item.quantity)
+                else:
+                    total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
 
-            for item in cart_items:                    
-                total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-                
-            grand_total = total  # You can add taxes, shipping, and discounts here
+            grand_total = total
 
             coupons = Coupons.objects.filter(active=True)
 
             available_coupons = Coupons.objects.filter(
                 active=True,
-                minimum_order_amount__lte=grand_total,  # Check if minimum_order_amount is less than or equal to the grand total
+                minimum_order_amount__lte=grand_total,
                 valid_from__lte=timezone.now(),
                 valid_to__gte=timezone.now()
-            ).order_by('-discount')  # Order by highest discount first
+            ).order_by('-discount')
 
         except ObjectDoesNotExist:
             pass
@@ -120,19 +126,34 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
             print(e)
 
     if request.method == 'POST':
+        user = request.session['user']
+        my_user = CustomUser.objects.get(email=user)
+        orders = Order.objects.filter(user=my_user.id)
+        coupon_store = []
+        for i in orders:
+            if i.coupon is not None:
+                print(i.coupon.id)
+                coupon_store.append(i.coupon.id)
+            print('-------------------')
         coupon_code = request.POST.get("coupon-codes")
-        selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
-        grand_total -= selected_coupon.discount 
+        coupon = Coupons.objects.get(coupon_code = coupon_code)
+        if coupon not in coupon_store:
+            selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
+            grand_total -= selected_coupon.discount 
+
+            request.session['selected_coupon_code'] = coupon_code
+            request.session['grand_total'] = float(grand_total)
+        else:
+            messages.error(request,"Coupon already used")
+            return redirect('cart')
         
-        request.session['selected_coupon_code'] = coupon_code
-        request.session['grand_total'] = float(grand_total)
    
     context = {
-        'quantity' : quantity,
-        'total' : total,
-        'cart_items' : cart_items,
-        'grand_total' : grand_total,
-        'coupons' : coupons,
+        'quantity': quantity,
+        'total': total,
+        'cart_items': cart_items,
+        'grand_total': grand_total,
+        'coupons': coupons,
         'available_coupons': available_coupons,
         'selected_coupon': selected_coupon
     }
@@ -361,6 +382,7 @@ def checkout(request):
             
         # Fetch the stored coupon code from the session
         selected_coupon_code = request.session.get('selected_coupon_code')
+        coupon = Coupons.objects.get(coupon_code= selected_coupon_code)
         if selected_coupon_code:
             try:
                 selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
@@ -373,7 +395,10 @@ def checkout(request):
 
         if request.method == 'POST':
           
-            delivery_address = UserAddress.objects.get(id=request.POST['delivery_address'])
+            try:
+                delivery_address = UserAddress.objects.get(id=request.POST['delivery_address'])
+            except:
+                return redirect('checkout')
             request.session['selected_address_id'] = delivery_address.id
             payment_method = request.POST['payment_method']
             
@@ -409,7 +434,11 @@ def checkout(request):
                     payment = payment,
                     total=total,
                     order_total=grand_total, 
+
                 )
+                if coupon is not None:
+                    order.coupon = coupon
+                    del request.session['selected_coupon_code']
                 order.save()
 
                 # creating order with current date and order id

@@ -168,6 +168,7 @@ def user_login(request):
             if user:  
                 request.session['user'] = email
                 login(request, user)
+                messages.success(request, "Logged in successfully!")
                 return redirect('index')
             else:
                 messages.error(request, "Invalid Credentials, Try again!")
