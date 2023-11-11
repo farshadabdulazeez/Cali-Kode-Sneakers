@@ -140,7 +140,7 @@ User-Profile
                                         <div class="tab-pane fade" id="orders" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Orders</h3>
-                                                <div class="myaccount-table table-responsive text-center">
+                                                <div class="table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead class="thead-light">
                                                             <tr>
@@ -161,7 +161,7 @@ User-Profile
                                                                 <td>{{ order.quantity }}</td>
                                                                 <td>{{ order.variant.product_size.size }}</td>
                                                                 <td>{{ order.order_id.status }}</td>
-                                                                <td>
+                                                                {% comment %} <td>
                                                                     {% if order.order_id.status == "ORDER CONFIRMED" %}
                                                                         <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel-{{order.order_id.id}}">CANCEL ORDER</button>
                                                                     {% elif order.order_id.status == "DELIVERED" %}
@@ -174,6 +174,19 @@ User-Profile
                                                                         <h5>ORDER CANCELLED</h5>
                                                                     {% else %}
                                                                         <h5>PROCESSING</h5>
+                                                                    {% endif %}
+                                                                </td> {% endcomment %}
+                                                                <td>
+                                                                    {% if order.order_id.status == "ORDER CONFIRMED" %}
+                                                                        <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel-{{order.order_id.id}}" style="color: red;">CANCEL ORDER</button>
+                                                                    {% elif order.order_id.status == "DELIVERED" %}
+                                                                        <button class="return-btn sqr-btn" data-toggle="modal" data-target="#returnOrderModalLabel-{{order.order_id.id}}" style="color: green;">RETURN ORDER</button>
+                                                                    {% elif order.order_id.status == "RETURNED" %}
+                                                                        <h5 style="color: blue;">RETURNED</h5>
+                                                                    {% elif order.order_id.status == "CANCELLED" %}
+                                                                        <h5 style="color: red;">ORDER CANCELLED</h5>
+                                                                    {% else %}
+                                                                        <h5 style="color: purple;">PROCESSING</h5>
                                                                     {% endif %}
                                                                 </td>
                                                                 <td><a href="{% url 'order_details' order.order_id.id %}" class="check-btn sqr-btn">View</a></td>
