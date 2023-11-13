@@ -145,6 +145,7 @@ Thank you for using Cali Kode Sneakers!
     return render(request, 'user/register.html')
 
 
+
 def generate_ref_code():
     code = str(uuid.uuid4()).replace("-", "")[:12]
     return code
@@ -236,38 +237,75 @@ def otp_verification(request, user_id):
     return render(request, 'user/otp_verification.html', context)
 
 
-# @cache_control(no_cache=True,no_store=True)
-# def regenerate_otp(request):
-#     try:
-#         user = CustomUser.objects.get(id=id)
-#         email = user.email
-#         user.otp = ''
-#         otp = get_random_string(length=6, allowed_chars='1234567890')
+@cache_control(no_cache=True, no_store=True)
+def forgot_password(request):
+    try:
+        if request.method == "POST":
+            email = request.POST.get("email")
+            user = CustomUser.objects.filter(email=email).first()
+            if user:
+                otp = get_random_string(length=6, allowed_chars="1234567890")
+                user.otp = otp
+                user.save()
+                subject = "Verify your account"
+                message = f"Your OTP for account verification in CaliKode Sneakers is {otp}"
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [
+                    email,
+                ]
+                send_mail(subject, message, email_from, recipient_list)
+                return redirect("forgot_password_otp_verification", user.id)
+            else:
+                messages.error(request, "email id not valid")
+                return redirect("forgot_password")
+        return render(request, "user/forgot_password.html")
+    
+    except Exception as e:
+        print(e)
+        return render(request, "user/forgot_password.html")
 
-#         subject = 'Verify your account'
-#         message = f'''You have requested a One-Time Password (OTP) for account verification.
-# Please use the following OTP to complete the verification process:
 
-# OTP: {otp}
+@cache_control(no_cache=True, no_store=True)
+def forgot_password_otp_verification(request, user_id):
 
-# Please enter this OTP in the appropriate field on our website to verify your account.
+    user = CustomUser.objects.get(id=user_id)
+    otp = user.otp
+    try:
+        if request.method == "POST":
+            user_otp = request.POST.get("otp")
+            if user_otp == otp:
+                return redirect("update_password", user.id)
+            else:
+                messages.error(request, "Incorrect otp")
+                return redirect("forgot_password_otp_verification")
+        return render(request, "user/forgot_password_otp_verification.html")
+        
+    except Exception as e:
+        print(e)
+        return render(request, "user/forgot_password_otp_verification.html")
+    
 
-# If you did not request this OTP or have any concerns about your account's security,
-# please contact our support team immediately.
+@cache_control(no_cache=True, no_store=True)
+def update_password(request, user_id):
 
-# Thank you for using Cali Kode Sneakers!
-# '''
-#         email_from = settings.EMAIL_HOST_USER
-#         recipient_list = [email, ]
-#         send_mail(subject, message, email_from, recipient_list)
+    user = CustomUser.objects.get(id=user_id)
+    try:
+        if request.method == "POST":
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm_password")
+            if password == confirm_password:
+                user.set_password(password)
+                user.save()
+                messages.success(request, "Password changed successfully")
+                return redirect("user_login")
+            else:
+                messages.error(request, "passwords do not match")
+                return redirect("update_password")
+        return render(request, "user/update_password.html")
 
-#         user.otp = otp
-#         user.save()
-#         messages.success(request, "An OTP has been sent to your email for verification.")
-#     except Exception as e:
-#         print(e)
-
-#     return render(request, 'otp_verification')
+    except Exception as e:
+        print(e)
+        return render(request, "user/update_password.html")
 
 
 @login_required(login_url='index')
@@ -445,19 +483,6 @@ def order_return(request, order_id):
 
     return redirect('user_profile')
 
-
-# @login_required(login_url='index')
-# def generate_invoice_number(request):
-#     last_invoice = Order.objects.filter(user=request.user).last()
-#     if not last_invoice:
-#         return 'INV-0001'
-#     invoice_parts = last_invoice.order_id.split('-')
-#     if len(invoice_parts) < 2:
-#         return 'INV-0001'
-#     invoice_no = invoice_parts[1]
-#     new_invoice_no = str(int(invoice_no) + 1).zfill(4)
-#     return 'INV-' + new_invoice_no
- 
 
 @login_required(login_url='index')
 def order_invoice(request, order_id):

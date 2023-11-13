@@ -704,6 +704,7 @@ def admin_edit_product(request, id):
             original_price = float(request.POST.get('original_price'))
             selling_price = float(request.POST.get('selling_price'))
             product_offer = int(request.POST.get('product_offer'))
+            product_description = request.POST.get('product_description')
 
             if product_offer > 0:
                 offer_amount = (original_price * product_offer) / 100
@@ -734,6 +735,7 @@ def admin_edit_product(request, id):
             product.brand = ProductBrand.objects.get(id=brand)
             product.original_price = original_price
             product.selling_price = selling_price
+            product.product_description = product_description 
 
             product.save()
             messages.success(request, "Product updated successfully!")
