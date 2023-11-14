@@ -127,8 +127,9 @@
                                         </div>
                                         
                                         {% comment %} <div class="same-style-2">
-                                            <a href="wishlist.html"><i class="icon-heart"></i></a>
+                                            <a href="{% url 'wishlist' %}"><i class="icon-heart"></i></a>
                                         </div> {% endcomment %}
+
                                         <div class="same-style-2 header-cart">
                                             {% if user.is_authenticated %}
                                                 <a class="cart-active" href="{% url 'cart' %}">
@@ -237,7 +238,7 @@
                                     <a href="#"><img src="{% static 'user\assets\images\logo\cali-kode-logo-rectangle.png' %}" alt="logo"></a>
                                 </div>
                                 <p>CALICUT BEACH ROAD, KERALA, INDIA</p>
-                                <p>(+91) 9895023108</p>
+                                <p>(+91) 9876543210</p>
                                 <p>calikodesneakers@gmail.com</p>
                             </div>
                         </div>

@@ -24,58 +24,6 @@ def _cart_id(request):
     return cart
 
 
-# def cart(request):
-#     if 'email' in request.session:
-#         return redirect('admin_dashboard')
-
-#     cart_items = None
-#     grand_total = 0
-#     selected_coupon = None
-
-#     if 'user' in request.session:
-#         user = request.user
-
-#         try:
-#             cart_items = CartItem.objects.filter(customer=user).order_by('id')
-#             grand_total = sum(
-#                 Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-#                 for item in cart_items
-#             )
-#             coupons = Coupons.objects.filter(active=True)
-
-#             available_coupons = Coupons.objects.filter(
-#                 active=True,
-#                 minimum_order_amount__lte=grand_total,
-#                 valid_from__lte=timezone.now(),
-#                 valid_to__gte=timezone.now()
-#             ).order_by('-discount')
-
-#             if request.method == 'POST':
-#                 coupon_code = request.POST.get("coupon-codes")
-#                 try:
-#                     selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
-#                     grand_total -= selected_coupon.discount
-#                     request.session['selected_coupon_code'] = coupon_code
-#                     request.session['grand_total'] = float(grand_total)
-#                 except Coupons.DoesNotExist:
-#                     messages.error(request, "Invalid coupon code")
-
-#         except ObjectDoesNotExist:
-#             pass
-#         except Exception as e:
-#             print(e)
-
-#     context = {
-#         'cart_items': cart_items,
-#         'grand_total': grand_total,
-#         'coupons' : coupons,
-#         'available_coupons': available_coupons,
-#         'selected_coupon': selected_coupon
-#     }
-
-#     return render(request, 'cart/cart.html', context)
-
-
 def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
 
     if 'email' in request.session:
@@ -319,28 +267,43 @@ def clear_coupon(request):
 #             return render(request, "cart/wishlist.html", context)
 #     else:
 #         return redirect("user_login")
-
-# @login_required(login_url="index")
-# def add_to_wishlist(request, variant_id):
-#     user = request.user
-#     try:
-#         variant = ProductVariant.objects.get(id=variant_id)
-#         product_id = request.GET.get('product_id') 
-
-#         # You might want to validate if the product_id belongs to the variant's product here
-        
-#         if Wishlist.objects.filter(user=user, variant=variant).exists():
-#             return redirect("wishlist")
-
-#         # Create Wishlist item associating the variant and the user
-#         wishlist = Wishlist.objects.create(user=user, variant=variant)
-#         wishlist.save()
-#         messages.success(request, "Product added to wishlist")
-#         return redirect("wishlist")
-#     except Exception as e:
-#         print(e)
-#         return redirect("index")
     
+
+# # @login_required(login_url="index")
+# # def add_to_wishlist(request, variant_id):
+# #     user = request.user
+# #     try:
+# #         variant = ProductVariant.objects.get(id=variant_id)
+# #         product_id = request.GET.get('product_id') 
+
+# #         # You might want to validate if the product_id belongs to the variant's product here
+        
+# #         if Wishlist.objects.filter(user=user, variant=variant).exists():
+# #             return redirect("wishlist")
+
+# #         # Create Wishlist item associating the variant and the user
+# #         wishlist = Wishlist.objects.create(user=user, variant=variant)
+# #         wishlist.save()
+# #         messages.success(request, "Product added to wishlist")
+# #         return redirect("wishlist")
+# #     except Exception as e:
+# #         print(e)
+# #         return redirect("index")
+    
+
+# @login_required(login_url="signin")
+# def add_to_wishlist(request, variant_id):
+#     variant = get_object_or_404(ProductVariant, id=variant_id)
+    
+#     # Check if the product is already in the wishlist for the user
+#     existing_wishlist_item = Wishlist.objects.filter(user=request.user, variant=variant).first()
+
+#     if not existing_wishlist_item:
+#         # If the product is not in the wishlist, add it
+#         Wishlist.objects.create(user=request.user, variant=variant)
+
+#     return redirect('wishlist')
+
 
 # @login_required(login_url="index")
 # def delete_wishlist(request, wishlist_id):

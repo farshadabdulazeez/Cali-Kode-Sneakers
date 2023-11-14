@@ -57,65 +57,52 @@
                         <div class="product-details-content pro-details-content-mrg">
                             <h2>{{ product.product_name }}</h2>
                             <br>
-                            
-                            {% comment %} <div class="product-ratting-review-wrap">
-                                <div class="product-ratting-digit-wrap">
-                                    <div class="product-ratting">
-                                        <i class="icon_star"></i>
-                                        <i class="icon_star"></i>
-                                        <i class="icon_star"></i>
-                                        <i class="icon_star"></i>
-                                        <i class="icon_star"></i>
-                                    </div>
-                                    <div class="product-digit">
-                                        <span>5.0</span>
-                                    </div>
-                                </div>
-                                <div class="product-review-order">
-                                    <span>62 Reviews</span>
-                                    <span>242 orders</span>
-                                </div>
-                            </div> {% endcomment %}
                             <p>{{ product.product_description }}</p>
+                            {% if variant %}
                             <div class="pro-details-price">
                                 <span class="new-price">{{ product.selling_price }}</span>
                                 {% if product.original_price != product.selling_price %}
                                     <span class="old-price">{{ product.original_price }}</span>
                                 {% endif %}
                             </div>
-                        <form method="post" action="{% url 'add_cart_item' product_id %}">
-                            {% csrf_token %}
-                            <div class="pro-details-size">
-                                <span>Size:</span>
-                                <div class="pro-details-size-content">
-                                    <ul>
-                                        {% if variant %}
-                                        {% for i in variant %}
-                                        <li>
-                                            <label style="display: inline-block; vertical-align: middle; font-size: 14px;">
-                                                <input type="radio" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;" name="size" value="{{ i.product_size }}">
-                                                {{ i.product_size }}
-                                            </label>
-                                        </li>
-                                        {% endfor %}
-                                        {% endif %}
-                                    </ul>
-                                </div>
-                            </div>
 
-                            <div class="pro-details-action-wrap">
-                                <div class="pro-details-add-to-cart">
-                                    {% comment %} <a title="Add to Cart" href="{% url 'add_cart_item' product_id %}">Add To Cart </a> {% endcomment %}
-                                    <button type="submit" class="btn btn-primary" style="border-radius:0" title="Add to Cart">Add to cart</button>
+                            <form method="post" action="{% url 'add_cart_item' product_id %}">
+                                {% csrf_token %}
+                                <div class="pro-details-size">
+                                    <span>Size:</span>
+                                    <div class="pro-details-size-content">
+                                        <ul>
+                                            {% for i in variant %}
+                                                <li>
+                                                    <label style="display: inline-block; vertical-align: middle; font-size: 14px;">
+                                                        <input type="radio" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;" name="size" value="{{ i.product_size }}">
+                                                        {{ i.product_size }}
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="pro-details-action">
-                                    {% comment %} <a title="Add to Wishlist" href=""><i class="icon-heart"></i></a> {% endcomment %}
-                                    <a title="Refresh" href="javascript:location.reload(true);">
-                                        <i class="icon-refresh"></i>
-                                    </a>
+
+                                <div class="pro-details-action-wrap">
+                                    <div class="pro-details-add-to-cart">
+                                        <button type="submit" class="btn btn-primary" style="border-radius: 0; height: 53px; width: 150px;" title="Add to Cart">Add to cart</button>
+                                    </div>
+                                </form>
+                                    <div class="pro-details-action"> 
+                                        {% comment %} <a title="Add to Wishlist" href="{% url 'add_to_wishlist' variant_id=item.variant.id %}"><i class="icon-heart"></i></a>  {% endcomment %}
+                                        <a title="Refresh" href="javascript:location.reload(true);">
+                                            <i class="icon-refresh"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                            </form>
+                                {% else %}
+                                <div class="pro-details-action-wrap">
+                                    <div class="pro-details-add-to-cart" style="margin-top: 10px;">
+                                        <h3 style="color: red; font-weight: bold;">Out of Stock</h3>
+                                    </div>
+                                </div>
+                                {% endif %}
                         </div>
                     </div>
                 </div>
@@ -128,7 +115,6 @@
                         <div class="dec-review-topbar nav mb-45">
                             <a class="active" data-toggle="tab" href="#des-details1">Description</a>
                             <a data-toggle="tab" href="#des-details2">Specification</a>
-                            {% comment %} <a data-toggle="tab" href="#des-details3">Meterials </a> {% endcomment %}
                             {% comment %} <a data-toggle="tab" href="#des-details4">Reviews and Ratting </a> {% endcomment %}
                         </div>
                         <div class="tab-content dec-review-bottom">

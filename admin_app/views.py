@@ -587,7 +587,7 @@ def admin_products(request):
     context = {}
 
     try:
-        products = Product.objects.all()
+        products = Product.objects.all().order_by('-id')
         context = {
             'products' : products
         }
