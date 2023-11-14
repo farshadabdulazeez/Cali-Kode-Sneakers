@@ -333,7 +333,7 @@ def user_profile(request):
     context = {}
     user = CustomUser.objects.get(id=user.id)
     address = UserAddress.objects.filter(user=user)
-    order_product = OrderProduct.objects.filter(customer=user)
+    order_product = OrderProduct.objects.filter(customer=user).order_by('-id')
 
     context = {
         'address' : address,
