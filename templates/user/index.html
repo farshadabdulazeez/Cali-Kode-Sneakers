@@ -93,6 +93,8 @@
                                         <ul>
                                             <li><a href="{% url 'index' %}">HOME </a></li>
                                             <li><a href="{% url 'products' %}">SHOP </a>
+                                            <li><a href="{% url 'blog' %}">BLOG </a>
+
                                                 {% comment %} <ul class="mega-menu-style mega-menu-mrg-2">
                                                     <li>
                                                         <ul>
@@ -724,7 +726,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="blog-wrap mb-30">
                                 <div class="blog-img mb-25">
-                                    <a href="blog-details.html"><img src="{% static 'user\assets\images\blog\1659606468-kendall-jenner-new-balance-ft.jpg' %}" alt="blog-img"></a>
+                                    <a href="https://www.vogue.com/article/best-minimal-white-sneakers"><img src="{% static 'user\assets\images\blog\1659606468-kendall-jenner-new-balance-ft.jpg' %}" alt="blog-img"></a>
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
@@ -808,6 +810,7 @@
                             <ul>
                                 <li><a class="active" href="/">HOME</a></li>
                                 <li><a href="{% url 'products' %}">SHOP</a></li>
+                                <li><a href="{% url 'blog' %}">BLOG </a>
                                 {% if user.is_authenticated %}
                                     <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
                                 {% else %}
@@ -852,6 +855,7 @@
                                 <span>Language</span>
                                 <div class="language-style-2">
                                     <a href="#">ENG</a>
+                                    <a href="#">SPA</a>
                                     <a href="#">FRA</a>
                                     <a href="#">GER</a>
                                 </div>

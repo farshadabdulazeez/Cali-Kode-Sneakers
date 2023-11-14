@@ -110,45 +110,14 @@
                                                 </li>
                                                 <li><a href="{% url 'products' %}">SHOP </a>
                                                 </li>
-                                                {% comment %} {% if user.is_authenticated %}
-                                                    <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
-                                                {% else %}
-                                                    <li><a href="{% url 'user_login' %}">PROFILE</a></li>
-                                                {% endif %} {% endcomment %}
-                                                {% comment %} <li><a href="#">PAGES </a>
-                                                    <ul class="sub-menu-style">
-                                                        <li><a href="about-us.html">about us </a></li>
-                                                        <li><a href="c{% url 'cart' %}">Cart</a></li>
-                                                        <li><a href="checkout.html">checkout </a></li>
-                                                        <li><a href="my-account.html">my account</a></li>
-                                                        <li><a href="wishlist.html">wishlist </a></li>
-                                                        <li><a href="compare.html">compare </a></li>
-                                                        <li><a href="contact.html">contact us </a></li>
-                                                        <li><a href="order-tracking.html">order tracking</a></li>
-                                                        <li><a href="login-register.html">login / register </a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="blog.html">BLOG </a>
-                                                </li>
-                                                <li><a href="contact.html">CONTACT </a></li> {% endcomment %}
+                                                <li><a href="{% url 'blog' %}">BLOG </a>
+
                                             </ul>
                                         </nav>
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-lg-3">
                                     <div class="header-action header-action-flex header-action-mrg-right">
-                                        {% comment %} <div class="same-style-2 header-search-1">
-                                            <a class="search-toggle" href="#">
-                                                <i class="icon-magnifier s-open"></i>
-                                                <i class="icon_close s-close"></i>
-                                            </a>
-                                            <div class="search-wrap-1">
-                                                <form action="#">
-                                                    <input placeholder="Search products…" type="text">
-                                                    <button class="button-search"><i class="icon-magnifier"></i></button>
-                                                </form>
-                                            </div>
-                                        </div> {% endcomment %}
                                         <div class="same-style-2">
                                             {% if user.is_authenticated %}
                                                 <a href="{% url 'user_profile' %}"><i class="icon-user"></i></a>
@@ -236,6 +205,7 @@
                             <ul>
                                 <li><a class="active" href="/">home</a></li>
                                 <li><a href="{% url 'products' %}">Shop</a></li>
+                                <li><a href="{% url 'blog' %}">BLOG </a>
                                 {% if user.is_authenticated %}
                                     <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
                                 {% else %}

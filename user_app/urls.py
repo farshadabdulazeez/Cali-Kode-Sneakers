@@ -21,5 +21,6 @@ urlpatterns = [
     path('delete-address/<int:address_id>/', views.delete_address, name = "delete_address"),
     path('change-password/', views.change_password, name = "change_password"),
     path('user-logout/', views.user_logout, name = "user_logout"),
+    path('blog/', views.blog, name = "blog"),
 
 ]

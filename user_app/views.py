@@ -642,4 +642,9 @@ def change_password(request):
     except Exception as e:
         print(e)
         return redirect("user_profile")
+    
+
+def blog(request):
+
+    return render(request, 'user/blog.html')
 
