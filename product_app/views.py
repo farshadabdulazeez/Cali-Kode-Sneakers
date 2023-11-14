@@ -133,10 +133,15 @@ def product_search(request):
 
     # Get selected sizes
     selected_sizes = request.GET.getlist('size')
+    selected_categories = request.GET.getlist('category')
 
     # Filter products by selected sizes
     if selected_sizes:
         products_all = products_all.filter(productvariant__product_size__size__in=selected_sizes)
+
+    if selected_categories:
+        products_all = products_all.filter(category__category_name__in=selected_categories)
+
 
     # Get the sizes for the sidebar
     sizes = ProductSize.objects.all()
@@ -164,11 +169,12 @@ def product_search(request):
         'products': products_paged,
         'search_query': search_query,
         'selected_sizes': selected_sizes,
+        'selected_categories': selected_categories,
         'sizes': sizes,
+        'categories': categories,
     }
 
     return render(request, 'product/products.html', context)
-
 
 # def product_search(request):
 #     search_query = request.GET.get('search', '')
