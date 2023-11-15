@@ -59,19 +59,45 @@ def online_payment(request):
 
     cart_items = CartItem.objects.filter(customer=my_user).order_by('id')
 
+    # for item in cart_items:
+    #     grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+
+    # # Fetch the stored coupon code from the session
+    # selected_coupon_code = request.session.get('selected_coupon_code')
+    # if selected_coupon_code:
+    #     try:
+    #         selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
+    #         grand_total -= selected_coupon.discount
+    #     except Coupons.DoesNotExist:
+    #         messages.error(request, "Selected coupon not valid")
+    #         del request.session['selected_coupon_code']  # Clear invalid coupon from session
+    #         return redirect('checkout')
     for item in cart_items:
-        grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+        # Check if the product has a category offer
+        if item.product.product.category.offer:
+            offer_percentage = item.product.product.category.offer
+            discounted_price = item.product.product.selling_price - (
+                item.product.product.selling_price * offer_percentage / 100
+            )
+            grand_total += Decimal(discounted_price) * Decimal(item.quantity)
+        else:
+            grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
 
     # Fetch the stored coupon code from the session
     selected_coupon_code = request.session.get('selected_coupon_code')
+    coupon_discount = 0
+
     if selected_coupon_code:
         try:
             selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
-            grand_total -= selected_coupon.discount
+            coupon_discount = selected_coupon.discount
         except Coupons.DoesNotExist:
             messages.error(request, "Selected coupon not valid")
             del request.session['selected_coupon_code']  # Clear invalid coupon from session
             return redirect('checkout') 
+
+    grand_total -= coupon_discount  # Subtract coupon discount after applying category offers
+ 
 
 
     if request.method == 'POST':

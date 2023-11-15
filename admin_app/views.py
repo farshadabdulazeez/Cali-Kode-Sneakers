@@ -598,13 +598,83 @@ def admin_products(request):
     return render(request, 'admin/admin_products.html', context)
 
 
+# @cache_control(no_cache=True, no_store=True)
+# @staff_member_required(login_url='admin_login')
+# def admin_add_product(request):
+
+#     if 'email' not in request.session:
+#         return redirect('admin_login')
+
+#     categories = Category.objects.all()
+#     brands = ProductBrand.objects.all()
+
+#     context = {
+#         'categories': categories,
+#         'brands': brands,
+#     }
+
+#     try:
+#         if request.method == 'POST':
+#             product = Product()
+#             category = request.POST['category']
+#             brand = request.POST['brand']
+#             original_price = int(request.POST['original_price'])
+#             selling_price = int(request.POST['selling_price'])
+#             product_offer = int(request.POST['product_offer'])
+
+#             # single image fetching
+#             try:
+#                 product_image = request.FILES.get('product_image', None)
+#                 if product_image:
+#                     product.product_image = product_image
+
+#             except Exception as e:
+#                 print(e)
+
+#             product_name = request.POST['product_name']
+#             product.product_name = product_name
+#             product_slug = product_name.replace(" ", "-")
+#             product.slug = product_slug
+#             product.category = Category.objects.get(id=category)
+#             product.brand = ProductBrand.objects.get(id=brand)
+#             product.original_price = original_price
+
+#             if product_offer > 0 :
+#                 offer_amount = (original_price * product_offer)//100
+#                 if (original_price - offer_amount) < selling_price : 
+#                     selling_price = original_price - offer_amount
+                    
+#             product.selling_price = selling_price
+#             product.product_description = request.POST['product_description']
+#             product.save()
+
+#             # multiple image fetching
+#             try:
+#                 multiple_images = request.FILES.getlist('multiple_images', None)
+#                 if multiple_images:
+#                     for image in multiple_images:
+#                         photo = MultipleImages.objects.create(
+#                             product=product,
+#                             images=image,
+#                         )
+#                         photo.save()
+#             except Exception as e:
+#                 print(e)
+
+#             messages.success(request, "Product Created Successfully!")
+
+#             return redirect('admin_products')
+        
+#     except Exception as e:
+#         messages.error(request, "Product is already exist!")
+#         print(e)
+
+#     return render(request, 'admin/admin_add_product.html', context)
+
+
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_product(request):
-
-    if 'email' not in request.session:
-        return redirect('admin_login')
-
     categories = Category.objects.all()
     brands = ProductBrand.objects.all()
 
@@ -620,16 +690,28 @@ def admin_add_product(request):
             brand = request.POST['brand']
             original_price = int(request.POST['original_price'])
             selling_price = int(request.POST['selling_price'])
-            product_offer = int(request.POST['product_offer'])
+            product_category_offer = 0
+            product_offer = 0
 
-            # single image fetching
+            # Get the category offer
             try:
-                product_image = request.FILES.get('product_image', None)
-                if product_image:
-                    product.product_image = product_image
+                category = Category.objects.get(id=category)
+                product_category_offer = category.offer
+            except Category.DoesNotExist:
+                pass
 
-            except Exception as e:
-                print(e)
+            # Apply category offer
+            if product_category_offer > 0:
+                offer_amount = (original_price * product_category_offer) // 100
+                if (original_price - offer_amount) < selling_price:
+                    selling_price -= offer_amount  # Deduct category offer
+
+            # Apply product offer (if needed)
+            product_offer = int(request.POST.get('product_offer', 0))
+            if product_offer > 0:
+                product_offer_amount = (original_price * product_offer) // 100
+                if (original_price - product_offer_amount) < selling_price:
+                    selling_price -= product_offer_amount  # Deduct product offer
 
             product_name = request.POST['product_name']
             product.product_name = product_name
@@ -638,17 +720,11 @@ def admin_add_product(request):
             product.category = Category.objects.get(id=category)
             product.brand = ProductBrand.objects.get(id=brand)
             product.original_price = original_price
-
-            if product_offer > 0 :
-                offer_amount = (original_price * product_offer)//100
-                if (original_price - offer_amount) < selling_price : 
-                    selling_price = original_price - offer_amount
-                    
             product.selling_price = selling_price
             product.product_description = request.POST['product_description']
             product.save()
 
-            # multiple image fetching
+            # Multiple image fetching
             try:
                 multiple_images = request.FILES.getlist('multiple_images', None)
                 if multiple_images:
@@ -671,17 +747,86 @@ def admin_add_product(request):
 
     return render(request, 'admin/admin_add_product.html', context)
 
+# @cache_control(no_cache=True, no_store=True)
+# @staff_member_required(login_url='admin_login')
+# def admin_edit_product(request, id):
+
+#     if 'email' not in request.session:
+#         return redirect('admin_login')
+
+#     product = Product.objects.get(id=id)
+#     product_category = product.category
+#     product_brand = product.brand
+#     multiple_images = MultipleImages.objects.filter(product=id)
+#     brands = ProductBrand.objects.all()
+#     categories = Category.objects.all()
+
+#     context = {
+#         'product': product,
+#         'categories': categories,
+#         'brands': brands,
+#         'product_category': product_category,
+#         'product_brand': product_brand,
+#         'multiple_images': multiple_images,
+#     }
+
+#     try:
+#         if request.method == 'POST':
+
+#             product_name = request.POST['product_name']
+#             category = request.POST['category']
+#             brand = request.POST['brand']
+#             original_price = float(request.POST.get('original_price'))
+#             selling_price = float(request.POST.get('selling_price'))
+#             product_offer = int(request.POST.get('product_offer'))
+#             product_description = request.POST.get('product_description')
+
+#             if product_offer > 0:
+#                 offer_amount = (original_price * product_offer) / 100
+#                 # Calculate the new selling price based on the offer
+#                 selling_price = original_price - offer_amount
+
+#             single_image = request.FILES.get('product_image', None)
+
+#             multiple_images = request.FILES.getlist('multiple_images')
+#             # we want to remove the image that already stored in the database.
+#             # first of all we have to check if there is any image exist on product object.
+#             if single_image:
+#                 if product.product_image:
+#                     product.product_image.delete()
+#                 product.product_image = single_image
+
+#             if multiple_images:
+#             # Clear existing multiple images for the product
+#                 MultipleImages.objects.filter(product=product).delete()
+
+#                 # Add new multiple images
+#                 for image in multiple_images:
+#                     MultipleImages.objects.create(product=product, images=image)
+
+
+#             product.product_name = product_name
+#             product.category = Category.objects.get(id=category)
+#             product.brand = ProductBrand.objects.get(id=brand)
+#             product.original_price = original_price
+#             product.selling_price = selling_price
+#             product.product_description = product_description 
+
+#             product.save()
+#             messages.success(request, "Product updated successfully!")
+#             return redirect('admin_products')
+#     except Exception as e:
+#         print(e)
+
+#     return render(request, 'admin/admin_edit_product.html', context)
+
 
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_product(request, id):
-
-    if 'email' not in request.session:
-        return redirect('admin_login')
-
     product = Product.objects.get(id=id)
-    product_category = product.category
-    product_brand = product.brand
+    product_category_offer = 0
+    product_offer = 0
     multiple_images = MultipleImages.objects.filter(product=id)
     brands = ProductBrand.objects.all()
     categories = Category.objects.all()
@@ -690,52 +835,51 @@ def admin_edit_product(request, id):
         'product': product,
         'categories': categories,
         'brands': brands,
-        'product_category': product_category,
-        'product_brand': product_brand,
+        'product_category_offer': product_category_offer,
+        'product_offer': product_offer,
         'multiple_images': multiple_images,
     }
 
     try:
         if request.method == 'POST':
-
-            product_name = request.POST['product_name']
-            category = request.POST['category']
-            brand = request.POST['brand']
             original_price = float(request.POST.get('original_price'))
             selling_price = float(request.POST.get('selling_price'))
-            product_offer = int(request.POST.get('product_offer'))
-            product_description = request.POST.get('product_description')
+            product_offer = int(request.POST.get('product_offer', 0))
 
+            # Get the category offer
+            try:
+                product_category_offer = product.category.offer
+            except Category.DoesNotExist:
+                pass
+
+            # Apply category offer
+            if product_category_offer > 0:
+                offer_amount = (original_price * product_category_offer) // 100
+                selling_price -= offer_amount  # Deduct category offer
+
+            # Apply product offer (if needed)
             if product_offer > 0:
-                offer_amount = (original_price * product_offer) / 100
-                # Calculate the new selling price based on the offer
-                selling_price = original_price - offer_amount
+                product_offer_amount = (original_price * product_offer) // 100
+                selling_price -= product_offer_amount  # Deduct product offer
 
             single_image = request.FILES.get('product_image', None)
 
             multiple_images = request.FILES.getlist('multiple_images')
-            # we want to remove the image that already stored in the database.
-            # first of all we have to check if there is any image exist on product object.
+            # Clear existing multiple images for the product
+            MultipleImages.objects.filter(product=product).delete()
+
+            # Add new multiple images
+            for image in multiple_images:
+                MultipleImages.objects.create(product=product, images=image)
+
+            product.original_price = original_price
+            product.selling_price = selling_price
+            product.product_description = request.POST['product_description'] 
+
             if single_image:
                 if product.product_image:
                     product.product_image.delete()
                 product.product_image = single_image
-
-            if multiple_images:
-            # Clear existing multiple images for the product
-                MultipleImages.objects.filter(product=product).delete()
-
-                # Add new multiple images
-                for image in multiple_images:
-                    MultipleImages.objects.create(product=product, images=image)
-
-
-            product.product_name = product_name
-            product.category = Category.objects.get(id=category)
-            product.brand = ProductBrand.objects.get(id=brand)
-            product.original_price = original_price
-            product.selling_price = selling_price
-            product.product_description = product_description 
 
             product.save()
             messages.success(request, "Product updated successfully!")
@@ -744,7 +888,6 @@ def admin_edit_product(request, id):
         print(e)
 
     return render(request, 'admin/admin_edit_product.html', context)
-
 
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')

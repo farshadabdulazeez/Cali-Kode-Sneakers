@@ -46,16 +46,31 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
         try:
             cart_items = CartItem.objects.filter(customer=user).order_by('id')
 
+            # for item in cart_items:
+            #     # Check if the product has a category offer
+            #     if item.product.product.category.offer:
+            #         offer_percentage = item.product.product.category.offer
+            #         discounted_price = item.product.product.original_price - (
+            #             item.product.product.original_price * offer_percentage / 100
+            #         )
+            #         total += Decimal(discounted_price) * Decimal(item.quantity)
+            #     else:
+            #         total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+
+            # grand_total = total
+
             for item in cart_items:
                 # Check if the product has a category offer
                 if item.product.product.category.offer:
                     offer_percentage = item.product.product.category.offer
-                    discounted_price = item.product.product.original_price - (
-                        item.product.product.original_price * offer_percentage / 100
+                    discounted_price = item.product.product.selling_price - (
+                        item.product.product.selling_price * offer_percentage / 100
                     )
-                    total += Decimal(discounted_price) * Decimal(item.quantity)
+                    item.sub_total = Decimal(discounted_price) * Decimal(item.quantity)
                 else:
-                    total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+                    item.sub_total = Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+
+                total += item.sub_total
 
             grand_total = total
 
@@ -76,24 +91,6 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
     if request.method == 'POST':
         user = request.session['user']
         my_user = CustomUser.objects.get(email=user)
-        # orders = Order.objects.filter(user=my_user.id)
-        # coupon_store = []
-        # for i in orders:
-        #     if i.coupon is not None:
-        #         print(i.coupon.id)
-        #         coupon_store.append(i.coupon.id)
-        #     print('-------------------')
-        # coupon_code = request.POST.get("coupon-codes")
-        # coupon = Coupons.objects.get(coupon_code = coupon_code)
-        # if coupon not in coupon_store:
-        #     selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
-        #     grand_total -= selected_coupon.discount 
-
-        #     request.session['selected_coupon_code'] = coupon_code
-        #     request.session['grand_total'] = float(grand_total)
-        # else:
-        #     messages.error(request,"Coupon already used")
-        #     return redirect('cart')
         orders = Order.objects.filter(user=my_user.id)
         coupon_store = [order.coupon.id for order in orders if order.coupon is not None]
 
@@ -365,21 +362,18 @@ def checkout(request):
         total = Decimal(0)
 
         for item in cart_items:
-            grand_total = sum(Decimal(item.product.product.selling_price) * Decimal(item.quantity) for item in cart_items)
-            
-        # # Fetch the stored coupon code from the session
-        # selected_coupon_code = request.session.get('selected_coupon_code')
-        # coupon = Coupons.objects.get(coupon_code= selected_coupon_code)
-        # if selected_coupon_code:
-        #     try:
-        #         selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
-        #         grand_total -= selected_coupon.discount
-        #     except Coupons.DoesNotExist:
-        #         messages.error(request, "Selected coupon not valid")
-        #         del request.session['selected_coupon_code']  # Clear invalid coupon from session
-        #         return redirect('checkout')  # Redirect back to prevent processing with invalid coupon
+            # Check if the product has a category offer
+            if item.product.product.category.offer:
+                offer_percentage = item.product.product.category.offer
+                discounted_price = item.product.product.selling_price - (
+                    item.product.product.selling_price * offer_percentage / 100
+                )
+                total += Decimal(discounted_price) * Decimal(item.quantity)
+            else:
+                total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
 
-        # Fetch the stored coupon code from the session
+        grand_total = total
+
         selected_coupon_code = request.session.get('selected_coupon_code')
 
         # Check if a coupon code is selected
@@ -397,11 +391,32 @@ def checkout(request):
             # No coupon selected, set coupon to None
             coupon = None
 
+        # for item in cart_items:
+        #     grand_total = sum(Decimal(item.product.product.selling_price) * Decimal(item.quantity) for item in cart_items)
+            
+        # selected_coupon_code = request.session.get('selected_coupon_code')
+
+        # # Check if a coupon code is selected
+        # if selected_coupon_code:
+        #     try:
+        #         # Attempt to retrieve the coupon with the specified code
+        #         coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
+        #         grand_total -= coupon.discount
+        #     except Coupons.DoesNotExist:
+        #         # Handle the case where the coupon does not exist
+        #         messages.error(request, "Selected coupon not valid")
+        #         del request.session['selected_coupon_code']  # Clear invalid coupon from session
+        #         return redirect('checkout')  # Redirect back to prevent processing with invalid coupon
+        # else:
+        #     # No coupon selected, set coupon to None
+        #     coupon = None
+
         if request.method == 'POST':
           
             try:
                 delivery_address = UserAddress.objects.get(id=request.POST['delivery_address'])
             except:
+                messages.error(request, "Please choose a delivery address.")
                 return redirect('checkout')
             request.session['selected_address_id'] = delivery_address.id
             payment_method = request.POST['payment_method']
@@ -477,78 +492,85 @@ def checkout(request):
         
             
             elif payment_method == "walletPayment":
-                
-                user = request.user
+                try:
+                    user = request.user
 
-                # Assuming 'wallet' is the field in your user model representing the wallet balance
-                wallet_amount = user.wallet
+                    # Assuming 'wallet' is the field in your user model representing the wallet balance
+                    wallet_amount = user.wallet
 
-                # Calculate the total amount from the cart items
-                grand_total = Decimal(0)
-                for item in cart_items:
-                    grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-
-                # Check if the user has sufficient balance in the wallet
-                if wallet_amount >= grand_total:
-                    # Deduct the amount from the wallet
-                    user.wallet -= grand_total
-                    user.save()
-
-                    payment = Payments.objects.create(
-                        user=user,
-                        payment_method=payment_method,
-                        total_amount=grand_total,
-                    )
-                    payment.save()
-
-                    order = Order.objects.create(
-                        user=user,
-                        address=delivery_address,
-                        payment=payment,
-                        total=grand_total,
-                        order_total=grand_total,
-                    )
-                    order.save()
-
-                    # Creating order with the current date and order id
-                    yr = int(datetime.date.today().strftime('%Y'))
-                    dt = int(datetime.date.today().strftime('%d'))
-                    mt = int(datetime.date.today().strftime('%m'))
-                    d = datetime.date(yr, mt, dt)
-                    current_date = d.strftime("%Y%m%d")
-                    order_id = current_date + str(order.id)  # Creating order id
-                    order.order_id = order_id
-
-                    order.save()
-
-                    # Process cart items and create order items
-                    cart_items = CartItem.objects.filter(customer=my_user)
+                    # Calculate the total amount from the cart items
+                    grand_total = Decimal(0)
                     for item in cart_items:
-                        variant = ProductVariant.objects.get(id=item.product.id)
-                        order_item = OrderProduct.objects.create(
-                            customer=my_user,
-                            order_id=order,
-                            payment_id=payment.id,
-                            variant=variant,
-                            quantity=item.quantity,
-                            product_price=item.product.product.selling_price,
-                            ordered=True,
+                        grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+
+                    # Check if the user has sufficient balance in the wallet
+                    if wallet_amount >= grand_total:
+                        # Deduct the amount from the wallet
+                        user.wallet -= grand_total
+                        user.save()
+
+                        payment = Payments.objects.create(
+                            user=user,
+                            payment_method=payment_method,
+                            total_amount=grand_total,
                         )
-                        variant.stock = variant.stock - item.quantity
-                        variant.save()
-                        item.delete()
+                        payment.save()
 
-                    return redirect('order_confirmed', order_id)
+                        order = Order.objects.create(
+                            user=user,
+                            address=delivery_address,
+                            payment=payment,
+                            total=grand_total,
+                            order_total=grand_total,
+                        )
+                        order.save()
 
-                else:
-                    # Redirect the user to an error page or handle insufficient funds as needed
-                    return redirect('insufficient_funds_error_page')
+                        # Creating order with the current date and order id
+                        yr = int(datetime.date.today().strftime('%Y'))
+                        dt = int(datetime.date.today().strftime('%d'))
+                        mt = int(datetime.date.today().strftime('%m'))
+                        d = datetime.date(yr, mt, dt)
+                        current_date = d.strftime("%Y%m%d")
+                        order_id = current_date + str(order.id)  # Creating order id
+                        order.order_id = order_id
+
+                        order.save()
+
+                        # Process cart items and create order items
+                        cart_items = CartItem.objects.filter(customer=my_user)
+                        for item in cart_items:
+                            variant = ProductVariant.objects.get(id=item.product.id)
+                            order_item = OrderProduct.objects.create(
+                                customer=my_user,
+                                order_id=order,
+                                payment_id=payment.id,
+                                variant=variant,
+                                quantity=item.quantity,
+                                product_price=item.product.product.selling_price,
+                                ordered=True,
+                            )
+                            variant.stock = variant.stock - item.quantity
+                            variant.save()
+                            item.delete()
+
+                        return redirect('order_confirmed', order_id)
+
+                    else:
+                        # Redirect the user with an error message about insufficient funds
+                        messages.error(request, "Insufficient funds in the wallet.")
+                        return redirect('checkout')
+
+                except Exception as e:
+                    # Log the exception or handle it as needed
+                    messages.error(request, str(e))
+                    return redirect('checkout')
         
         context = {
             'addresses': address,
             'cart_items' : cart_items,
             'grand_total' : grand_total,
             'selected_coupon_code': selected_coupon_code, 
+            'applied_coupon': coupon,
         }
 
         return render(request, "cart/checkout.html", context)

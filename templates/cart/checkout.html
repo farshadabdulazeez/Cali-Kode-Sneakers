@@ -137,18 +137,19 @@
                                             </ul>
                                         </div> 
                                         
-                                        {% comment %} <div class="your-order-info order-shipping">
+                                        <div class="your-order-info order-shipping">
                                             <ul>
                                                 <li>
                                                     Coupon discount:
-                                                    {% if selected_coupon %}
-                                                        <p>{{ selected_coupon.discount }}</p>
+                                                    {% if applied_coupon %}
+                                                        <p>{{ applied_coupon.discount }}</p>
                                                     {% else %}
                                                         <p>No coupon applied</p>
                                                     {% endif %}
                                                 </li>
                                             </ul>
-                                        </div>  {% endcomment %}
+                                        </div> 
+                                        
                                         <div class="your-order-info order-total">
                                             <ul>
                                                 {% if grand_total %}
