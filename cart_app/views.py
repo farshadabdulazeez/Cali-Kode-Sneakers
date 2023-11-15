@@ -94,7 +94,6 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
         else:
             messages.error(request,"Coupon already used")
             return redirect('cart')
-        
    
     context = {
         'quantity': quantity,
@@ -343,18 +342,35 @@ def checkout(request):
         for item in cart_items:
             grand_total = sum(Decimal(item.product.product.selling_price) * Decimal(item.quantity) for item in cart_items)
             
+        # # Fetch the stored coupon code from the session
+        # selected_coupon_code = request.session.get('selected_coupon_code')
+        # coupon = Coupons.objects.get(coupon_code= selected_coupon_code)
+        # if selected_coupon_code:
+        #     try:
+        #         selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
+        #         grand_total -= selected_coupon.discount
+        #     except Coupons.DoesNotExist:
+        #         messages.error(request, "Selected coupon not valid")
+        #         del request.session['selected_coupon_code']  # Clear invalid coupon from session
+        #         return redirect('checkout')  # Redirect back to prevent processing with invalid coupon
+
         # Fetch the stored coupon code from the session
         selected_coupon_code = request.session.get('selected_coupon_code')
-        coupon = Coupons.objects.get(coupon_code= selected_coupon_code)
+
+        # Check if a coupon code is selected
         if selected_coupon_code:
             try:
-                selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
-                grand_total -= selected_coupon.discount
+                # Attempt to retrieve the coupon with the specified code
+                coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
+                grand_total -= coupon.discount
             except Coupons.DoesNotExist:
+                # Handle the case where the coupon does not exist
                 messages.error(request, "Selected coupon not valid")
                 del request.session['selected_coupon_code']  # Clear invalid coupon from session
                 return redirect('checkout')  # Redirect back to prevent processing with invalid coupon
-
+        else:
+            # No coupon selected, set coupon to None
+            coupon = None
 
         if request.method == 'POST':
           
