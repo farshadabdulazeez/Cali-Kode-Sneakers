@@ -58,7 +58,7 @@
                             <div class="row">
                                 <div class="col-xl-4 col-lg-5">
                                     <div class="header-offer-wrap">
-                                        <p><i class="icon-paper-plane"></i> FREE SHIPPING world wide for all orders over <span>Rs.2499</span></p>
+                                        <p><i class="icon-paper-plane"></i> FREE SHIPPING world wide for all orders over <span>Rs.1999</span></p>
                                     </div>
                                 </div>
                                 <div class="col-xl-8 col-lg-7">
@@ -179,9 +179,6 @@
                                             </a>
                                         {% endif %}
                                     </div>
-                                    {% comment %} <div class="same-style-2 main-menu-icon">
-                                        <a class="mobile-header-button-active" href="#"><i class="icon-menu"></i> </a>
-                                    </div> {% endcomment %}
                                 </div>
                             </div>
                         </div>
@@ -298,14 +295,22 @@
 
 
 {% comment %} ALERTIFY JS {% endcomment %}
-<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>  
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script>
-    alertify.set('notifier','position', 'top-right');
+    alertify.set('notifier', 'position', 'top-right');
+
     {% for message in messages %}
-
-    alertify.success('{{ message }}');
-
+        {% if message.tags == 'success' %}
+            alertify.success('{{ message }}');
+        {% elif message.tags == 'error' %}
+            alertify.error('{{ message }}');
+        {% elif message.tags == 'warning' %}
+            alertify.warning('{{ message }}');
+        {% elif message.tags == 'info' %}
+            alertify.message('{{ message }}');
+        {% endif %}
     {% endfor %}
+    
 </script>
 
 <!-- Use the minified version files listed below for better performance and remove the files listed above  

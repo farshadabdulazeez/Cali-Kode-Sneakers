@@ -145,7 +145,6 @@ Thank you for using Cali Kode Sneakers!
     return render(request, 'user/register.html')
 
 
-
 def generate_ref_code():
     code = str(uuid.uuid4()).replace("-", "")[:12]
     return code

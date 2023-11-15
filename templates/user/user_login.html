@@ -30,15 +30,6 @@
                                         <div class="login-register-form">
                                             <form action="{% url 'user_login' %}" method="post">
                                                 {% csrf_token %}
-                                                {% if messages %}
-                                                    <div class="messages alert alert-danger">
-                                                        {% for message in messages %}
-                                                            <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
-                                                                {{ message }}
-                                                            </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
                                                 <input type="text" name="email" placeholder="Enter your email address" required>
                                                 <input type="password" name="password" placeholder="Enter your password" required>
                                                 <div class="button-box d-flex justify-content-center align-items-center flex-column">
@@ -62,6 +53,6 @@
                 </div>
             </div>
         </div>
-        
+         
 
 {% endblock content %}

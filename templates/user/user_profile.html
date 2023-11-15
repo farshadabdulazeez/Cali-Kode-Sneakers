@@ -161,21 +161,6 @@ User-Profile
                                                                 <td>{{ order.quantity }}</td>
                                                                 <td>{{ order.variant.product_size.size }}</td>
                                                                 <td>{{ order.order_id.status }}</td>
-                                                                {% comment %} <td>
-                                                                    {% if order.order_id.status == "ORDER CONFIRMED" %}
-                                                                        <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel-{{order.order_id.id}}">CANCEL ORDER</button>
-                                                                    {% elif order.order_id.status == "DELIVERED" %}
-                                                                    <button class="return-btn sqr-btn" data-toggle="modal" data-target="#returnOrderModalLabel-{{order.order_id.id}}">RETURN ORDER</button>
-
-                                                                    {% elif order.order_id.status == "RETURNED" %}
-                                                                        <h5> RETURNED </h5>
-                                                                       
-                                                                    {% elif order.order_id.status == "CANCELLED" %}
-                                                                        <h5>ORDER CANCELLED</h5>
-                                                                    {% else %}
-                                                                        <h5>PROCESSING</h5>
-                                                                    {% endif %}
-                                                                </td> {% endcomment %}
                                                                 <td>
                                                                     {% if order.order_id.status == "ORDER CONFIRMED" %}
                                                                         <button class="cancel-btn sqr-btn" data-toggle="modal" data-target="#cancelOrderModalLabel-{{order.order_id.id}}" style="color: red;">CANCEL ORDER</button>
@@ -268,11 +253,6 @@ User-Profile
                                 <label for="edit-mobile" class="required">Mobile Number</label>
                                 <input type="text" id="edit-mobile" name="edit_mobile" value="{{ user.mobile }}" />
                             </div>
-                            {% comment %} <div class="single-input-item text-center">
-                                <button type="button" class="btn btn-primary" id="saveProfileChanges" style="border-radius: 0; margin: 0 auto; display: block;">
-                                    Save Changes
-                                </button>
-                            </div> {% endcomment %}
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editAccountModal">Save Changes</button>
