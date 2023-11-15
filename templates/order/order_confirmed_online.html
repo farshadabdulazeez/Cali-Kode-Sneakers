@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% load static%}
+{% load static %}
 
 {% block title %}
-Order-confirmed
+Order-confirmed-online
 {% endblock title %}
 
 {% block content %}
@@ -16,7 +16,7 @@ Order-confirmed
                     <li>
                         <a href="{% url 'index' %}">Home</a>
                     </li>
-                    <li class="active">Order-confirmed </li>
+                    <li class="active">Order confirmed </li>
                 </ul>
             </div>
         </div>
@@ -34,18 +34,8 @@ Order-confirmed
                                         <img src="{% static 'user/assets/images/logo/icons8-approval.gif' %}" alt="Success GIF" class="success-gif">
                                     </div>
                                     <div class="your-order-wrap gray-bg-4">
-                                        <div class="your-order-wrap gray-bg-4 text-center mx-auto">
-                                            <div class="your-order-info-wrap">
-                                                <div class="your-order-info order-total">
-                                                    <h5>ORDER NUMBER : {{ order.order_id }}</h5>
-                                                    
-                                                    <ul>
-                                                        
-                                                        {% for order_product in order_products %}
-                                                            <li>PRODUCT : {{ order_product.variant.product.product_name }} - Quantity : {{ order_product.quantity }}</li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </div>
+                                        <div class="your-order-info-wrap">
+                                            <div class="your-order-info order-total">
                                             </div>
                                         </div>
                                     </div>

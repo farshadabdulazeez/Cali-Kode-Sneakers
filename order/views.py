@@ -3,7 +3,7 @@ from decimal import Decimal
 from cart_app.models import *
 from order.models import *
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
@@ -40,11 +40,6 @@ def proceed_to_pay(request):
     user = request.user
     cart = CartItem.objects.filter(customer=user)
 
-    # total_amount = 0   
-    # for item in cart:
-    #     total_amount = total_amount + item.product.product.selling_price * item.quantity
-    # print(total_amount)
-
     return JsonResponse({
         'total_amount' : total_amount,
     })
@@ -64,12 +59,6 @@ def online_payment(request):
 
     cart_items = CartItem.objects.filter(customer=my_user).order_by('id')
 
-    # if 'grand_total' in request.session:
-    #     grand_total = Decimal(request.session.get('grand_total', 0)) 
-    # else:
-    #     for item in cart_items:
-    #         total = total + (float(item.product.product.selling_price) * float(item.quantity))
-    # grand_total = total  
     for item in cart_items:
         grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
 
@@ -152,14 +141,30 @@ def online_payment(request):
     return render(request, 'order/online_payment.html', context)
 
 
-def order_confirmed(request, order_id=None):
+# def order_confirmed(request, order_id=None):
 
-    if order_id is None:
-        order_id = "2038473462134"
+#     # if order_id is None:
+#     #     order_id = "2038473462134"
+#     context = {
+#         "order_number":order_id
+#     }
+#     return render(request, "order/order_confirmed.html", context)
+
+def order_confirmed(request, order_id=None):
+    order = get_object_or_404(Order, order_id=order_id)
+    order_products = OrderProduct.objects.filter(order_id=order)
+
     context = {
-        "order_number":order_id
+        "order": order,
+        "order_products": order_products,
     }
+
     return render(request, "order/order_confirmed.html", context)
+
+
+def order_confirmed_online(request):
+
+    return render(request, 'order/order_confirmed_online.html')
 
 
 @login_required(login_url='index')

@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
                                     console.log(response_b.order_id);
                                     var order_id=response_b.order_id
                                     swal('Your Payment is Confirmed!', response_b.status, "success").then(function(value) {
-                                        window.location.href = '/order/order-confirmed/?order_id=' + order_id + '/';
+                                        window.location.href = '/order/order-confirmed-online/?order_id=' + order_id + '/';
                                     });
                                 }
                             });
