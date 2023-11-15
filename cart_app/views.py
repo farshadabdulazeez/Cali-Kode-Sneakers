@@ -76,24 +76,49 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
     if request.method == 'POST':
         user = request.session['user']
         my_user = CustomUser.objects.get(email=user)
-        orders = Order.objects.filter(user=my_user.id)
-        coupon_store = []
-        for i in orders:
-            if i.coupon is not None:
-                print(i.coupon.id)
-                coupon_store.append(i.coupon.id)
-            print('-------------------')
-        coupon_code = request.POST.get("coupon-codes")
-        coupon = Coupons.objects.get(coupon_code = coupon_code)
-        if coupon not in coupon_store:
-            selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
-            grand_total -= selected_coupon.discount 
+        # orders = Order.objects.filter(user=my_user.id)
+        # coupon_store = []
+        # for i in orders:
+        #     if i.coupon is not None:
+        #         print(i.coupon.id)
+        #         coupon_store.append(i.coupon.id)
+        #     print('-------------------')
+        # coupon_code = request.POST.get("coupon-codes")
+        # coupon = Coupons.objects.get(coupon_code = coupon_code)
+        # if coupon not in coupon_store:
+        #     selected_coupon = Coupons.objects.get(coupon_code=coupon_code)
+        #     grand_total -= selected_coupon.discount 
 
-            request.session['selected_coupon_code'] = coupon_code
-            request.session['grand_total'] = float(grand_total)
-        else:
-            messages.error(request,"Coupon already used")
+        #     request.session['selected_coupon_code'] = coupon_code
+        #     request.session['grand_total'] = float(grand_total)
+        # else:
+        #     messages.error(request,"Coupon already used")
+        #     return redirect('cart')
+        orders = Order.objects.filter(user=my_user.id)
+        coupon_store = [order.coupon.id for order in orders if order.coupon is not None]
+
+        coupon_code = request.POST.get("coupon-codes")
+        try:
+            coupon = Coupons.objects.get(coupon_code=coupon_code)
+        except Coupons.DoesNotExist:
+            messages.error(request, "Invalid coupon code")
             return redirect('cart')
+
+        if coupon.id in coupon_store:
+            messages.error(request, "Coupon already used in a previous order")
+            return redirect('cart')
+
+        if not coupon.active:
+            messages.error(request, "Coupon is not active")
+            return redirect('cart')
+
+        grand_total -= coupon.discount 
+
+        request.session['selected_coupon_code'] = coupon_code
+        request.session['grand_total'] = float(grand_total)
+
+        # Update the selected_coupon variable
+        selected_coupon = coupon
    
     context = {
         'quantity': quantity,
