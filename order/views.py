@@ -59,19 +59,6 @@ def online_payment(request):
 
     cart_items = CartItem.objects.filter(customer=my_user).order_by('id')
 
-    # for item in cart_items:
-    #     grand_total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-
-    # # Fetch the stored coupon code from the session
-    # selected_coupon_code = request.session.get('selected_coupon_code')
-    # if selected_coupon_code:
-    #     try:
-    #         selected_coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
-    #         grand_total -= selected_coupon.discount
-    #     except Coupons.DoesNotExist:
-    #         messages.error(request, "Selected coupon not valid")
-    #         del request.session['selected_coupon_code']  # Clear invalid coupon from session
-    #         return redirect('checkout')
     for item in cart_items:
         # Check if the product has a category offer
         if item.product.product.category.offer:
@@ -167,15 +154,8 @@ def online_payment(request):
     return render(request, 'order/online_payment.html', context)
 
 
-# def order_confirmed(request, order_id=None):
-
-#     # if order_id is None:
-#     #     order_id = "2038473462134"
-#     context = {
-#         "order_number":order_id
-#     }
-#     return render(request, "order/order_confirmed.html", context)
-
+@login_required(login_url='index')
+@cache_control(no_cache=True, no_store=True)
 def order_confirmed(request, order_id=None):
     order = get_object_or_404(Order, order_id=order_id)
     order_products = OrderProduct.objects.filter(order_id=order)
@@ -188,6 +168,8 @@ def order_confirmed(request, order_id=None):
     return render(request, "order/order_confirmed.html", context)
 
 
+@login_required(login_url='index')
+@cache_control(no_cache=True, no_store=True)
 def order_confirmed_online(request):
 
     return render(request, 'order/order_confirmed_online.html')

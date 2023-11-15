@@ -45,20 +45,7 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
 
         try:
             cart_items = CartItem.objects.filter(customer=user).order_by('id')
-
-            # for item in cart_items:
-            #     # Check if the product has a category offer
-            #     if item.product.product.category.offer:
-            #         offer_percentage = item.product.product.category.offer
-            #         discounted_price = item.product.product.original_price - (
-            #             item.product.product.original_price * offer_percentage / 100
-            #         )
-            #         total += Decimal(discounted_price) * Decimal(item.quantity)
-            #     else:
-            #         total += Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-
-            # grand_total = total
-
+            
             for item in cart_items:
                 # Check if the product has a category offer
                 if item.product.product.category.offer:
@@ -390,26 +377,6 @@ def checkout(request):
         else:
             # No coupon selected, set coupon to None
             coupon = None
-
-        # for item in cart_items:
-        #     grand_total = sum(Decimal(item.product.product.selling_price) * Decimal(item.quantity) for item in cart_items)
-            
-        # selected_coupon_code = request.session.get('selected_coupon_code')
-
-        # # Check if a coupon code is selected
-        # if selected_coupon_code:
-        #     try:
-        #         # Attempt to retrieve the coupon with the specified code
-        #         coupon = Coupons.objects.get(coupon_code=selected_coupon_code)
-        #         grand_total -= coupon.discount
-        #     except Coupons.DoesNotExist:
-        #         # Handle the case where the coupon does not exist
-        #         messages.error(request, "Selected coupon not valid")
-        #         del request.session['selected_coupon_code']  # Clear invalid coupon from session
-        #         return redirect('checkout')  # Redirect back to prevent processing with invalid coupon
-        # else:
-        #     # No coupon selected, set coupon to None
-        #     coupon = None
 
         if request.method == 'POST':
           
