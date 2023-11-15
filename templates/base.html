@@ -111,7 +111,8 @@
                                                 <li><a href="{% url 'products' %}">SHOP </a>
                                                 </li>
                                                 <li><a href="{% url 'blog' %}">BLOG </a>
-
+                                                <li><a href="{% url 'contact' %}">CONTACT </a>
+                                                
                                             </ul>
                                         </nav>
                                     </div>
@@ -204,6 +205,7 @@
                                 <li><a class="active" href="/">home</a></li>
                                 <li><a href="{% url 'products' %}">Shop</a></li>
                                 <li><a href="{% url 'blog' %}">BLOG </a>
+                                <li><a href="{% url 'contact' %}">CONTACT </a>
                                 {% if user.is_authenticated %}
                                     <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
                                 {% else %}

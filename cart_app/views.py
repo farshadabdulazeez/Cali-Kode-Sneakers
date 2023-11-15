@@ -119,6 +119,10 @@ def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
 
 def add_cart_item(request, product_id):
 
+    if not request.user.is_authenticated:
+        messages.error(request, "Please log in to add items to your cart.")
+        return redirect('product_details', product_id)
+
     product = Product.objects.get(id=product_id)
     size = None
     variant = None
@@ -155,13 +159,13 @@ def add_cart_item(request, product_id):
             if variant.stock > cart_item.quantity:
                 cart_item.quantity += 1
             else:
-                messages.error(request, "stock exhausted")
+                messages.error(request, "Stock exhausted")
         else:
             cart_item = CartItem.objects.get(product=variant, cart=cart)
             if variant.stock > cart_item.quantity:
                 cart_item.quantity += 1
             else:
-                messages.error(request, "stock exhausted")
+                messages.error(request, "Stock exhausted")
         
         cart_item.save() 
 

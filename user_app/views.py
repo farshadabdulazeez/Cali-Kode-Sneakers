@@ -647,3 +647,7 @@ def blog(request):
 
     return render(request, 'user/blog.html')
 
+
+def contact(request):
+
+    return render(request, 'user/contact.html')

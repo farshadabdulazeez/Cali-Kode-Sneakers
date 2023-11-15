@@ -78,13 +78,13 @@
                                     </div>
                                     {% endif %}
 
-                                    {% comment %} <div class="header-cart-2">
+                                    <div >
                                         {% if user.is_authenticated %}
-                                            <a class="cart-active" href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
+                                            <a  href="{% url 'cart' %}"><i class="icon-basket-loaded"></i></a>
                                         {% else %}
-                                            <a class="cart-active" href="{% url 'user_login' %}"><i class="icon-basket-loaded"></i></a>
+                                            <a  href="{% url 'user_login' %}"><i class="icon-basket-loaded"></i></a>
                                         {% endif %}
-                                    </div> {% endcomment %}
+                                    </div> 
                                     
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
                                             <li><a href="{% url 'index' %}">HOME </a></li>
                                             <li><a href="{% url 'products' %}">SHOP </a>
                                             <li><a href="{% url 'blog' %}">BLOG </a></li>
-                                           
+                                            <li><a href="{% url 'contact' %}">CONTACT </a>
                                             {% if user.is_authenticated %}
                                                 <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
                                             {% else %}
@@ -634,6 +634,7 @@
                                 <li><a class="active" href="/">HOME</a></li>
                                 <li><a href="{% url 'products' %}">SHOP</a></li>
                                 <li><a href="{% url 'blog' %}">BLOG </a>
+                                <li><a href="{% url 'contact' %}">CONTACT </a>
                                 {% if user.is_authenticated %}
                                     <li><a href="{% url 'user_profile' %}">PROFILE</a></li>
                                 {% else %}
