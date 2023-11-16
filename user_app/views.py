@@ -57,7 +57,6 @@ def index(request):
 
 @cache_control(no_cache=True, no_store=True)
 def register(request):
-
     if 'email' in request.session:
         return redirect('admin_dashboard')
     if 'user' in request.session:
@@ -71,10 +70,16 @@ def register(request):
         mobile = request.POST.get('mobile')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        if not request.POST["referral"]:
-            referral = "calikode"
-        else:
-            referral = request.POST["referral"]
+        # Referral code handling
+        referral = request.POST.get('referral', 'calikode')  # default referral code is 'calikode'
+        referred_user = None
+
+        if referral != "calikode":
+            try:
+                referred_user = CustomUser.objects.get(referral_code=referral)
+            except CustomUser.DoesNotExist:
+                messages.error(request, "Invalid referral code!")
+                return redirect('register')
 
         existing_email = CustomUser.objects.filter(email=email)
         existing_mobile = CustomUser.objects.filter(mobile=mobile)
@@ -112,14 +117,6 @@ Thank you for using Cali Kode Sneakers!
                 user.otp = otp
                 user.save()
 
-                # Referral code handling
-                referred_user = None
-                if referral != "calikode":
-                    try:
-                        referred_user = CustomUser.objects.get(referral_code=referral)
-                    except CustomUser.DoesNotExist:
-                        referred_user = None
-
                 if referred_user:
                     # Credit the referred user's wallet
                     referred_user.wallet += 250
@@ -139,8 +136,8 @@ Thank you for using Cali Kode Sneakers!
                     
                 return redirect('otp_verification', user_id)
             else:
-                 messages.error(request, "Passwords do not match!")
-                 return redirect('register')
+                messages.error(request, "Passwords do not match!")
+                return redirect('register')
 
     return render(request, 'user/register.html')
 

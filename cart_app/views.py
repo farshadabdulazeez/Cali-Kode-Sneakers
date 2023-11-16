@@ -142,7 +142,13 @@ def add_cart_item(request, product_id):
                 return redirect('product_details', product_id)
             
         except ProductVariant.DoesNotExist:
-            return redirect('product_details', product_id)        
+            messages.error(request, 'Invalid Size')
+            return redirect('product_details', product_id) 
+
+    # Check if the selected product variant has sufficient stock
+    if variant.stock <= 0:
+        messages.error(request, "This variant is out of stock.")
+        return redirect('product_details', product_id)       
 
     # getting cart    
     try:
@@ -187,11 +193,17 @@ def add_cart_item(request, product_id):
 def add_cart_quantity(request, cart_item_id):
     if 'email' in request.session:
         return redirect('admin_dashboard')
-    
+
     cart_item = get_object_or_404(CartItem, id=cart_item_id)
-    if cart_item.product.stock > cart_item.quantity:
+    
+    # Check if the product is in stock
+    if cart_item.product.stock <= 0:
+        messages.error(request, "This product is out of stock.")
+    elif cart_item.product.stock > cart_item.quantity:
         cart_item.quantity += 1
         cart_item.save()
+    else:
+        messages.error(request, "Stock exhausted")
 
     return redirect('cart')
 
@@ -200,13 +212,16 @@ def add_cart_quantity(request, cart_item_id):
 def remove_cart_quantity(request, cart_item_id):
     if 'email' in request.session:
         return redirect('admin_dashboard')
-    
+
     cart_item = get_object_or_404(CartItem, id=cart_item_id)
-    
+
+    # Check if the user is trying to decrease quantity to 0
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
         cart_item.save()
-    
+    else:
+        messages.error(request, "Product quantity cannot be less than 1.")
+
     return redirect('cart')
 
 

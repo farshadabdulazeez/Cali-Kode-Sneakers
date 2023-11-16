@@ -48,6 +48,10 @@
 
     <!-- Chartjs-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    {% comment %} ALERTIFY JS {% endcomment %}
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
     
     <!-- Helpers -->
     <script src="{% static 'admin/assets/vendor/js/helpers.js' %}"></script>
@@ -316,6 +320,25 @@
     <script src="{% static 'admin/assets/vendor/js/bootstrap.js' %}"></script>
     <script src="{% static 'admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
 
+    {% comment %} ALERTIFY JS {% endcomment %}
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script>
+        alertify.set('notifier', 'position', 'top-right');
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                alertify.success('{{ message }}');
+            {% elif message.tags == 'error' %}
+                alertify.error('{{ message }}');
+            {% elif message.tags == 'warning' %}
+                alertify.warning('{{ message }}');
+            {% elif message.tags == 'info' %}
+                alertify.message('{{ message }}');
+            {% endif %}
+        {% endfor %}
+        
+    </script>
+    
     <script src="{% static 'admin/assets/vendor/js/menu.js' %}"></script>
     <!-- endbuild -->
 

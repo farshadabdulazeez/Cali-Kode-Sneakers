@@ -19,7 +19,7 @@
                 <th>SL.NO</th>
                 <th>NAME</th>
                 <th>IMAGE</th>
-                {% comment %} <th>CATEGORY</th> {% endcomment %}
+                <th>CATEGORY</th>
                 <th>STOCK</th>
                 <th>SIZE</th>
                 <th>OPERATIONS</th>
@@ -44,11 +44,11 @@
                         </div>
                         {% endif %}
                     </td>
-                    {% comment %} <td>{{ i.category.category_name }}</td> {% endcomment %}
+                    <td>{{ i.category.category_name }}</td> 
                     <td>{{ i.stock }}</td>
                     <td>{{ i.product_size.size }}</td>
-                    <td><a href="{% url 'admin_edit_product_variant' %}" data-bs-toggle="modal"
-                      data-bs-target="#exampleModal" data-qwer="{{ i.id }}" data-price="{{ i.product_price }}"
+                    <td><a href="{% url 'admin_edit_product_variant'  variant_id=i.id %}" data-bs-toggle="modal"
+                      data-bs-target="#exampleModal{{ i.id }}" data-qwer="{{ i.id }}" data-price="{{ i.product_price }}"
                       data-stock="{{ i.stock }}"><i class="bi bi-pencil-fill  me-4"></i></a>
                       <a href="{% url 'admin_delete_product_variant' i.id %}" class="delete"><i class="bi bi-trash-fill" data-toggle="tooltip" title="Delete"></i></a></td>
                     <td>
@@ -77,38 +77,38 @@
 
 
 <!-- Modal -->
+<!-- Modal -->
 {% for i in variants %}
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
+<div class="modal fade" id="exampleModal{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form action="{% url 'admin_edit_product_variant' %}" method="post">
+      <form action="{% url 'admin_edit_product_variant' variant_id=i.id %}" method="post">
         {% csrf_token %}
         <div class="modal-header">
-          <h5 class="modal-title text-dark" id="exampleModalLabel">UPDATE STOCK  </h5>
+          <h5 class="modal-title text-dark" id="exampleModalLabel">UPDATE STOCK</h5>
         </div>
         <div class="modal-body">
           <label for="variantId">Product Name </label>
           <input type="hidden" name="id" value="{{i.id}}">
-          <input class = "form-control" type="text" name="name" id="variantId" value="{{ i.product.product_name }}" readonly>
+          <input class="form-control" type="text" name="name" id="variantId" value="{{ i.product.product_name }}" readonly>
             
           <label for="variantId">Size </label>
-          <input class = "form-control" type="text" name="size" id="variantId" value="{{ i.product_size.size }}" > 
+          <input class="form-control" type="text" name="size" id="variantId" value="{{ i.product_size.size }}" > 
   
           <label for="stock">Stock</label>
-          <input class = "form-control bg-white text-dark" type="number" name="stock" min="0" id="stock" required>
+          <input class="form-control bg-white text-dark" type="number" name="stock" min="0" id="stock" required>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Save changes</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </form>
-
     </div>
   </div>
 </div>
-
 {% endfor %}
+
 
 <!-- Button trigger modal -->
 

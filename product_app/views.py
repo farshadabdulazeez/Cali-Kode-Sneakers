@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from product_app.models import *
 from user_app.models import *
 from django.db.models import Q
+from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -98,6 +99,12 @@ def product_details(request, id):
     all_products = Product.objects.all()
     variant = ProductVariant.objects.filter(product=product_id)
     multiple_images = MultipleImages.objects.filter(product=product_id).order_by('-id')
+
+    # Check if any variant has stock greater than 0
+    if not any(variant.stock > 0 for variant in variant):
+        # If no variant has stock, display an error message or redirect to another page
+        messages.error(request, "This product is currently out of stock.")
+        return redirect('home')
 
     if single_product.category.offer:
         offer_percentage = single_product.category.offer

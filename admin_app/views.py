@@ -295,6 +295,10 @@ def admin_users_control(request, id):
     try:
         user = CustomUser.objects.get(id=id)
         if user.is_active:
+            # Log out the user if they are currently logged in
+            if user == request.user:
+                logout(request)
+                request.session.flush()
             user.is_active = False
         else:
             user.is_active = True
@@ -865,28 +869,22 @@ def admin_add_product_variant(request,product_id):
 
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
-def admin_edit_product_variant(request):
-
+def admin_edit_product_variant(request, variant_id):
     if 'email' not in request.session:
         return redirect('admin_login')
-    
+
     try:
         if request.method == 'POST':
-
-            id = request.POST['id']
             stock = request.POST['stock']
-            variant = ProductVariant.objects.get(id=id)
-            product_id = variant.product
+            variant = get_object_or_404(ProductVariant, id=variant_id)
             variant.stock = stock
             variant.save()
+            messages.success(request, 'Stock updated successfully')
 
-        return redirect('admin_product_variant', product_id.id)
-    
+        return redirect('admin_product_variant', variant.product.id)
+
     except ProductVariant.DoesNotExist:
-        pass
-
-    except Exception as e:
-        print(e)
+        messages.error(request, 'Product variant not found')
 
     return redirect('admin_product_variant')
 
