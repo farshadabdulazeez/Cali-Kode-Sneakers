@@ -423,6 +423,8 @@ def order_cancel(request, order_id):
                     product_variant.save()
 
                 user.save()
+
+            messages.success(request, "Order has been cancelled successfully!")
         
         return redirect('user_profile')
     # Handle GET requests or other cases not covered in the post request
@@ -476,6 +478,8 @@ def order_return(request, order_id):
                     product_variant.save()
 
                 user.save()
+
+            messages.success(request, "Order has been returned successfully!")
 
     return redirect('user_profile')
 

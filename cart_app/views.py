@@ -361,7 +361,7 @@ def checkout(request):
             address = UserAddress.objects.filter(user=my_user)
         except Exception as e:
             print(e)
-            messages.error(request, "Choose address")
+            messages.error(request, "Choose an address")
             return redirect('checkout')
         
         grand_total = Decimal(0)
@@ -404,8 +404,15 @@ def checkout(request):
             except:
                 messages.error(request, "Please choose a delivery address.")
                 return redirect('checkout')
+            
             request.session['selected_address_id'] = delivery_address.id
-            payment_method = request.POST['payment_method']
+
+            payment_method = request.POST.get('payment_method')
+
+            if not payment_method:
+                # If the payment method is not selected, set an error message
+                messages.error(request, "Please select a payment method.")
+                return redirect('checkout')
             
             if payment_method == "razorpayPayment":
 
@@ -470,8 +477,10 @@ def checkout(request):
                         product_price=item.product.product.selling_price,
                         ordered=True,
                     )
-                    variant.stock = variant.stock - item.quantity
+                    # Update variant stock
+                    variant.stock -= item.quantity
                     variant.save()
+
                     item.delete()
 
                 return redirect('order_confirmed', order_id )
@@ -535,7 +544,7 @@ def checkout(request):
                                 product_price=item.product.product.selling_price,
                                 ordered=True,
                             )
-                            variant.stock = variant.stock - item.quantity
+                            variant.stock -= item.quantity
                             variant.save()
                             item.delete()
 

@@ -48,8 +48,13 @@ def proceed_to_pay(request):
 @login_required(login_url='index')
 @cache_control(no_cache=True, no_store=True)
 def online_payment(request):
+    if 'user' in request.session:
+        my_user = request.user
+        cart_items = CartItem.objects.filter(customer=my_user)
 
-    my_user = request.user
+    if not cart_items.exists():
+        return redirect('index')
+    
     total = 0
     grand_total = 0
 
@@ -84,8 +89,6 @@ def online_payment(request):
             return redirect('checkout') 
 
     grand_total -= coupon_discount  # Subtract coupon discount after applying category offers
- 
-
 
     if request.method == 'POST':
         address_id = request.POST.get('address_id')
@@ -132,7 +135,7 @@ def online_payment(request):
                 product_price=item.product.product.selling_price,
                 ordered=True,
             )
-            variant.stock -= variant.stock - item.quantity
+            variant.stock -= item.quantity
             variant.save()
             item.delete()
 

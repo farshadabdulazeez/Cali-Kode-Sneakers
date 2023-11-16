@@ -192,12 +192,12 @@
               <td>{{order.order_total}}</td>
               <td>{{order.status}}</td>
               <td><a href="{% url 'admin_order_details' order.order_id %}" class="check-btn sqr-btn">View</a></td>
-          </tr>
-          {% endfor %}
-      </tbody>
-  </table>
-  </div>
-  <div class="pagination" style="display: flex; justify-content: flex-end; align-items: center; margin-top: 30px;  margin-right: 20px;">
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="pagination" style="display: flex; justify-content: flex-end; align-items: center; margin-top: 30px;  margin-right: 20px;">
     <span class="step-links">
         {% if orders.has_previous %}
             <a href="?page=1" style="padding: 4px 8px; text-decoration: none; border: 1px solid #ccc; border-radius: 4px; margin-right: 5px;">&laquo; first</a>
@@ -210,10 +210,14 @@
 
         {% if orders.has_next %}
             <a href="?page={{ orders.next_page_number }}" style="padding: 4px 8px; text-decoration: none; border: 1px solid #ccc; border-radius: 4px; margin-right: 5px;">next</a>
+        {% endif %}
+
+        {% if orders.has_next %}
             <a href="?page={{ orders.paginator.num_pages }}" style="padding: 4px 8px; text-decoration: none; border: 1px solid #ccc; border-radius: 4px;">last &raquo;</a>
         {% endif %}
     </span>
-</div>
+    </div>
+
 
 
 </div>
