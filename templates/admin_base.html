@@ -21,7 +21,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'admin/assets/img/favicon/cali-kode-logo-crop.png' %}" />
+    <link rel="icon" type="image/x-icon" href="{% static 'admin\assets\img\backgrounds\cali-kode-logo-crop.png' %}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,7 +69,7 @@
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
+            <a href="" class="app-brand-link">
               <span class="app-brand-text fw-bolder ms-2" style="text-transform: uppercase;">CALI KODE SNEAKERS</span>
 
             </a>
@@ -160,31 +160,10 @@
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
               <!-- Search -->
               <div class="navbar-nav align-items-center">
-                {% comment %} <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
-                  <input
-                    type="text"
-                    class="form-control border-0 shadow-none"
-                    placeholder="Search..."
-                    aria-label="Search..."
-                  />
-                </div> {% endcomment %}
               </div>
               <!-- /Search -->
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- Place this tag where you want the button to render. -->
-                {% comment %} <li class="nav-item lh-1 me-3">
-                  <a
-                    class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                    >Star</a
-                  >
-                </li> {% endcomment %}
 
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -268,24 +247,6 @@
                   CALI KODE SNEAKERS
                   <a href="#" target="_blank" class="footer-link fw-bolder">| INDIA</a>
                 </div>
-                {% comment %} <div>
-                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-                  <a
-                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Documentation</a
-                  >
-
-                  <a
-                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Support</a
-                  >
-                </div> {% endcomment %}
               </div>
             </footer>
             <!-- / Footer -->
@@ -300,16 +261,6 @@
       <!-- Overlay -->
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-    <!-- / Layout wrapper -->
-{% comment %} 
-    <div class="buy-now">
-      <a
-        href="{% url 'admin_dashboard' %}"
-        
-        class="btn btn-danger btn-buy-now"
-        >BACK TO DASHBOARD</a
-      >
-    </div> {% endcomment %}
 
     
 
@@ -337,6 +288,14 @@
             {% endif %}
         {% endfor %}
         
+    </script>
+
+    <script>
+      // Disable the browser's back button
+      window.history.pushState(null, null, window.location.href);
+      window.onpopstate = function () {
+          window.history.pushState(null, null, window.location.href);
+      };
     </script>
     
     <script src="{% static 'admin/assets/vendor/js/menu.js' %}"></script>

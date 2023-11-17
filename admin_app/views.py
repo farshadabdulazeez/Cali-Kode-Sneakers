@@ -605,6 +605,10 @@ def admin_products(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_product(request):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     categories = Category.objects.all()
     brands = ProductBrand.objects.all()
 
@@ -690,6 +694,10 @@ def admin_add_product(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_edit_product(request, id):
+
+    if 'email' not in request.session:
+        return redirect('admin_login')
+    
     product = Product.objects.get(id=id)
     product_category_offer = 0
     product_offer = 0
@@ -768,7 +776,6 @@ def admin_edit_product(request, id):
     return render(request, 'admin/admin_edit_product.html', context)
 
 
-
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_delete_product(request, id):
@@ -808,7 +815,6 @@ def admin_control_product(request, id):
     return redirect('admin_products')
 
 
-@cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_product_variant(request, product_id):
 
@@ -1143,25 +1149,6 @@ def admin_banner(request):
     
     context = {}
     try:
-        banners = Banner.objects.all()
-        context = {
-            "banners": banners,
-        }
-        return render(request, "admin/admin_banner.html", context)
-
-    except Exception as e:
-        print(e)
-        return render(request, "admin/admin_banner.html", context)
-
-
-@staff_member_required(login_url="admin_login")
-def admin_banner(request):
-
-    if 'email' not in request.session:
-        return redirect('admin_login')
-    
-    context = {}
-    try:
         banners = Banner.objects.all().order_by('id')
         context = {
             "banners": banners,
@@ -1212,6 +1199,7 @@ def admin_logout(request):
 
     if 'email' not in request.session:
         return redirect('admin_login')
+    
     logout(request)
     request.session.flush()
     return redirect('admin_login')

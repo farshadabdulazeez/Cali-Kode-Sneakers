@@ -78,6 +78,7 @@
                                                         <input type="radio" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;" name="size" value="{{ i.product_size }}">
                                                         {{ i.product_size }}
                                                     </label>
+                                                    {% comment %} <input type="hidden" name="variant_id" value="{{ i.variant_id }}"> {% endcomment %}
                                                 </li>
                                             {% endfor %}
                                         </ul>
@@ -90,7 +91,7 @@
                                     </div>
                                 </form>
                                     <div class="pro-details-action"> 
-                                        {% comment %} <a title="Add to Wishlist" href="{% url 'add_to_wishlist' variant_id=item.variant.id %}"><i class="icon-heart"></i></a>  {% endcomment %}
+                                        {% comment %} <a title="Add to Wishlist" href="{% url 'add_to_wishlist' i.variant.id %}"><i class="icon-heart"></i></a>  {% endcomment %}
                                         <a title="Refresh" href="javascript:location.reload(true);">
                                             <i class="icon-refresh"></i>
                                         </a>
