@@ -91,8 +91,10 @@ def products(request):
         return render(request, 'product/products.html', context)
 
     except Exception as e:
-        
-        return render(request,'error_404.html')
+        # Log the exception or handle it appropriately
+        # In development, you can also return a detailed error response
+        print(e)
+        return HttpResponse("An error occurred", status=500)
 
 
 def calculate_percentage_discount(selling_price, original_price):
@@ -116,7 +118,7 @@ def product_details(request, id):
 
         # Get all products and product variants
         all_products = Product.objects.all()
-        variant = ProductVariant.objects.filter(product=single_product, is_active=True)
+        variant = ProductVariant.objects.filter(product=product_id)
 
         # Get multiple images associated with the product
         multiple_images = MultipleImages.objects.filter(product=product_id).order_by('-id')
@@ -125,7 +127,7 @@ def product_details(request, id):
         if not any(variant.stock > 0 for variant in variant):
             # If no variant has stock, display an error message or redirect to another page
             messages.error(request, "This product is currently out of stock.")
-            return redirect('products')
+            return redirect('home')
 
         # Apply offer percentage if available
         if single_product.category.offer:
@@ -149,11 +151,13 @@ def product_details(request, id):
     except Product.DoesNotExist:
         # Handle the case where the requested product does not exist
         messages.error(request, "This product does not exist.")
-        return redirect('index')
+        return redirect('home')
 
     except Exception as e:
         # Log the exception or handle it appropriately
-        return render(request,'error_404.html')
+        # In development, you can also return a detailed error response
+        print(e)
+        return render(request, 'error.html', {'error_message': 'An error occurred'})
 
 
 def product_search(request):
@@ -210,5 +214,7 @@ def product_search(request):
         return render(request, 'product/products.html', context)
 
     except Exception as e:
-        
-        return render(request,'error_404.html')
+        # Log the exception or handle it appropriately
+        # In development, you can also return a detailed error response
+        print(e)
+        return HttpResponse("An error occurred", status=500)

@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <title>Admin Invoice</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    {% comment %} ALERTIFY JS {% endcomment %}
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
-
     <style>
         /* Define your styles here */
         body {
@@ -123,24 +118,5 @@
             </table>
         </div>
     </div>
-
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <script>
-        alertify.set('notifier', 'position', 'top-right');
-
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                alertify.success('{{ message }}');
-            {% elif message.tags == 'error' %}
-                alertify.error('{{ message }}');
-            {% elif message.tags == 'warning' %}
-                alertify.warning('{{ message }}');
-            {% elif message.tags == 'info' %}
-                alertify.message('{{ message }}');
-            {% endif %}
-        {% endfor %}
-        
-    </script>
-
 </body>
 </html>

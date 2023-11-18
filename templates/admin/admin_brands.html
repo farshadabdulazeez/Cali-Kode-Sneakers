@@ -34,7 +34,7 @@
                         <td>{{ i.brand_description }}</td>
                         <td>
                             <a href="{% url 'admin_edit_brand' i.id %}"><i class="bi bi-pencil-fill me-4"></i></a>
-                            {% comment %} <a href="{% url 'admin_delete_brand' i.id %}"><i class="bi bi-trash-fill"></i></a> {% endcomment %}
+                            <a href="{% url 'admin_delete_brand' i.id %}"><i class="bi bi-trash-fill"></i></a>
                         </td>
                         <td>
                           {% if i.is_active == True %}

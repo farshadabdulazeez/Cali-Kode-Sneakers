@@ -24,380 +24,118 @@ def _cart_id(request):
     return cart
 
 
-# def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
-
-#     if 'email' in request.session:
-#         return redirect('admin_dashboard')
-
-#     total = 0
-#     cart_items = None
-#     grand_total = 0
-#     available_coupons = None
-#     selected_coupon = 0
-#     coupons = None  # Define coupons here
-
-#     if 'user' in request.session:
-#         user = request.user
-#         try:
-#             cart = Cart.objects.get(cart_id=_cart_id(request))
-#         except ObjectDoesNotExist:
-#             pass
-
-#         try:
-#             cart_items = CartItem.objects.filter(customer=user).order_by('id')
-            
-#             for item in cart_items:
-#                 # Check if the product has a category offer
-#                 if item.product.product.category.offer:
-#                     offer_percentage = item.product.product.category.offer
-#                     discounted_price = item.product.product.selling_price - (
-#                         item.product.product.selling_price * offer_percentage / 100
-#                     )
-#                     item.sub_total = Decimal(discounted_price) * Decimal(item.quantity)
-#                 else:
-#                     item.sub_total = Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-
-#                 total += item.sub_total
-
-#             grand_total = total
-
-#             coupons = Coupons.objects.filter(active=True)
-
-#             available_coupons = Coupons.objects.filter(
-#                 active=True,
-#                 minimum_order_amount__lte=grand_total,
-#                 valid_from__lte=timezone.now(),
-#                 valid_to__gte=timezone.now()
-#             ).order_by('-discount')
-
-#         except ObjectDoesNotExist:
-#             pass
-#         except Exception as e:
-#             print(e)
-
-#     if request.method == 'POST':
-#         user = request.session['user']
-#         my_user = CustomUser.objects.get(email=user)
-#         orders = Order.objects.filter(user=my_user.id)
-#         coupon_store = [order.coupon.id for order in orders if order.coupon is not None]
-
-#         coupon_code = request.POST.get("coupon-codes")
-#         try:
-#             coupon = Coupons.objects.get(coupon_code=coupon_code)
-#         except Coupons.DoesNotExist:
-#             messages.error(request, "Invalid coupon code")
-#             return redirect('cart')
-
-#         if coupon.id in coupon_store:
-#             messages.error(request, "Coupon already used in a previous order")
-#             return redirect('cart')
-
-#         if not coupon.active:
-#             messages.error(request, "Coupon is not active")
-#             return redirect('cart')
-
-#         grand_total -= coupon.discount 
-
-#         request.session['selected_coupon_code'] = coupon_code
-#         request.session['grand_total'] = float(grand_total)
-
-#         # Update the selected_coupon variable
-#         selected_coupon = coupon
-   
-#     context = {
-#         'quantity': quantity,
-#         'total': total,
-#         'cart_items': cart_items,
-#         'grand_total': grand_total,
-#         'coupons': coupons,
-#         'available_coupons': available_coupons,
-#         'selected_coupon': selected_coupon
-#     }
-
-#     return render(request, 'cart/cart.html', context)
-
-
-
-
+@cache_control(no_cache=True)
 def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
-
-    if 'email' in request.session:
-        return redirect('admin_dashboard')
-
-    total = 0
-    cart_items = None
-    grand_total = 0
-    available_coupons = None
-    selected_coupon = 0
-    coupons = None  # Define coupons here
-
-    if 'user' in request.session:
-        user = request.user
-        try:
-            cart = Cart.objects.get(cart_id=_cart_id(request))
-        except ObjectDoesNotExist:
-            pass
-
-        try:
-            cart_items = CartItem.objects.filter(customer=user).order_by('id')
-            
-            for item in cart_items:
-                # Check if the product has a category offer
-                if item.product.product.category.offer:
-                    offer_percentage = item.product.product.category.offer
-                    discounted_price = item.product.product.selling_price - (
-                        item.product.product.selling_price * offer_percentage / 100
-                    )
-                    item.sub_total = Decimal(discounted_price) * Decimal(item.quantity)
-                else:
-                    item.sub_total = Decimal(item.product.product.selling_price) * Decimal(item.quantity)
-
-                total += item.sub_total
-
-            grand_total = total
-
-            coupons = Coupons.objects.filter(active=True)
-
-            available_coupons = Coupons.objects.filter(
-                active=True,
-                minimum_order_amount__lte=grand_total,
-                valid_from__lte=timezone.now(),
-                valid_to__gte=timezone.now()
-            ).order_by('-discount')
-
-        except ObjectDoesNotExist:
-            pass
-        except Exception as e:
-            print(e)
-
-    if request.method == 'POST':
-        user = request.session['user']
-        my_user = CustomUser.objects.get(email=user)
-        orders = Order.objects.filter(user=my_user.id)
-        coupon_store = [order.coupon.id for order in orders if order.coupon is not None]
-
-        coupon_code = request.POST.get("coupon-codes")
-        try:
-            coupon = Coupons.objects.get(coupon_code=coupon_code)
-        except Coupons.DoesNotExist:
-            messages.error(request, "Invalid coupon code")
-            return redirect('cart')
-
-        if coupon.id in coupon_store:
-            messages.error(request, "Coupon already used in a previous order")
-            return redirect('cart')
-
-        if not coupon.active:
-            messages.error(request, "Coupon is not active")
-            return redirect('cart')
-
-        grand_total -= coupon.discount 
-
-        request.session['selected_coupon_code'] = coupon_code
-        request.session['grand_total'] = float(grand_total)
-
-        # Update the selected_coupon variable
-        selected_coupon = coupon
-   
-    context = {
-        'quantity': quantity,
-        'total': total,
-        'cart_items': cart_items,
-        'grand_total': grand_total,
-        'coupons': coupons,
-        'available_coupons': available_coupons,
-        'selected_coupon': selected_coupon
-    }
-
-    return render(request, 'cart/cart.html', context)
-
-
-def add_cart_item(request, product_id):
-
-    if not request.user.is_authenticated:
-        messages.error(request, "Please log in to add items to your cart.")
-        return redirect('product_details', product_id)
-
-    product = Product.objects.get(id=product_id)
-    size = None
-    variant = None
-
-    if request.method == 'POST':
-
-        try:
-            product = Product.objects.get(id=product_id)
-            category_slug = product.category.slug
-            product_slug = product.slug
-            size = request.POST.get('size') 
-
-            if size:
-                variant = ProductVariant.objects.get(Q(product=product), Q(product_size__size=size))
-            else:
-                messages.error(request, 'Select a size')
-                return redirect('product_details', product_id)
-            
-        except ProductVariant.DoesNotExist:
-            messages.error(request, 'Invalid Size')
-            return redirect('product_details', product_id) 
-
-    # Check if the selected product variant has sufficient stock
-    if variant.stock <= 0:
-        messages.error(request, "This variant is out of stock.")
-        return redirect('product_details', product_id)       
-
-    # getting cart    
     try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(cart_id=_cart_id(request))   #to get the cart using cart id present in the session
-        cart.save()   
+        # Check if the user is an admin
+        if 'email' in request.session:
+            return redirect('admin_dashboard')
 
-    # getting cart items
-    try:
+        total = 0
+        cart_items = None
+        grand_total = 0
+        available_coupons = None
+        selected_coupon = 0
+        coupons = None  # Define coupons here
+
+        # Check if the user is logged in
         if 'user' in request.session:
-            my_user = request.user
-            cart_item = CartItem.objects.get(product=variant, customer=my_user)
-            if variant.stock > cart_item.quantity:
-                cart_item.quantity += 1
-            else:
-                messages.error(request, "Stock exhausted")
-        else:
-            cart_item = CartItem.objects.get(product=variant, cart=cart)
-            if variant.stock > cart_item.quantity:
-                cart_item.quantity += 1
-            else:
-                messages.error(request, "Stock exhausted")
-        
-        cart_item.save() 
+            user = request.user
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+            except ObjectDoesNotExist:
+                pass
 
-    except CartItem.DoesNotExist:
-        if 'user' in request.session:
-            my_user = request.user
-            cart_item = CartItem.objects.create(product=variant, quantity=1, cart=cart, customer=my_user)
-            cart_item.save()
+            try:
+                # Get cart items for the logged-in user
+                cart_items = CartItem.objects.filter(customer=user).order_by('id')
 
-        else:
-            cart_item = CartItem.objects.create(product=variant, quantity=1, cart=cart)
-            cart_item.save()
-        cart.save()
+                for item in cart_items:
+                    # Check if the product has a category offer
+                    if item.product.product.category.offer:
+                        offer_percentage = item.product.product.category.offer
+                        discounted_price = item.product.product.selling_price - (
+                            item.product.product.selling_price * offer_percentage / 100
+                        )
+                        item.sub_total = Decimal(discounted_price) * Decimal(item.quantity)
+                    else:
+                        item.sub_total = Decimal(item.product.product.selling_price) * Decimal(item.quantity)
 
-    return redirect('cart')
+                    total += item.sub_total
 
+                grand_total = total
 
+                coupons = Coupons.objects.filter(active=True)
 
-# FDSHJGVD
-# @cache_control(no_cache=True)
-# def cart(request, quantity=0, total=0, cart_items=None, grand_total=0):
-#     try:
-#         # Check if the user is an admin
-#         if 'email' in request.session:
-#             return redirect('admin_dashboard')
+                # Get available coupons based on conditions
+                available_coupons = Coupons.objects.filter(
+                    active=True,
+                    minimum_order_amount__lte=grand_total,
+                    valid_from__lte=timezone.now(),
+                    valid_to__gte=timezone.now()
+                ).order_by('-discount')
 
-#         total = 0
-#         cart_items = None
-#         grand_total = 0
-#         available_coupons = None
-#         selected_coupon = 0
-#         coupons = None  # Define coupons here
+            except ObjectDoesNotExist:
+                pass
+            except Exception as e:
+                print(e)
 
-#         # Check if the user is logged in
-#         if 'user' in request.session:
-#             user = request.user
-#             try:
-#                 cart = Cart.objects.get(cart_id=_cart_id(request))
+        # Handle coupon application when the form is submitted (POST request)
+        if request.method == 'POST':
+            user = request.session['user']
+            my_user = CustomUser.objects.get(email=user)
+            orders = Order.objects.filter(user=my_user.id)
+            coupon_store = [order.coupon.id for order in orders if order.coupon is not None]
 
-#             except ObjectDoesNotExist:
-#                 pass
+            # Get coupon code from the form
+            coupon_code = request.POST.get("coupon-codes")
 
-#             try:
-#                 # Get cart items for the logged-in user
-#                 cart_items = CartItem.objects.filter(customer=user).order_by('id')
+            try:
+                # Retrieve the coupon object based on the provided code
+                coupon = Coupons.objects.get(coupon_code=coupon_code)
+            except Coupons.DoesNotExist:
+                messages.error(request, "Invalid coupon code")
+                return redirect('cart')
 
+            # Check if the coupon has already been used in a previous order
+            if coupon.id in coupon_store:
+                messages.error(request, "Coupon already used in a previous order")
+                return redirect('cart')
 
-#                 for item in cart_items:
-#                     # Check if the product has a category offer
-#                     if item.product.product.category.offer:
-#                         offer_percentage = item.product.product.category.offer
-#                         discounted_price = item.product.product.selling_price - (
-#                             item.product.product.selling_price * offer_percentage / 100
-#                         )
-#                         item.sub_total = Decimal(discounted_price) * Decimal(item.quantity)
-#                     else:
-#                         item.sub_total = Decimal(item.product.product.selling_price) * Decimal(item.quantity)
+            # Check if the coupon is active
+            if not coupon.active:
+                messages.error(request, "Coupon is not active")
+                return redirect('cart')
 
-#                     total += item.sub_total
+            # Apply coupon discount to the grand total
+            grand_total -= coupon.discount
 
-#                 grand_total = total
+            # Update session variables
+            request.session['selected_coupon_code'] = coupon_code
+            request.session['grand_total'] = float(grand_total)
 
-#                 coupons = Coupons.objects.filter(active=True)
+            # Update the selected_coupon variable
+            selected_coupon = coupon
 
-#                 # Get available coupons based on conditions
-#                 available_coupons = Coupons.objects.filter(
-#                     active=True,
-#                     minimum_order_amount__lte=grand_total,
-#                     valid_from__lte=timezone.now(),
-#                     valid_to__gte=timezone.now()
-#                 ).order_by('-discount')
+        # Prepare the context to be passed to the template
+        context = {
+            'quantity': quantity,
+            'total': total,
+            'cart_items': cart_items,
+            'grand_total': grand_total,
+            'coupons': coupons,
+            'available_coupons': available_coupons,
+            'selected_coupon': selected_coupon
+        }
 
-#             except ObjectDoesNotExist:
-#                 pass
-#             except Exception as e:
-#                 print(e)
+        # Render the cart page with the context
+        return render(request, 'cart/cart.html', context)
 
-#         # Handle coupon application when the form is submitted (POST request)
-#         if request.method == 'POST':
-#             user = request.session['user']
-#             my_user = CustomUser.objects.get(email=user)
-#             orders = Order.objects.filter(user=my_user.id)
-#             coupon_store = [order.coupon.id for order in orders if order.coupon is not None]
-
-#             # Get coupon code from the form
-#             coupon_code = request.POST.get("coupon-codes")
-
-#             try:
-#                 # Retrieve the coupon object based on the provided code
-#                 coupon = Coupons.objects.get(coupon_code=coupon_code)
-#             except Coupons.DoesNotExist:
-#                 messages.error(request, "Invalid coupon code")
-#                 return redirect('cart')
-
-#             # Check if the coupon has already been used in a previous order
-#             if coupon.id in coupon_store:
-#                 messages.error(request, "Coupon already used in a previous order")
-#                 return redirect('cart')
-
-#             # Check if the coupon is active
-#             if not coupon.active:
-#                 messages.error(request, "Coupon is not active")
-#                 return redirect('cart')
-
-#             # Apply coupon discount to the grand total
-#             grand_total -= coupon.discount
-
-#             # Update session variables
-#             request.session['selected_coupon_code'] = coupon_code
-#             request.session['grand_total'] = float(grand_total)
-
-#             # Update the selected_coupon variable
-#             selected_coupon = coupon
-
-#         # Prepare the context to be passed to the template
-#         context = {
-#             'quantity': quantity,
-#             'total': total,
-#             'cart_items': cart_items,
-#             'grand_total': grand_total,
-#             'coupons': coupons,
-#             'available_coupons': available_coupons,
-#             'selected_coupon': selected_coupon
-#         }
-
-#         # Render the cart page with the context
-#         return render(request, 'cart/cart.html', context)
-
-#     except Exception as e:
-        
-#         return render(request,'error_404.html')
+    except Exception as e:
+        # Log the exception or handle it appropriately
+        # In development, you can also return a detailed error response
+        print(e)
+        return HttpResponse("An error occurred", status=500)
 
 
 def add_cart_item(request, product_id):
@@ -468,8 +206,10 @@ def add_cart_item(request, product_id):
         return redirect('cart')
 
     except Exception as e:
-        
-        return render(request,'error_404.html')
+        # Log the exception for further investigation
+        logging.error(f"Error in add_cart_item view: {e}")
+        # Return an error response or redirect to an error page
+        return HttpResponse("An error occurred", status=500)
 
 
 @cache_control(no_cache=True, no_store=True)
