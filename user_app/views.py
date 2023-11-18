@@ -56,7 +56,7 @@ def index(request):
     except Exception as e:
         # Log the exception or handle it appropriately
         # In development, you can also return a detailed error response
-        return HttpResponseServerError(f"An error occurred: {str(e)}")
+        return render(request, 'error_404.html')
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -158,8 +158,7 @@ Thank you for using Cali Kode Sneakers!
 
     except Exception as e:
         # Log the exception or handle it appropriately
-        # In development, you can also return a detailed error response
-        return HttpResponseServerError(f"An error occurred: {str(e)}")
+        return render(request, 'error_404.html')
 
 
 def generate_ref_code():
@@ -185,11 +184,16 @@ def user_login(request):
             user = authenticate(request, username=email, password=password)
 
             if user:
-                # Log in user and set session
-                request.session['user'] = email
-                login(request, user)
-                messages.success(request, "Logged in successfully!")
-                return redirect('index')
+                if user.is_active:
+                    # Log in user and set session
+                    request.session['user'] = email
+                    login(request, user)
+                    messages.success(request, "Logged in successfully!")
+                    return redirect('index')
+                else:
+                    # User is not active, raise an error message
+                    messages.error(request, "Your account is not active")
+                    return redirect('user_login')
             else:
                 # Invalid credentials, redirect to login page with error message
                 messages.error(request, "Invalid Credentials, Try again!")
@@ -200,7 +204,7 @@ def user_login(request):
 
     except Exception as e:
 
-        return HttpResponseServerError(f"An error occurred: {str(e)}")
+        return render(request, 'error_404.html')
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -270,9 +274,7 @@ def otp_verification(request, user_id):
 
     except Exception as e:
         # Log the exception or handle it appropriately
-        # In development, you can also return a detailed error response
-        return HttpResponseServerError(f"An error occurred: {str(e)}")
-    
+        return render(request, 'error_404.html')
 
 
 @cache_control(no_cache=True, no_store=True)

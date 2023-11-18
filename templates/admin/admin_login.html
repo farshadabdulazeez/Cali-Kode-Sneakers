@@ -39,6 +39,10 @@
     <link rel="stylesheet" href="{% static 'admin/assets/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{% static 'admin/assets/css/demo.css' %}" />
 
+    {% comment %} ALERTIFY JS {% endcomment %}
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{% static 'admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
 
@@ -127,7 +131,24 @@
     <script src="{% static 'admin/assets/vendor/js/menu.js' %}"></script>
     <!-- endbuild -->
 
-    <!-- Vendors JS -->
+    {% comment %} ALERTIFY JS {% endcomment %}
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script>
+        alertify.set('notifier', 'position', 'top-right');
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                alertify.success('{{ message }}');
+            {% elif message.tags == 'error' %}
+                alertify.error('{{ message }}');
+            {% elif message.tags == 'warning' %}
+                alertify.warning('{{ message }}');
+            {% elif message.tags == 'info' %}
+                alertify.message('{{ message }}');
+            {% endif %}
+        {% endfor %}
+        
+    </script>
 
     <!-- Main JS -->
     <script src="{% static 'admin/assets/js/main.js' %}"></script>

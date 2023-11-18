@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin-products/', views.admin_products, name="admin_products"),
     path('admin-add-product/', views.admin_add_product, name="admin_add_product"),
     path('admin-edit-product/<int:id>', views.admin_edit_product, name="admin_edit_product"),
-    path('admin-delete-product/<int:id>', views.admin_delete_product, name="admin_delete_product"),
+    # path('admin-delete-product/<int:id>', views.admin_delete_product, name="admin_delete_product"),
     path('admin-control-product/<int:id>', views.admin_control_product, name="admin_control_product"),
 
     path('admin-product-variant/<int:product_id>/', views.admin_product_variant, name="admin_product_variant"),
@@ -35,7 +35,7 @@ urlpatterns = [
     path('admin-brands/', views.admin_brands, name="admin_brands"),
     path('admin-add-brand/', views.admin_add_brand, name="admin_add_brand"),
     path('admin-edit-brand/<int:id>', views.admin_edit_brand, name="admin_edit_brand"),
-    path('admin-delete-brand/<int:id>', views.admin_delete_brand, name="admin_delete_brand"),
+    # path('admin-delete-brand/<int:id>', views.admin_delete_brand, name="admin_delete_brand"),
     path('admin-control-brand/<int:id>', views.admin_control_brand, name="admin_control_brand"),
 
     path('admin-coupons/', views.admin_coupons, name="admin_coupons"),
@@ -52,6 +52,7 @@ urlpatterns = [
     path('admin-edit-banner/<int:banner_id>/', views.admin_edit_banner, name="admin_edit_banner"),
 
     path('admin-logout/', views.admin_logout, name = "admin_logout"),
+    path('error-404/', views.error_404, name = "error_404")
 
     
 ]
