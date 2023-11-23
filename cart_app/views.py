@@ -594,56 +594,6 @@ def clear_coupon(request):
         return HttpResponse("An error occurred", status=500)
 
 
-# def wishlist(request):
-#     context = {}
-#     if request.user.is_authenticated:
-#         try:
-#             my_user = request.user
-#             user = CustomUser.objects.get(id=my_user.id)
-#             wishlist_items = Wishlist.objects.filter(user=user)
-            
-#             # Fetching product variants associated with the wishlist items
-#             product_variants = [item.variant for item in wishlist_items]
-
-#             context = {"wishlist": wishlist_items, "product_variants": product_variants}
-#             return render(request, "cart/wishlist.html", context)
-#         except Exception as e:
-#             print(e)
-#             return render(request, "cart/wishlist.html", context)
-#     else:
-#         return redirect("user_login")
-    
-
-# @login_required(login_url="index")
-# def add_to_wishlist(request, variant_id):
-#     return HttpResponse(True)
-#     try:
-#         if request.method == 'POST':
-#             variant = get_object_or_404(ProductVariant, id=variant_id)
-
-#             # Check if the product is already in the wishlist
-#             existing_wishlist_item = Wishlist.objects.filter(user=request.user, variant=variant).first()
-
-#             if not existing_wishlist_item:
-#                 # Add the product variant to the wishlist
-#                 Wishlist.objects.create(user=request.user, variant=variant)
-
-#     except Exception as e:
-#         print(e)
-#     return redirect("wishlist")
-
-
-# @login_required(login_url="index")
-# def delete_wishlist(request, wishlist_id):
-#     try:
-#         wishlist = Wishlist.objects.get(id=wishlist_id)
-#         wishlist.delete()
-#         return redirect("wishlist")
-#     except Exception as e:
-#         print(e)
-#         return redirect("wishlist")
-    
-
 # @cache_control(no_cache=True, no_store=True)
 # @login_required(login_url='user_login')
 # def checkout(request):

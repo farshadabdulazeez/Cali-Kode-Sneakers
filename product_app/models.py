@@ -30,7 +30,6 @@ class ProductBrand(models.Model):
     brand_image = models.ImageField(upload_to='brand_images/')
     brand_description = models.TextField(null=True)
     is_active = models.BooleanField(default=True)
-    offer = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         ordering = ['brand_name']

@@ -200,8 +200,14 @@ def product_details(request, id):
         if not any(variant.stock > 0 for variant in variant):
             # If no variant has stock, display an error message or redirect to another page
             messages.error(request, "This product is currently out of stock.")
-            return redirect('home')
+            return redirect('products')
 
+        #  Check if any variant is not active
+        if any(not variant.is_active for variant in variant):
+            # If any variant is not active, redirect with an error message
+            messages.error(request, "This product is currently not available.")
+            return redirect('products')
+        
         # Apply offer percentage if available
         if single_product.category.offer:
             offer_percentage = single_product.category.offer
@@ -224,13 +230,13 @@ def product_details(request, id):
     except Product.DoesNotExist:
         # Handle the case where the requested product does not exist
         messages.error(request, "This product does not exist.")
-        return redirect('home')
+        return redirect('products')
 
     except Exception as e:
         # Log the exception or handle it appropriately
         # In development, you can also return a detailed error response
         print(e)
-        return render(request, 'error.html', {'error_message': 'An error occurred'})
+        return render(request, 'index', {'error_message': 'An error occurred'})
 
 
 # def product_details(request, id):
