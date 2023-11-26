@@ -65,20 +65,6 @@ WSGI_APPLICATION = 'calikodesneakers.wsgi.application'
 
 AUTH_USER_MODEL = 'user_app.CustomUser'
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'calikodesneakers',
-#         'USER': 'postgres',
-#         'port': '5432',
-#         'PASSWORD': '0786',
-#         'HOST': 'localhost',
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -90,6 +76,18 @@ DATABASES = {
         'port': '5432',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+#         'NAME': 'calikodesneakers',
+#         'USER': 'postgres',
+#         'PASSWORD': '0786',
+#         'HOST': 'localhost',
+#         'port': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -146,3 +144,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'farshadabdulazeez@gmail.com'
 EMAIL_HOST_PASSWORD = 'anxoxkbquzujlkkg'
 EMAIL_USE_TLS = True
+

@@ -226,6 +226,24 @@
                                 <h4 class="sidebar-widget-title">BRANDS</h4>
                                 <div class="sidebar-widget-list">
                                     <ul>
+                                        {% for brand in brands %}
+                                            <li>
+                                                <div class="sidebar-widget-list-left">
+                                                    <input type="checkbox" name="brand" value="{{ brand.brand_name }}">
+                                                    <a href="#">{{ brand.brand_name }}</a>
+                                                    <span class="checkmark"></span>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+{% comment %} 
+                            <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                                <h4 class="sidebar-widget-title">BRANDS</h4>
+                                <div class="sidebar-widget-list">
+                                    <ul>
                                         <li>
                                             <div class="sidebar-widget-list-left">
                                                 <input type="checkbox" name="brand" value="ADIDAS ORIGINALS"> <a href="#">ADIDAS ORIGINALS</a>
@@ -258,7 +276,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div> 
+                            </div>  {% endcomment %}
 
                             <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
                                 <h4 class="sidebar-widget-title">Size </h4>

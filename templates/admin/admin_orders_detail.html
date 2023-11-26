@@ -114,8 +114,6 @@
                             <option value="OUT OF DELIVERY" {% if order.status == "OUT OF DELIVERY" %}selected{% endif %}>OUT OF DELIVERY</option>
                             <option value="DELIVERED" {% if order.status == "DELIVERED" %}selected{% endif %}>DELIVERED</option>
                             <option value="CANCELLED" {% if order.status == "CANCELLED" %}selected{% endif %}>CANCELLED</option>
-                            <option value="RETURN REQUESTED" {% if order.status == "RETURN REQUESTED" %}selected{% endif %}>RETURN REQUESTED</option>
-                            <option value="RETURN PROCESSING" {% if order.status == "RETURN PROCESSING" %}selected{% endif %}>RETURN PROCESSING</option>
                             <option value="RETURNED" {% if order.status == "RETURNED" %}selected{% endif %}>RETURNED</option>
                         </select>
                     </div>

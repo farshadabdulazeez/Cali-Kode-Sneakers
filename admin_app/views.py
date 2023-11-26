@@ -1,5 +1,6 @@
 import json
 import os
+from django.utils.text import slugify
 from django.forms import ValidationError
 from order.models import *
 from decimal import Decimal
@@ -71,9 +72,19 @@ def admin_dashboard(request):
     successfull_orders_count = Order.objects.filter(status="DELIVERED").count()
     cash_on_delivery_count = Payments.objects.filter(payment_method ='cash_on_delivery').count()
     razorpay_count = Payments.objects.filter(payment_method ='Razorpay').count()
-    total_revenue = Order.objects.aggregate(total_revenue = Sum('order_total'))['total_revenue']
-    total_revenue = float(total_revenue)
-    total_profit = total_revenue * 0.20
+    # total_revenue = Order.objects.aggregate(total_revenue = Sum('order_total'))['total_revenue']
+    # total_revenue = float(total_revenue)
+    # total_profit = total_revenue * 0.20
+    total_revenue_data = Order.objects.aggregate(total_revenue=Sum('order_total'))
+    total_revenue = total_revenue_data['total_revenue']
+
+    # Check if total_revenue is None before converting to float
+    if total_revenue is not None:
+        total_revenue = float(total_revenue)
+        total_profit = total_revenue * 0.20
+    else:
+        total_revenue = 0.0  # or any default value you want
+        total_profit = 0.0   # or any 
     # Inside your admin_dashboard view
     product_sales = OrderProduct.objects.values('variant__product').annotate(sales=Sum('quantity')).order_by('-sales')
 
@@ -336,9 +347,12 @@ def admin_add_category(request):
 
     try:
         if request.method == 'POST':
+            # category_name = request.POST['category_name']
+            # category_slug = category_name.replace("-"," ")
+            # existing_category = Category.objects.filter(category_name__iexact=category_name)
             category_name = request.POST['category_name']
-            category_slug = category_name.replace("-"," ")
-            existing_category = Category.objects.filter(category_name__iexact=category_name)
+            category_slug = slugify(category_name)  # Use slugify to generate a URL-friendly slug
+            existing_category = Category.objects.filter(slug=category_slug)
            
             if existing_category.exists():
                 messages.error(request, 'Category exists!')
@@ -463,7 +477,6 @@ def admin_brands(request):
 @cache_control(no_cache=True, no_store=True)
 @staff_member_required(login_url='admin_login')
 def admin_add_brand(request):
-
     if 'email' not in request.session:
         return redirect('admin_login')
     
@@ -471,8 +484,11 @@ def admin_add_brand(request):
         brand_name = request.POST['brand_name']
         brand_description = request.POST['brand_description']
 
-        # Check if a brand with the same name already exists
-        existing_brand = ProductBrand.objects.filter(brand_name=brand_name).first()
+        # Generate the slug from the brand name
+        brand_slug = slugify(brand_name)
+
+        # Check if a brand with the same slug already exists
+        existing_brand = ProductBrand.objects.filter(slug=brand_slug).first()
 
         if existing_brand:
             # Update the existing brand's description and image if provided
@@ -489,6 +505,7 @@ def admin_add_brand(request):
             brand = ProductBrand(
                 brand_name=brand_name,
                 brand_description=brand_description,
+                slug=brand_slug,  # Set the slug field
             )
             
             if request.FILES:
@@ -500,6 +517,7 @@ def admin_add_brand(request):
         return redirect('admin_brands')
 
     return render(request, 'admin/admin_add_brand.html')
+
 
 
 @cache_control(no_cache=True, no_store=True)
@@ -632,10 +650,10 @@ def admin_add_product(request):
                 category = Category.objects.get(id=category_id)
                 product_category_offer = category.offer
             except Category.DoesNotExist:
-                pass
+                product_category_offer = None
 
             # Apply category offer
-            if product_category_offer > 0:
+            if product_category_offer is not None and product_category_offer > 0:
                 offer_amount = (original_price * product_category_offer) // 100
                 if (original_price - offer_amount) < selling_price:
                     selling_price -= offer_amount  # Deduct category offer
@@ -684,7 +702,7 @@ def admin_add_product(request):
 
             return redirect('admin_products')
         
-    except Exception as e:
+    except Exception as e:  
         messages.error(request, "Product is already exist!")
         print(e)
 
@@ -714,64 +732,70 @@ def admin_edit_product(request, id):
         'multiple_images': multiple_images,
     }
 
-    try:
-        if request.method == 'POST':
-            original_price = float(request.POST.get('original_price'))
-            selling_price = float(request.POST.get('selling_price'))
-            product_offer = int(request.POST.get('product_offer', 0))
+    # try:
+    if request.method == 'POST':
+        original_price = float(request.POST.get('original_price'))
+        selling_price = float(request.POST.get('selling_price'))
+        product_offer = int(request.POST.get('product_offer', 0))
 
-            # Get the category offer
-            try:
+        # Get the category offer
+        try:
+            if product.category is not None:
                 product_category_offer = product.category.offer
-            except Category.DoesNotExist:
-                pass
+            else:
+                product_category_offer = 0  # Default to 0 if the category is None
+        except Category.DoesNotExist:
+            product_category_offer = 0  # Default to 0 if the category doesn't have an offer
 
-            # Apply category offer
-            if product_category_offer > 0:
-                offer_amount = (original_price * product_category_offer) // 100
-                selling_price -= offer_amount  # Deduct category offer
+        # Apply category offer
+        if product_category_offer is not None and product_category_offer > 0:
+            offer_amount = (original_price * product_category_offer) // 100
+            selling_price -= offer_amount  # Deduct category offer
 
-            # Apply product offer (if needed)
-            if product_offer > 0:
-                product_offer_amount = (original_price * product_offer) // 100
-                selling_price -= product_offer_amount  # Deduct product offer
+        # Apply product offer (if needed)
+        if product_offer > 0:
+            product_offer_amount = (original_price * product_offer) // 100
+            selling_price -= product_offer_amount
 
-            single_image = request.FILES.get('product_image', None)
+        single_image = request.FILES.get('product_image', None)
 
-            multiple_images = request.FILES.getlist('multiple_images')
-            # Clear existing multiple images for the product
-            MultipleImages.objects.filter(product=product).delete()
+        multiple_images = request.FILES.getlist('multiple_images')
+        # Clear existing multiple images for the product
+        MultipleImages.objects.filter(product=product).delete()
 
-            # Add new multiple images
-            for image in multiple_images:
-                MultipleImages.objects.create(product=product, images=image)
+        # Add new multiple images
+        for image in multiple_images:
+            MultipleImages.objects.create(product=product, images=image)
 
-            # Update the product's category if it has changed
-            category_id = request.POST.get('category')
-            if category_id:
-                new_category = Category.objects.get(id=category_id)
-                product.category = new_category
+        # Update the product's category if it has changed
+        category_id = request.POST.get('category')
+        if category_id:
+            new_category = Category.objects.get(id=category_id)
+            product.category = new_category
 
-            # Update the product's brand if it has changed
-            brand_id = request.POST.get('brand')
-            if brand_id:
-                new_brand = ProductBrand.objects.get(id=brand_id)
-                product.brand = new_brand
+        # Update the product's brand if it has changed
+        brand_id = request.POST.get('brand')
+        if brand_id:
+            new_brand = ProductBrand.objects.get(id=brand_id)
+            product.brand = new_brand
 
-            product.original_price = original_price
-            product.selling_price = selling_price
-            product.product_description = request.POST['product_description']
+        product.original_price = original_price
+        product.selling_price = selling_price
+        product.product_description = request.POST['product_description']
 
-            if single_image:
-                if product.product_image:
-                    product.product_image.delete()
-                product.product_image = single_image
+        if single_image:
+            if product.product_image:
+                product.product_image.delete()
+            product.product_image = single_image
 
-            product.save()
-            messages.success(request, "Product updated successfully!")
-            return redirect('admin_products')
-    except Exception as e:
-        print(e)
+        product.save()
+        messages.success(request, "Product updated successfully!")
+        return redirect('admin_products')
+    # except Exception as e:
+    #     error_message = f"An error occurred while updating the product: {str(e)}"
+    #     messages.error(request, error_message)
+    #     print(error_message)
+
 
     return render(request, 'admin/admin_edit_product.html', context)
 
